@@ -1,0 +1,22 @@
+# Python virtual environments
+.venv/
+**/.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Secrets
+.env
+.env.*
+
+# Generated SUMO simulation outputs
+**/tripinfos.xml
+**/stats.xml
+**/baseline_tripinfo.xml
+
+# IDE settings
+.vscode/
+.idea/
+
+

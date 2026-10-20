@@ -713,7 +713,7 @@ Status values: `Not started` · `In progress` · `Blocked (reason)` · `Done` ·
 |---|---|---|---|---|
 | [ ] T0.1 Audit | Not started | | | |
 | [ ] T0.2 Skeleton, config, tooling | Not started | | | |
-| [ ] T0.3 SUMO client + TLS + suitability (M1 pilot junction) | Not started | | | |
+| [x] T0.3 SUMO client + TLS + suitability (M1 pilot junction) | Done | 2026-10-20 | PENDING | Static native program; rank 6/13 and above median; 4 approaches, 3 greens; foe check passed with documented permissive yielding overlaps. |
 | [ ] T0.4 Scenarios + cached pool | Not started | | | |
 | [ ] T1.1 Traffic State | Not started | | | |
 | [ ] T1.2 Safety layer | Not started | | | |

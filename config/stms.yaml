@@ -1,6 +1,6 @@
 sumo:
   config: SUMO/No_Polygon_Map/osm.sumocfg
-  tls_id: cluster618250255_7478115627_cluster_11927462278_11927462280_7479633881
+  tls_id: cluster618250255_7478115627_cluster_11927462278_11927462280_7478115626_7479633881
   step_length: 1.0
   horizon_s: 3600
   max_sim_s: 7200
@@ -123,11 +123,120 @@ rl_net:
   validation_every_timesteps: 20000
 
 intersection:
-  approaches: []
-  green_phases: []
-  yellow_after: {}
-  movements: []
-
+  approaches:
+  - name: approach_1
+    lanes:
+    - 229965236#0_0
+    - 229965236#0_1
+    incoming_edge: 229965236#0
+    bearing: 59.51
+  - name: approach_2
+    lanes:
+    - 1196514117#0_0
+    - 1196514117#0_1
+    incoming_edge: 1196514117#0
+    bearing: 149.07
+  - name: approach_3
+    lanes:
+    - 1105763532#3_0
+    incoming_edge: 1105763532#3
+    bearing: 328.0
+  - name: approach_4
+    lanes:
+    - 312063814#0_0
+    - 312063814#0_1
+    - 312063814#0_2
+    incoming_edge: 312063814#0
+    bearing: 328.26
+  green_phases:
+  - 0
+  - 2
+  - 4
+  yellow_after:
+    0: 1
+    2: 3
+    4: 5
+  movements:
+  - from_edge: 1105763532#3
+    to_edge: -1105763532#3
+    link_indices:
+    - 22
+  - from_edge: 1105763532#3
+    to_edge: 1196514119#0
+    link_indices:
+    - 21
+  - from_edge: 1105763532#3
+    to_edge: 229965238#0
+    link_indices:
+    - 18
+  - from_edge: 1105763532#3
+    to_edge: 312063814#4
+    link_indices:
+    - 20
+  - from_edge: 1105763532#3
+    to_edge: 744561214#0
+    link_indices:
+    - 19
+  - from_edge: 1196514117#0
+    to_edge: -1105763532#3
+    link_indices:
+    - 10
+  - from_edge: 1196514117#0
+    to_edge: 1196514119#0
+    link_indices:
+    - 7
+    - 8
+    - 9
+  - from_edge: 1196514117#0
+    to_edge: 229965238#0
+    link_indices:
+    - 11
+  - from_edge: 1196514117#0
+    to_edge: 312063814#4
+    link_indices:
+    - 13
+  - from_edge: 1196514117#0
+    to_edge: 744561214#0
+    link_indices:
+    - 12
+  - from_edge: 229965236#0
+    to_edge: -1105763532#3
+    link_indices:
+    - 17
+  - from_edge: 229965236#0
+    to_edge: 1196514119#0
+    link_indices:
+    - 16
+  - from_edge: 229965236#0
+    to_edge: 312063814#4
+    link_indices:
+    - 15
+  - from_edge: 229965236#0
+    to_edge: 744561214#0
+    link_indices:
+    - 14
+  - from_edge: 312063814#0
+    to_edge: -1105763532#3
+    link_indices:
+    - 0
+  - from_edge: 312063814#0
+    to_edge: 1196514119#0
+    link_indices:
+    - 6
+  - from_edge: 312063814#0
+    to_edge: 229965238#0
+    link_indices:
+    - 1
+  - from_edge: 312063814#0
+    to_edge: 312063814#4
+    link_indices:
+    - 4
+    - 5
+  - from_edge: 312063814#0
+    to_edge: 744561214#0
+    link_indices:
+    - 2
+    - 3
 logging:
   step_log_every_s: 5
 

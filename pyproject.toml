@@ -20,6 +20,8 @@ target-version = "py310"
 # The roadmap and existing imports require the uppercase package name Ai.
 "Ai/*.py" = ["N999"]
 "Ai/**/*.py" = ["N999"]
+# Python 3.10 remains supported without adding typing_extensions only for Self.
+"Ai/common/sumo_client.py" = ["PYI034"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

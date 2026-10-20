@@ -712,7 +712,7 @@ Status values: `Not started` · `In progress` · `Blocked (reason)` · `Done` ·
 | Task | Status | Date | Commit | Note |
 |---|---|---|---|---|
 | [x] T0.1 Audit | Done | 2026-10-20 | 19d83ad | Repository and environment audit recorded; baseline replay did not reproduce. |
-| [x] T0.2 Skeleton, config, tooling | Done | 2026-10-20 | PENDING | Setup, config, dependency lock, lint and tests pass. |
+| [x] T0.2 Skeleton, config, tooling | Done | 2026-10-20 | 50bda08 | Setup, config, dependency lock, lint and tests pass. |
 | [ ] T0.3 SUMO client + TLS + suitability (M1 pilot junction) | Not started | | | |
 | [ ] T0.4 Scenarios + cached pool | Not started | | | |
 | [ ] T1.1 Traffic State | Not started | | | |

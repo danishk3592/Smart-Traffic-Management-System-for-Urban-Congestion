@@ -1,22 +1,33 @@
-# Python virtual environments
+# Python environments
 .venv/
 **/.venv/
 
-# Python cache
+# Python caches and tool output
 __pycache__/
 *.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.tfevents.*
 
 # Secrets
 .env
 .env.*
+!.env.example
 
-# Generated SUMO simulation outputs
+# Generated SUMO outputs and cached scenario routes
 **/tripinfos.xml
 **/stats.xml
 **/baseline_tripinfo.xml
+SUMO/scenarios/*/seed_*/
+
+# Generated experiment data
+results/raw/
+prediction/data/raw/
+vision/data/
 
 # IDE settings
 .vscode/
 .idea/
-
-

@@ -1,0 +1,1 @@
+- Rule N999 for Ai/*.py and Ai/**/*.py: the roadmap and existing imports require the uppercase package name Ai; renaming it would break documented imports.

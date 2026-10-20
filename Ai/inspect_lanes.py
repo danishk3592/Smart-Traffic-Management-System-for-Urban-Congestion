@@ -1,5 +1,6 @@
 
 import os
+
 import traci
 
 sumo_cfg = os.path.abspath(

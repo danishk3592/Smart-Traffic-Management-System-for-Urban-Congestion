@@ -1,7 +1,8 @@
 
 import os
-import traci
 import xml.etree.ElementTree as ET
+
+import traci
 
 sumo_cfg = os.path.abspath(
     "../SUMO/No_Polygon_Map/osm.sumocfg"

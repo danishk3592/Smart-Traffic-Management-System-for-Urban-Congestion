@@ -1,0 +1,13 @@
+traci==1.27.1
+sumolib==1.27.1
+numpy
+pandas
+matplotlib
+PyYAML
+gymnasium
+stable-baselines3
+torch
+tensorboard
+scikit-learn
+joblib
+psutil

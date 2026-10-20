@@ -1,4 +1,5 @@
 import os
+
 import traci
 
 # SUMO configuration

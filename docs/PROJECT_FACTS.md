@@ -12,5 +12,5 @@
 - Baseline: existing script attempted for 3,600 steps with tripinfo redirected to `%TEMP%`; run was interrupted before completion, XML is incomplete, so the reported 4,408/3,323/1,085/~299 s result did not reproduce. SUMO logged emergency braking at 315 s and repeated teleports from 801 s onward. GUI inspection scripts were read but not run.
 - Measured SUMO speed: headless 600-step run, `Measure-Command` = 22.6325531 s including startup; 600/22.6325531 = 26.51 sim-s/real-s; run used `--no-warnings true`.
 - `Ai/analytics/`: absent; lint/test status not applicable. `Ai/rl/ppo_evaluation.csv` and model are preliminary/unverified beyond archive load.
-- Missing / needs human: baseline replay and GUI/RL episode validation remain incomplete; CIM denied CPU model/video details; RAM was obtained via psutil; dirty working tree violates the roadmap’s clean-tree/phase-branch prerequisite. No implementation files changed; only this audit report was created. Await direction before T0.2.
+- Missing / needs human: baseline replay and GUI/RL episode validation remain incomplete; CIM denied CPU model/video details; RAM was obtained via psutil. T0.2 setup completed on isolated Phase 0 worktree; the original checkout remains preserved.
 

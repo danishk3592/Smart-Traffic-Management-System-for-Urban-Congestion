@@ -1,0 +1,145 @@
+sumo:
+  config: SUMO/No_Polygon_Map/osm.sumocfg
+  tls_id: cluster618250255_7478115627_cluster_11927462278_11927462280_7479633881
+  step_length: 1.0
+  horizon_s: 3600
+  max_sim_s: 7200
+  time_to_teleport_s: 300
+
+signal:
+  min_green_s: 10
+  max_green_s: 60
+  yellow_s: 3
+  all_red_s: 0
+
+fixed:
+  green_s: 30
+
+rl:
+  decision_interval_s: 5
+  episode_s: 3600
+  reward_weights:
+    queue: 1.0
+    wait: 1.0
+    throughput: 0.5
+  device: cpu
+
+rule:
+  queue_threshold: 8
+  wait_threshold_s: 45
+
+congestion:
+  thresholds:
+    low_max_halting: 4
+    medium_max_halting: 12
+    high_min_halting: 13
+
+demand:
+  vehicle_mix:
+    passenger: 1.0
+  junction_share_min: 0.30
+  train_pool:
+    scenarios:
+      - balanced
+      - directional_ns
+      - directional_ew
+      - low
+      - medium
+      - heavy
+      - rush_hour
+    seeds_per_scenario: 20
+    seed_min: 1000
+    seed_max: 1999
+  net_train_pool:
+    scenarios:
+      - net_balanced
+      - net_low
+      - net_medium
+      - net_heavy
+      - net_rush_hour
+    seeds_per_scenario: 20
+    seed_min: 1000
+    seed_max: 1999
+
+eval:
+  scenarios_headline:
+    - balanced
+    - directional_ns
+    - directional_ew
+    - medium
+    - heavy
+    - rush_hour
+  scenarios_primary:
+    - medium
+    - heavy
+    - rush_hour
+  scenarios_separate:
+    - low
+  dev_seeds: [5000, 5001, 5002, 5003, 5004]
+  final_seeds: [6000, 6001, 6002, 6003, 6004]
+  target_reduction_pct: 10.0
+  ai_coverage_min_share: 0.95
+  completion_gap_flag_pp: 2.0
+
+prediction:
+  split:
+    full:
+      train: [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019]
+      val: [2020, 2021, 2022, 2023, 2024]
+      test: [2025, 2026, 2027, 2028, 2029]
+    reduced:
+      train: [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011]
+      val: [2020, 2021, 2022, 2023]
+      test: [2025, 2026, 2027, 2028]
+
+network:
+  controlled_tls: []
+  excluded_tls: []
+  max_intended: 20
+  min_veh_per_1800s: 20
+  max_approaches: null
+  max_phases: null
+  scenarios:
+    - net_balanced
+    - net_low
+    - net_medium
+    - net_heavy
+    - net_rush_hour
+  headline_scenarios: [net_balanced, net_medium, net_heavy, net_rush_hour]
+  primary_scenarios: [net_medium, net_heavy, net_rush_hour]
+  separate_scenarios: [net_low]
+  min_controlled_trip_share: 0.5
+
+rl_net:
+  decision_interval_s: 5
+  episode_s: 3600
+  device: cpu
+  network_term_weight: 0.0
+  max_train_hours: 10
+  validation_pairs:
+    - [net_medium, 3000]
+    - [net_heavy, 3001]
+    - [net_rush_hour, 3002]
+  validation_every_timesteps: 20000
+
+intersection:
+  approaches: []
+  green_phases: []
+  yellow_after: {}
+  movements: []
+
+logging:
+  step_log_every_s: 5
+
+vision:
+  width: 1280
+  height: 720
+  capture_every_s: 5
+  confidence: 0.25
+  recall_gate: 0.85
+  max_frames:
+    train: 2000
+    val: 300
+    test: 300
+
+metrics_version: 1

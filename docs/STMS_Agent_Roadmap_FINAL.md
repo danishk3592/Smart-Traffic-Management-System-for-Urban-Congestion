@@ -720,8 +720,8 @@ Status values: `Not started` · `In progress` · `Blocked (reason)` · `Done` ·
 | [x] T0.4 Scenarios + cached pool | Done with approved deviation | 2026-10-24 | 478daff | 140/140 cached routes verified; native >5% teleport failure preserved and deferred to post-PPO comparison per Section 0.6. |
 | [x] T1.1 Traffic State | Done | 2026-10-24 | 133b0c0 | SUMO sensor aggregation, normalized vector, serialization; unit/live SUMO checks pass. |
 | [x] T1.2 Safety layer | Done | 2026-10-24 | eacb7e0 | SUMO safety fuzzer 1200 s; unit/SUMO suites and Ruff pass. |
-| [ ] T1.3 Controllers + runner | Not started | | | |
-| [ ] T1.4 Metrics | Not started | | | |
+| [ ] T1.3 Controllers + runner | In progress; acceptance pending | 2026-10-24 | agent/phase-1-core | Implementation/tests complete; tuning is 1/9, no threshold selected. Eight validation runs remain. |
+| [ ] T1.4 Metrics | In progress; acceptance pending | 2026-10-24 | agent/phase-1-core | Metric implementation/tests complete; current-run fixed summary and completed-trip crossing diagnostic remain pending. |
 | [ ] T2.1 Env | Not started | | | |
 | [ ] T2.2 Env tests (gate) | Not started | | | |
 | [ ] T2.3 PPO training (staged) | Not started | | | |

@@ -4,7 +4,7 @@ Updated: 2026-10-24
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T1.2 - Signal Safety Layer | Done | agent/phase-1-core | eacb7e0 | Begin T1.3 Controllers + runner. |
+| T1.3/T1.4 - Controllers + metrics | Implementation committed; acceptance pending | agent/phase-1-core | pending this commit | T1.3 tuning stopped at 1/9; T1.4 current-run fixed diagnostics remain. No long simulations without user approval. |
 
 ## Completed
 
@@ -15,6 +15,16 @@ Updated: 2026-10-24
 - Phase 0 merged into `main` as `ee77f85`; Phase 1 branch `agent/phase-1-core` starts at that merge. Pre-merge backup and collision quarantine are at `C:\Users\empow\AppData\Local\Temp\STMS_premerge_preserve_20261024-173055`.
 - T1.1 - dataclasses, config-derived vector normalization, lane-level SUMO sensor aggregation, throughput sampling, and JSON conversion (`133b0c0`). Tests: unit suite 16 passed/4 deselected; SUMO-marked suite 4 passed; Ruff passed; zombie check clean. Protected map hash check: 23 files unchanged.
 - T1.2 - generic `SignalSafetyLayer` validates the active TLS program and phase transitions, rejects invalid requests with reasons, routes phase changes through verified green/yellow/all-red phases, enforces configured minimum/maximum green, supports approach requests, and caps extensions. Confirmed pilot TLS used; native phase 2's 6-second green is lengthened to the configured 10-second minimum. Safety fuzzer: seed 731, 1200 simulated seconds; pass. Tests: `pytest -q -p no:cacheprovider` 21 passed/5 deselected; `pytest -q -p no:cacheprovider -m sumo` 5 passed/21 deselected; Ruff all checks passed; zombie check clean. No map files modified. Implementation commit `eacb7e0`.
+
+## T1.3 and T1.4 implementation; acceptance pending
+
+- Implemented generic fixed-time, observation-only rule-based, registry, and fail-safe fallback controllers; the fallback enforces a decision timeout and remains latched after a timed-out policy. Added the single-junction closed-loop runner and resumable threshold tuning script. No edge-specific green bonuses or demand changes were added.
+- Short checks on 2026-10-24: `pytest -q tests/test_controllers.py tests/test_metrics.py` -> 9 passed; full unit suite -> 30 passed, 5 deselected; SUMO-marked suite -> 5 passed, 30 deselected; `ruff check .` -> all checks passed; zombie check -> no running SUMO processes. An initial timeout-test expectation failed, was corrected to match the fixed controller's phase state, and the focused suite then passed.
+- Existing fixed episode (`results/raw/20261024-192727_fixed_medium_s3000`): 2,600 scheduled trips, 1,534 completed, 1,082 teleports, 862.5 s wall time. The step log confirms 30-second green intervals. Existing rule episode (`results/raw/20261024-194221_rule_medium_s3000`): 1,560/2,600 completed, 1,088 teleports; repeated safety-fallback warnings at maximum green make it exploratory, not accepted tuning evidence.
+- Rule tuning stopped at the user's instruction: 1/9 validation runs complete (q6/w30, seed 3000: 1,544/2,600 completed, 1,145 teleports, 0 fallback activations, 1,459.7 s). A second q6/w30/3001 attempt is preserved as a partial `steps.csv` through simulation time 1,655 s; no trip log or `run.json` exists for it. An earlier startup attempt has a preserved zero-byte `steps.csv`. The eight remaining complete runs were not launched after the stop instruction. No best threshold is selected; config remains at 8/45.
+- T1.4 metric code, definitions, and exact-fixture tests are implemented. Existing fixed logs were copied to `results/raw/20261024-205400_fixed_existing_metrics_recheck` and postprocessed without overwriting the source run; the generated summary has all Section 11 columns and no NaN. This old episode predates unfinished-tripinfo and per-vehicle crossing diagnostics, so its unfinished-trip metrics and crossing explanation do not satisfy T1.4 acceptance.
+- T1.4 remains pending a fixed run with the current runner and a completed-trip route-through crossing check. The prior fixed artifact has 396 completed route-through trips, of which 210 lack a recorded crossing; its run record lacks teleport IDs, so those mismatches are unexplained. No further simulation was started. The approved baseline teleport amendment remains in force; excessive teleports are reported, not hidden or used to reduce demand.
+- Phase 1 is **not complete**. Next action requires user approval for the remaining long validation simulations and the current-run fixed-time diagnostic.
 
 ## T0.4 completed with explicit deviation
 
@@ -29,4 +39,4 @@ Updated: 2026-10-24
 - Preserve the user's modified `SUMO/No_Polygon_Map/edgeData.xml` and never write outputs under `SUMO/No_Polygon_Map/`. The existing edgeData change and HSR file remain in place; RL artifacts were restored after content/hash comparison.
 - Database, backend/API and dashboard remain out of scope.
 - The 2026-10-24 human-approved amendment changes only when teleport performance is evaluated; it does not erase or pass the native baseline failure. T0.4 is recorded Done with deviation. PPO remains sequenced after T1.4, T2.1 and T2.2.
-- Next task: T1.3 Controllers + runner.
+- Next task: complete T1.3 validation and T1.4 acceptance evidence. The implementation and short-test criteria are verified; remaining requirements need the eight full tuning episodes and a current-run fixed diagnostic. No long simulations without user approval.

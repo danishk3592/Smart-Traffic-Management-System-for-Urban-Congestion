@@ -65,6 +65,23 @@
 - Full-suite verification also exposed a stale expected TLS ID and a SUMO config parser splitting Windows paths at spaces. Updated the expectation to the user-confirmed TLS and changed file-list parsing to comma/semicolon separators; the complete suites then passed.
 - T1.1 commit: `133b0c0`. Next task is T1.2 Signal safety layer.
 
+## 2026-10-24 - T1.4 crossing diagnostic and T1.3 tuning resumed
+
+- Current fixed seed-3000 diagnostic on unchanged medium demand: `results/raw/20261024-210315_fixed_medium_s3000`, 917.1259 s wall time; 2,600 scheduled, 1,534 completed, 1,082 teleports. It reproduced 396 completed route-through trips and the exact same 210 mismatch IDs as the old run. All 210 are in the teleport ID set; zero mismatches lack a recorded teleport. Summary has all 33 Section 11 columns, no NaN, and only the documented network-only fields blank.
+- Under the user's current authorization, resumed the saved T1.3 tuning state without repeating q6/w30/seed3000. q6/w30/seed3001 completed: 1,495/2,600 completed, 1,099 teleports, zero fallbacks, 846.79 s wall time. q6/w30/seed3002 completed: 1,540/2,600 completed, 1,041 teleports, zero fallbacks, 929.12 s. q8/w45/seed3000 completed: 1,576/2,600 completed, 1,096 teleports, zero fallbacks, 1,216.92 s. q8/w45/seed3001 completed: 1,527/2,600 completed, 1,070 teleports, zero fallbacks, 1,004.46 s. q8/w45/seed3002 completed: 1,507/2,600 completed, 1,050 teleports, zero fallbacks, 966.26 s. The q10/w60/seed3000 cell is now running. The previously interrupted seed-3001 partial output remains preserved and does not count as a complete cell.
+
+## 2026-10-24 - T1.3 checkpoint and Antigravity handoff
+
+- The user interrupted the tuning batch after six complete cells. q10/w60 seed 3000 was stopped at approximately sim time 5,692/7,200. Preserved folder `results/raw/20261024-224337_rule_medium_s3000/` contains only `steps.csv` (1,246,372 bytes), flushed through sim time 5,450; it has no `trips.csv`, `run.json`, or `summary.csv` and is not a completed trial. Zombie check: no running SUMO processes.
+- q10/w60 seeds 3001 and 3002 were not started. To resume after the user directs it, run `Ai/.venv/Scripts/python.exe -m scripts.tune_rule_controller`; it resumes from the six records in `results/raw/t13_rule_tuning_progress.json` and will rerun the incomplete q10/w60 seed 3000 in a new unique output directory before starting the last two cells.
+- Preserved the checkpoint and resume instructions in `docs/PROGRESS.md` and `docs/rule_tuning.md`. T1.4's fixed-run diagnostic remains complete and all 210 mismatches are explained by teleport IDs. Phase 1 is not complete.
+
+## 2026-10-24 - T1.4 fixed-run crossing diagnostic
+
+- Ran the authorized current-run fixed controller on unchanged medium demand, seed 3000, using the existing cached route file. Artifact: `results/raw/20261024-210315_fixed_medium_s3000`; wall time 917.1259 s; 2,600 scheduled trips, 1,534 completed, 1,082 teleports.
+- The run reproduced the old fixed artifact's 396 completed route-through trips and exact same 210 crossing-mismatch vehicle IDs. All 210 appear in the new per-vehicle teleport IDs; zero crossing-mismatch IDs lack a recorded teleport. The old discrepancies are explained by SUMO teleport events bypassing an observed TLS crossing. No mismatches remain unexplained.
+- The 33-field summary matches `SUMMARY_FIELDS`, has no NaN, and is blank only for the documented network-only queue fields. The legacy-metric explanation remains in `docs/metrics.md`. T1.4 current-run evidence is collected; acceptance is pending required test rerun and T1.3 dependency completion. No demand, config, or map changes were made.
+
 ## 2026-10-24 - T1.3/T1.4 implementation with acceptance pending
 
 - Implemented controller protocol/actions, fixed-time controller (30-second green requests through the safety layer), observation-only queue/wait rule policy, controller registry, timeout/invalid-action fallback, closed-loop episode runner, rule-tuning script, Section 11 metrics, and metric definitions/tests. No road-specific phase timing boosts or demand changes were introduced.

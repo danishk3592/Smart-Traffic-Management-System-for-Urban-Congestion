@@ -42,7 +42,7 @@ def _write_report(records: dict[str, dict[str, Any]], *, running: str = "") -> N
     lines = [
         "# Rule controller validation tuning (T1.3)",
         "",
-        "Unchanged `medium` demand; validation seeds 3000-3002. Three queue/wait threshold pairs were tested. ",
+        "Unchanged `medium` demand; validation seeds 3000-3002. Three candidate threshold pairs are crossed with all three seeds; progress below counts completed cells.",
         "Selection uses the lowest mean approach queue over all nine runs; waiting time and teleports are shown as context.",
         "",
         "| Queue threshold | Wait threshold (s) | Seed | Avg queue | Avg wait (s) | Completed / trips | Teleports | Fallback activations | Wall time (s) | Run |",

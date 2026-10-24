@@ -36,8 +36,15 @@ def route_uses_controlled_movement(
     route_edges: Iterable[str], movements: Iterable[dict[str, Any]]
 ) -> bool:
     """Return whether any consecutive route edge pair is a controlled movement."""
+    return bool(controlled_route_movements(route_edges, movements))
+
+
+def controlled_route_movements(
+    route_edges: Iterable[str], movements: Iterable[dict[str, Any]]
+) -> list[tuple[str, str]]:
+    """Return the route's ordered consecutive TLS-controlled edge pairs."""
     route = tuple(route_edges)
     controlled = {
         (str(movement["from_edge"]), str(movement["to_edge"])) for movement in movements
     }
-    return any(pair in controlled for pair in pairwise(route))
+    return [pair for pair in pairwise(route) if pair in controlled]

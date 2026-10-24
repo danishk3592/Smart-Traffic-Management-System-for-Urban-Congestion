@@ -25,14 +25,21 @@ rl:
   device: cpu
 
 rule:
-  queue_threshold: 8
-  wait_threshold_s: 45
+  queue_threshold: 6
+  wait_threshold_s: 30
 
 congestion:
   thresholds:
     low_max_halting: 4
     medium_max_halting: 12
     high_min_halting: 13
+
+state:
+  vector_normalization:
+    max_vehicle_count: 60
+    max_halting: 60
+    max_mean_speed_mps: 15
+    max_waiting_time_s: 300
 
 demand:
   vehicle_mix:

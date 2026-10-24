@@ -31,6 +31,7 @@ class SumoClient:
         seed: int = 1000,
         label: str | None = None,
         repo_root: str | Path | None = None,
+        route_file: str | Path | None = None,
     ) -> None:
         root = Path(repo_root).resolve() if repo_root else Path(__file__).resolve().parents[2]
         self.config_path = (
@@ -42,10 +43,12 @@ class SumoClient:
         self.seed = int(seed)
         self.label = label or f"stms_{uuid.uuid4().hex[:12]}"
         self._repo_root = root
+        self.route_file = Path(route_file).expanduser().resolve() if route_file else None
         self._connection: Any = None
         self._process: Any = None
         self._temp_dir: tempfile.TemporaryDirectory[str] | None = None
         self.sumo_output = ""
+        self.tripinfo_output = ""
         self._started = False
         self._resolved: dict[str, Any] | None = None
 
@@ -102,7 +105,13 @@ class SumoClient:
         files: dict[str, list[Path]] = {}
         for key in ("net-file", "route-files", "additional-files"):
             node = input_node.find(key)
-            values = re.split(r"[,;\s]+", node.get("value", "")) if node is not None else []
+            # SUMO's list-valued file attributes use commas/semicolons. Spaces
+            # are valid within Windows paths and must not split a single file.
+            values = [
+                value.strip()
+                for value in re.split(r"[,;]+", node.get("value", ""))
+                if value.strip()
+            ] if node is not None else []
             paths = []
             for item in filter(None, values):
                 path = Path(item)
@@ -134,6 +143,10 @@ class SumoClient:
         if self._started:
             return
         self._resolved = self._resolve_config()
+        if self.route_file is not None:
+            if not self.route_file.is_file():
+                raise FileNotFoundError(f"Scenario route file not found: {self.route_file}")
+            ET.parse(self.route_file)
         executable = shutil.which("sumo-gui" if self.gui else "sumo")
         if executable is None:
             name = "sumo-gui" if self.gui else "sumo"
@@ -153,6 +166,7 @@ class SumoClient:
             str(safe_additional),
             "--tripinfo-output",
             str(temp / "tripinfo.xml"),
+            "--tripinfo-output.write-unfinished",
             "--statistic-output",
             str(temp / "statistics.xml"),
             "--log",
@@ -162,6 +176,8 @@ class SumoClient:
             "--no-step-log",
             "true",
         ]
+        if self.route_file is not None:
+            command.extend(["--route-files", str(self.route_file)])
         port = getFreeSocketPort()
         try:
             traci.start(command, port=port, label=self.label, numRetries=10)
@@ -210,6 +226,9 @@ class SumoClient:
             log_path = Path(self._temp_dir.name) / "sumo.log"
             if log_path.is_file():
                 self.sumo_output = log_path.read_text(encoding="utf-8", errors="replace")
+            tripinfo_path = Path(self._temp_dir.name) / "tripinfo.xml"
+            if tripinfo_path.is_file():
+                self.tripinfo_output = tripinfo_path.read_text(encoding="utf-8", errors="replace")
         self._connection = None
         self._started = False
         self._remove_temp()

@@ -9,7 +9,7 @@ def test_loads_default_project_config() -> None:
     config = load_config()
 
     assert config["sumo"]["tls_id"] == (
-        "cluster618250255_7478115627_cluster_11927462278_11927462280_7478115626_7479633881"
+        "cluster11259448953_11259448962_11259448969_cluster_11259448960_11259448961_11259448963"
     )
     assert config["sumo"]["max_sim_s"] == 7200
 

@@ -9,3 +9,48 @@
 - Seed 1000, final 1800 s run: rank 6/13, 298 unique crossings; 4 approaches; 3 green phases; 0 protected G/G foe conflicts; 21 permissive overlaps with network yield responses; 1 unique teleport ID in the first 600 s and 38 through 1800 s; 2 warning lines through 600 s and 71 through 1800 s.
 - All run outputs and edgeData were directed to temporary storage; no protected source map path was modified.
 - Acceptance: inspect_tls.py exited 0; Ruff passed; default pytest 6 passed/3 deselected; SUMO client tests 3 passed; junction tests 4 passed; zombie check found no SUMO processes.
+
+## 2026-10-24 � T0.4 scenario generation and native measurements
+
+- Initial environment invocation used `Ai\.venv\Scripts\python.exe` as a PowerShell command and failed before Python started (`The module 'Ai' could not be loaded`). Verified the actual project interpreter at `C:\Users\empow\Documents\Major Project\Ai\.venv\Scripts\python.exe` (Python 3.14.2; sumolib 1.27.1) and reran.
+- Seed 1000 low-scenario force regeneration completed; route cache matched. Ruff passed and `pytest -q tests/test_scenarios.py` reported 5 passed in 3.90s.
+- Early exploratory low run before the arrival-ID counter fix reported 0 arrivals; invalid completion metric. Corrected measurement to accumulate per-step arrived/departed IDs. That early run reported 29 unique teleports / 700 (4.14%); it is superseded by the accepted run below.
+- `python scripts/make_scenarios.py --seed 1000 --all` generated routes and completed all seven native runs, but exited 1 at the Section 0 teleport gate. Measured (trips; planned junction share; arrived; unique teleports/share): balanced 1800; .401; 1176; 428/.238. directional_ns 1800; .400; 1203; 405/.225. directional_ew 1800; .403; 1197; 400/.222. low 700; .301; 697; 29/.041. medium 2600; .400; 1492; 846/.325. heavy 3600; .400; 2037; 1269/.352. rush_hour 3200; .402; 1834; 1129/.353. Thus six scenarios exceed 5%; medium/heavy/rush_hour also exceed the <1% design target. Recorded measurements are in docs/scenarios.md.
+- Decision: stopped at the roadmap human-review gate. No demand tuning, train-pool generation, commit, or T0.5 work was done. The measurement report date and generator date formatting were corrected to the actual run date.
+
+## 2026-10-24 � T0.4 resume gate and bottleneck TLS verification
+
+- Read roadmap T0.4 through T2.3 dependency/gate blocks and Section 0.6. T1.1 requires accepted T0.4; T2.1 requires T1.4; real PPO training in T2.3 requires T2.1 and T2.2. The measured >5% teleport condition requires stopping for human review, so no PPO work is authorized by the dependency order yet.
+- Read the configured net path from SUMO/No_Polygon_Map/osm.sumocfg and queried its 13 TLS IDs with the project Python 3.14.2 and sumolib 1.27.1. Requested ID `cluster11259448953_11259448962_11259448969_cluster_11259448960_7479633881` has no exact match. Closest actual ID: `cluster11259448953_11259448962_11259448969_cluster_11259448960_11259448961_11259448963`; docs/tls_inspection.md lists it as rank 3 with 349 crossings in the earlier 1800 s T0.3 ranking. No map or config was changed. Decision: report both blockers and wait for human resolution; do not repeat scenario measurements.
+
+## 2026-10-24 - Confirmed bottleneck TLS and T0.4 rerun
+
+- User confirmed the intended junction and TLS. Queried `SUMO/No_Polygon_Map/osm.net.xml` with the project interpreter (Python 3.14.2, sumolib 1.27.1): exact TLS match true and exact junction-node match true.
+- Preserved prior `config/stms.yaml`, `docs/tls_inspection.md`, and `docs/scenarios.md` outside the repository at `C:\Users\empow\AppData\Local\Temp\STMS_confirmed_TLS_preserve_20261024-162745` before changing target-related files.
+- Updated `sumo.tls_id` to the confirmed ID and reran T0.3. Seed 1000, 1800 s: rank 3/13, 349 crossings, 5 approaches, 4 green phases, no protected foe conflicts, 8 permissive yielding overlaps, 38 teleports. Acceptance: `inspect_tls.py` exited 0; SUMO client tests 3 passed; junction tests 4 passed; zombie check clean; Ruff passed after fixing import ordering.
+- Rebuilt seed-1000 routes for the confirmed TLS using unchanged configured scenario trip counts and insertion profiles. T0.4 run completed all seven scenarios but exited 1 under roadmap Section 0.6 because every scenario exceeded 5% teleports. Shares and counts are in `docs/scenarios.md`; medium/heavy/rush_hour also exceed the <1% design target. Junction shares were all above 30%.
+- T0.4 unit tests: 5 passed in 3.60s; Ruff passed. `--all --force` and `--train-pool` were not run because the measured stop gate requires human review. No demand reduction, PPO implementation, training, or protected-map writes occurred. Decision: stop and ask the human how to proceed with the gate while retaining unchanged demand.
+
+## 2026-10-24 - Human approval scope after the T0.4 stop gate
+
+- Human explicitly approved proceeding with unchanged-demand experiments, recording excessive teleports/gridlock as unresolved, and prohibited reducing demand or weakening acceptance criteria.
+- Approval applies to the remaining experiments within T0.4, including force-reproducibility and cached training-pool generation. It does not mark T0.4 accepted or waive its acceptance criteria.
+- Roadmap Section 0.1 requires strict task/dependency order. T1.1 depends on T0.4; T2.1 depends on T1.4; real PPO training in T2.3 requires T2.1 and T2.2. Therefore single-junction PPO implementation/training is not permitted while T0.4 remains blocked/not accepted. Do not start RL tasks under this approval.
+
+## 2026-10-24 - Approved T0.4 experiments, route force check, and training pool
+
+- Approval scope honored: unchanged demand only; excessive teleports/gridlock remain reported, criteria are not weakened. Compared config with the preserved pre-change config: `demand_unchanged=True`.
+- After confirming the target TLS and preserving the completed native measurements, ran `python scripts/make_scenarios.py --seed 1000 --all --force`; all seven primary route hashes matched byte-for-byte, 71.1 s.
+- First detached `--train-pool` attempt (PID 18116) reached 30/140 progress, then `duarouter` timed out after 600 s at directional_ns/seed_1010. Stderr and stdout are preserved under `results/raw/t04_train_pool_20261024-164322/`. No protected map files were written.
+- SUMO duarouter also emitted route alternatives. For subsequent runs, capped alternatives at 1 and sent that auxiliary file to a unique temporary path. Force-regenerating directional_ns/seed_1009 produced an identical primary route; scenario tests passed 5/5 and Ruff passed.
+- Resumed detached pool generation (PID 27412) from existing valid caches. CLI output ended with `Pre-generated 140 cached training route files.` after 773 s; stderr was empty. Independently checked all 140 expected scenario/seed manifests: route files present, config hashes current, route hashes match, vehicle counts match; issues=0. Logs are preserved under `results/raw/t04_train_pool_retry_20261024-170158/`.
+- Re-ran `scripts/check_zombies.py`: no running SUMO or sumo-gui processes. T0.4 native measurements remain above the Section 0.6 >5% teleport stop threshold; T0.4 stays blocked/not accepted and its criteria were not weakened.
+- Roadmap decision: `--train-pool` was permitted as an approved experiment within T0.4. Single-junction PPO implementation and training are not permitted as experimental work while dependency tasks are incomplete: T1.1 depends on accepted T0.4, T2.1 on T1.4, and T2.3 real training on T2.1/T2.2. No PPO/baseline comparison was run.
+
+## 2026-10-24 - Human-approved native-baseline teleport criterion deferral
+
+- Human authorized the minimum roadmap amendment: retain the confirmed-TLS unchanged-demand native measurements and their >5% teleport failures as failed baseline results; defer performance evaluation until PPO is trained and connected to SUMO.
+- Updated Section 0.6, T1.4, T2.5 and the T0.4 tracker row. The amendment does not reduce demand, change the recorded measurements, mark the baseline as passed, or waive safety/correctness/dependency gates.
+- Updated the T0.4 generator to report native baseline teleports above 5% without aborting, in accordance with the approved amendment. No baseline simulation or route generation was repeated.
+- T0.4 acceptance evidence retained: prior `--all` run produced all seven measured results but exited 1 solely at the superseded >5% stop rule; `--all --force` verified byte-identical routes; 140/140 training route/manifest pairs passed verification; `pytest -q tests/test_scenarios.py` passed 5 tests; Ruff passed.
+- T0.4 is recorded Done with an explicit deviation; baseline remains failed. The next task is T1.1 after the mandatory Phase 0 merge and human reply under Section 0.5.

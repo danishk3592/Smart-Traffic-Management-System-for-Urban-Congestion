@@ -102,7 +102,13 @@ class SumoClient:
         files: dict[str, list[Path]] = {}
         for key in ("net-file", "route-files", "additional-files"):
             node = input_node.find(key)
-            values = re.split(r"[,;\s]+", node.get("value", "")) if node is not None else []
+            # SUMO's list-valued file attributes use commas/semicolons. Spaces
+            # are valid within Windows paths and must not split a single file.
+            values = [
+                value.strip()
+                for value in re.split(r"[,;]+", node.get("value", ""))
+                if value.strip()
+            ] if node is not None else []
             paths = []
             for item in filter(None, values):
                 path = Path(item)

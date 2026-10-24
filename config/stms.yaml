@@ -34,6 +34,13 @@ congestion:
     medium_max_halting: 12
     high_min_halting: 13
 
+state:
+  vector_normalization:
+    max_vehicle_count: 60
+    max_halting: 60
+    max_mean_speed_mps: 15
+    max_waiting_time_s: 300
+
 demand:
   vehicle_mix:
     passenger: 1.0

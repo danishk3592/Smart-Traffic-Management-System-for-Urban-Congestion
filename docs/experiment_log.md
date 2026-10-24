@@ -65,6 +65,15 @@
 - Full-suite verification also exposed a stale expected TLS ID and a SUMO config parser splitting Windows paths at spaces. Updated the expectation to the user-confirmed TLS and changed file-list parsing to comma/semicolon separators; the complete suites then passed.
 - T1.1 commit: `133b0c0`. Next task is T1.2 Signal safety layer.
 
+## 2026-10-24 - T1.2 Signal Safety Layer
+
+- Implemented and unit-tested `SignalSafetyLayer` for the confirmed pilot TLS. It checks the active SUMO program against configured green/yellow/all-red indices, verifies sequential clearance transitions, rejects invalid/early requests with reasons, enforces minimum green at phase entry, forces clearance at maximum green, and caps extension requests. Approach phase mapping derives from configured incoming lanes/edges and the network TLS link map; no approach receives a timing boost.
+- The inspected native program has a 6-second green (phase 2) below the configured 10-second minimum. The layer extends this phase on entry from the configured bound; other green timing remains governed by the program or accepted requests.
+- SUMO fuzzer: explicit seed 731, 1200 simulation seconds, random switch/extension/approach requests; verified clearance before changing green, minimum/maximum duration, and allowed phase indices. Passed. No route or demand was changed.
+- Commands: `python -m pytest -q -p no:cacheprovider tests/test_safety_unit.py` -> 5 passed; `python -m pytest -q -p no:cacheprovider -m sumo tests/test_safety.py` -> 1 passed; full unit suite -> 21 passed, 5 deselected; full SUMO suite -> 5 passed, 21 deselected; `python -m ruff check .` -> all checks passed; `python scripts/check_zombies.py` -> no SUMO processes.
+- No experiments failed after the initial fake-clock fixture correction. The pre-existing modified `edgeData.xml` and untracked RL artifacts were not staged or modified; protected original map files were not written.
+- Decision: T1.2 implementation and safety acceptance checks pass. Next task: T1.3 Controllers + runner. Commit hash will be recorded in the progress tracker after commit.
+
 ## 2026-10-24 - Phase 0 merge, preservation reconciliation, and T1.1
 
 - With the user's approval, quarantined the colliding untracked `Ai/rl/`, `Documents/STMS_Agent_Roadmap_FINAL.md`, and `docs/` paths into `C:\Users\empow\AppData\Local\Temp\STMS_premerge_preserve_20261024-173055`, retaining the earlier verified copies under `verified_snapshot/`. File counts and SHA256 hashes matched after quarantine. The modified `edgeData.xml` and `✅ HSR Layout.txt` were left in place.

@@ -4,7 +4,7 @@ Updated: 2026-10-24
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T1.1 - Traffic State module | Done | agent/phase-1-core | 133b0c0 | Begin T1.2 Signal safety layer; its dependencies T1.1 and accepted T0.3 are met. |
+| T1.2 - Signal Safety Layer | Done | agent/phase-1-core | pending tracker commit | Begin T1.3 Controllers + runner. |
 
 ## Completed
 
@@ -14,6 +14,7 @@ Updated: 2026-10-24
 - T0.3 target revalidation (2026-10-24): exact junction and TLS ID `cluster11259448953_11259448962_11259448969_cluster_11259448960_11259448961_11259448963` verified in the active net. Native run: rank 3/13, 349 crossings, 5 approaches, 4 green phases, 0 protected foe conflicts, 8 permissive yielding overlaps, 38 teleports over 1800 s. SUMO client tests 3 passed; junction tests 4 passed; zombie check clean; Ruff passed. Updated `config/stms.yaml` and `docs/tls_inspection.md`; report date now generated dynamically.
 - Phase 0 merged into `main` as `ee77f85`; Phase 1 branch `agent/phase-1-core` starts at that merge. Pre-merge backup and collision quarantine are at `C:\Users\empow\AppData\Local\Temp\STMS_premerge_preserve_20261024-173055`.
 - T1.1 - dataclasses, config-derived vector normalization, lane-level SUMO sensor aggregation, throughput sampling, and JSON conversion (`133b0c0`). Tests: unit suite 16 passed/4 deselected; SUMO-marked suite 4 passed; Ruff passed; zombie check clean. Protected map hash check: 23 files unchanged.
+- T1.2 - generic `SignalSafetyLayer` validates the active TLS program and phase transitions, rejects invalid requests with reasons, routes phase changes through verified green/yellow/all-red phases, enforces configured minimum/maximum green, supports approach requests, and caps extensions. Confirmed pilot TLS used; native phase 2's 6-second green is lengthened to the configured 10-second minimum. Safety fuzzer: seed 731, 1200 simulated seconds; pass. Tests: `pytest -q -p no:cacheprovider` 21 passed/5 deselected; `pytest -q -p no:cacheprovider -m sumo` 5 passed/21 deselected; Ruff all checks passed; zombie check clean. No map files modified. Implementation commit pending tracker update.
 
 ## T0.4 completed with explicit deviation
 
@@ -28,4 +29,4 @@ Updated: 2026-10-24
 - Preserve the user's modified `SUMO/No_Polygon_Map/edgeData.xml` and never write outputs under `SUMO/No_Polygon_Map/`. The existing edgeData change and HSR file remain in place; RL artifacts were restored after content/hash comparison.
 - Database, backend/API and dashboard remain out of scope.
 - The 2026-10-24 human-approved amendment changes only when teleport performance is evaluated; it does not erase or pass the native baseline failure. T0.4 is recorded Done with deviation. PPO remains sequenced after T1.4, T2.1 and T2.2.
-- Next task: T1.2 Signal safety layer, which depends on T1.1 and accepted T0.3.
+- Next task: T1.3 Controllers + runner.

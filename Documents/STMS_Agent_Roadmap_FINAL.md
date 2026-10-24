@@ -719,7 +719,7 @@ Status values: `Not started` · `In progress` · `Blocked (reason)` · `Done` ·
 | [x] T0.3 SUMO client + TLS + suitability (M1 pilot junction) | Done | 2026-10-24 | e2b189d | Confirmed target; rank 3/13, 5 approaches, 4 green phases, no protected foe conflicts; 8 permissive yielding overlaps documented. |
 | [x] T0.4 Scenarios + cached pool | Done with approved deviation | 2026-10-24 | 478daff | 140/140 cached routes verified; native >5% teleport failure preserved and deferred to post-PPO comparison per Section 0.6. |
 | [x] T1.1 Traffic State | Done | 2026-10-24 | 133b0c0 | SUMO sensor aggregation, normalized vector, serialization; unit/live SUMO checks pass. |
-| [ ] T1.2 Safety layer | Not started | | | |
+| [x] T1.2 Safety layer | Done | 2026-10-24 | pending tracker commit | SUMO safety fuzzer 1200 s; unit/SUMO suites and Ruff pass. |
 | [ ] T1.3 Controllers + runner | Not started | | | |
 | [ ] T1.4 Metrics | Not started | | | |
 | [ ] T2.1 Env | Not started | | | |

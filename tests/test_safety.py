@@ -68,3 +68,4 @@ def test_signal_safety_random_commands_for_1200_seconds() -> None:
             previous_phase = phase
 
         assert checked_green_durations, "fuzzer did not observe any completed green phase"
+        assert client.sim_time >= 1200, "SUMO ended before the full fuzzer horizon"

@@ -65,11 +65,6 @@
 - Full-suite verification also exposed a stale expected TLS ID and a SUMO config parser splitting Windows paths at spaces. Updated the expectation to the user-confirmed TLS and changed file-list parsing to comma/semicolon separators; the complete suites then passed.
 - T1.1 commit: `133b0c0`. Next task is T1.2 Signal safety layer.
 
-## 2026-10-24 - T1.4 crossing diagnostic and T1.3 tuning resumed
-
-- Current fixed seed-3000 diagnostic on unchanged medium demand: `results/raw/20261024-210315_fixed_medium_s3000`, 917.1259 s wall time; 2,600 scheduled, 1,534 completed, 1,082 teleports. It reproduced 396 completed route-through trips and the exact same 210 mismatch IDs as the old run. All 210 are in the teleport ID set; zero mismatches lack a recorded teleport. Summary has all 33 Section 11 columns, no NaN, and only the documented network-only fields blank.
-- Under the user's current authorization, resumed the saved T1.3 tuning state without repeating q6/w30/seed3000. q6/w30/seed3001 completed: 1,495/2,600 completed, 1,099 teleports, zero fallbacks, 846.79 s wall time. q6/w30/seed3002 completed: 1,540/2,600 completed, 1,041 teleports, zero fallbacks, 929.12 s. q8/w45/seed3000 completed: 1,576/2,600 completed, 1,096 teleports, zero fallbacks, 1,216.92 s. q8/w45/seed3001 completed: 1,527/2,600 completed, 1,070 teleports, zero fallbacks, 1,004.46 s. q8/w45/seed3002 completed: 1,507/2,600 completed, 1,050 teleports, zero fallbacks, 966.26 s. The q10/w60/seed3000 cell is now running. The previously interrupted seed-3001 partial output remains preserved and does not count as a complete cell.
-
 ## 2026-10-24 - T1.3 checkpoint and Antigravity handoff
 
 - The user interrupted the tuning batch after six complete cells. q10/w60 seed 3000 was stopped at approximately sim time 5,692/7,200. Preserved folder `results/raw/20261024-224337_rule_medium_s3000/` contains only `steps.csv` (1,246,372 bytes), flushed through sim time 5,450; it has no `trips.csv`, `run.json`, or `summary.csv` and is not a completed trial. Zombie check: no running SUMO processes.
@@ -123,3 +118,10 @@
 - Updated `config/stms.yaml` rule thresholds from 8/45 to 6/30.
 - Tests: focused suite (test_controllers + test_metrics) 9 passed; full unit suite 30 passed, 5 deselected; Ruff all checks passed. Two ERROR lines in first invocation were Windows tmpdir permission issue on pytest-of-hannan; resolved by --basetemp; no code failures.
 - Decision: T1.3 tuning complete. Best threshold selected and applied. T1.4 fixed diagnostic evidence already collected at `results/raw/20261024-210315_fixed_medium_s3000`; required test rerun passes. Phase 1 acceptance pending human review gate.
+
+## 2026-10-25 - Phase 1 Human Acceptance and Closure
+
+- Human review completed for T1.3 (rule tuning 9/9 cells, threshold queue=6, wait=30s) and T1.4 (metrics and crossing diagnostics). All 210 crossing mismatches in the fixed diagnostic are accounted for as SUMO gridlock teleports bypassing the junction (0 unexplained).
+- User explicitly approved Phase 1 acceptance. T1.1, T1.2, T1.3, and T1.4 are marked Done.
+- High teleport count on unchanged medium demand (~40-44%) is preserved as an unresolved baseline performance characteristic under the 2026-10-24 Section 0.6 approved amendment, to be comparatively evaluated in T2.5 and Phase 3 against PPO on identical demand and seeds.
+- Phase 1 closed on `agent/phase-1-core`. Phase 2 is not started automatically. Next task at boundary: human review and merge of `agent/phase-1-core` into `main`, then T2.1 on `agent/phase-2-rl`.

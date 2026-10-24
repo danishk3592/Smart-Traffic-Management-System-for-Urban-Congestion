@@ -4,7 +4,7 @@ Updated: 2026-10-24
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T1.3/T1.4 - Controllers + metrics | Implementation committed; acceptance pending | agent/phase-1-core | pending this commit | T1.3 tuning stopped at 1/9; T1.4 current-run fixed diagnostics remain. No long simulations without user approval. |
+| T1.3/T1.4 - Controllers + metrics | Implementation committed; acceptance pending | agent/phase-1-core | a413e55 | T1.3 tuning stopped at 1/9; T1.4 current-run fixed diagnostics remain. No long simulations without user approval. |
 
 ## Completed
 

@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "smart-traffic-management-system"
+version = "0.1.0"
+description = "SUMO-based smart traffic management research project"
+requires-python = ">=3.10"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["Ai*", "prediction*", "scripts*", "vision*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint.per-file-ignores]
+# The roadmap and existing imports require the uppercase package name Ai.
+"Ai/*.py" = ["N999"]
+"Ai/**/*.py" = ["N999"]
+# Python 3.10 remains supported without adding typing_extensions only for Self.
+"Ai/common/sumo_client.py" = ["PYI034"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = '-m "not sumo"'
+markers = ["sumo: tests that require a SUMO installation"]
+timeout = 120

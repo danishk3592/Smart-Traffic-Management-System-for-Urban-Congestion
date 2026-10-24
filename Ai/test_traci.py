@@ -1,4 +1,5 @@
 import os
+
 import traci
 
 # Path to our SUMO configuration

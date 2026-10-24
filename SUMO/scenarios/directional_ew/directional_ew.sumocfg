@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<configuration>
+  <input>
+    <net-file value="../../No_Polygon_Map/osm.net.xml" />
+    <route-files value="seed_1000/routes.rou.xml" />
+  </input>
+  <time>
+    <begin value="0" />
+    <end value="7200" />
+  </time>
+  <processing>
+    <time-to-teleport value="300" />
+  </processing>
+  <report>
+    <no-step-log value="true" />
+    <duration-log.statistics value="false" />
+  </report>
+</configuration>

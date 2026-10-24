@@ -102,6 +102,8 @@ Because T0.2 creates `AGENTS.md`, the agent cannot read rules that do not exist 
 ### 0.6 Stop-and-ask conditions
 Stop and ask the human (do not guess) if: a needed tool is missing (SUMO, `duarouter`, compatible Python, SUMO-GUI display) and cannot be installed from official sources; dependency installation fails on the active Python; a protected file (Section 0.3) would need to change; acceptance criteria conflict; a measured result looks wrong (RL much worse than fixed-time, > 5% teleports, identical metrics across controllers); a time budget in this roadmap would be exceeded; the selected junction turns out unsuitable (T0.3); a Section 2 pending decision would materially change the project; the intended-TLS count exceeds `network.max_intended`, the network simulation is too slow for the staged budget (T7.1/T7.6), the shared network PPO cannot cover **all** intended TLS within budget (P5), or the human's working tree has uncommitted changes you did not make.
 
+**Human-approved amendment (2026-10-24):** For the unchanged-demand native-signal baseline in T0.4, a teleport share above 5% is recorded as a failed baseline performance result and does not block completion of T0.4 or implementation through PPO connection. Preserve the measured results; do not reduce demand or mark the baseline as passed. Evaluate the >5% criterion after PPO is trained and connected to SUMO, using identical demand and seeds for fixed-time and PPO and reporting teleports alongside completions, queues, waiting time, and time loss (T2.5/T3.1). This amendment supersedes only the native-baseline >5% stop condition and the T1.4 fixed-time teleport stop check. All other safety, correctness, dependency, and acceptance criteria remain in force.
+
 ### 0.7 Code quality
 - Python version: **whatever T0.1/T0.2 verify as the working interpreter** (project minimum 3.10). Never assume the global Python is the project's Python; use a project virtual environment and record `python --version` and the interpreter path in `docs/PROJECT_FACTS.md`.
 - PEP 8, type hints and docstrings on public functions.
@@ -296,7 +298,7 @@ Branch: `agent/phase-0-foundation`
 - **Do:** `scripts/make_scenarios.py` generating, per scenario, a `.sumocfg` (pointing at the existing net / derived static TLS, never editing them) and **cached route files per seed** at `SUMO/scenarios/<scenario>/seed_<seed>/routes.rou.xml` plus a small `manifest.json` (config hash of net + demand parameters + generator version). Expose `ensure_routes(scenario, seed) -> Path`: reuse if the manifest hash matches, regenerate if missing/stale. **Training must never wait on demand generation:** a CLI flag `--train-pool` pre-generates the whole training pool (`demand.train_pool`: 7 scenarios × 20 seeds from 1000–1999), and the RL environment draws **only from that cached pool** and fails fast if a file is missing instead of generating during training.
   - Scenarios: `balanced, directional_ns, directional_ew, low, medium, heavy, rush_hour`.
   - **Routing method (explicit and seeded):** using `sumolib`, sample origin/destination edge pairs with a seeded RNG over **sorted** edge lists; compute shortest paths; classify pairs whose path **uses a controlled movement** (`Ai/common/junction.py`, not merely an incoming edge); draw `junction_share` of trips from through-junction pairs, the rest from the others; for `directional_*` bias origins to the matching approach bearing; `rush_hour` ramps the insertion rate. Write trips, run `duarouter`. Vehicle type from `demand.vehicle_mix` (cars only by default). Routes are fixed per file (no rerouting during the run), so "route uses a controlled movement" is controller-independent.
-  - **Measure** per scenario with SUMO's native program (fixed-time controller does not exist yet): total trips, fraction through the junction, completion rate by `max_sim_s`, teleports, insertion-backlog size. Tune insertion rates so that every scenario designed to evaluate the junction has junction-share ≥ 30% (document `low` honestly if it cannot), and `medium`/`heavy`/`rush_hour` are congested but not gridlocked (teleports < 1% of trips).
+  - **Measure** per scenario with SUMO's native program (fixed-time controller does not exist yet): total trips, fraction through the junction, completion rate by `max_sim_s`, teleports, insertion-backlog size. Tune insertion rates so that every scenario designed to evaluate the junction has junction-share ≥ 30% (document `low` honestly if it cannot). Record whether `medium`/`heavy`/`rush_hour` meet the <1% teleport design target; under the human-approved 2026-10-24 amendment in Section 0.6, this is a baseline performance result evaluated after PPO is connected and compared with fixed-time on identical demand/seeds, not a T0.4 stop condition. Preserve failures and do not reduce demand.
 - **Files:** `scripts/make_scenarios.py`, `docs/scenarios.md` (measured table), `tests/test_scenarios.py`.
 - **Accept:**
   ```
@@ -345,7 +347,7 @@ Branch: `agent/phase-1-core`
   - **Junction membership (metric B)** = `route_through_junction`: the planned route contains at least one TLS-controlled movement (`from_edge→to_edge`), evaluated with `Ai/common/junction.py` on the route file; `first_controlled_movement` records which one. It is fixed by the route file, so it is the same for every controller (no selection bias). `passed_controlled_junction` (actually crossed it during the run) is recorded separately and used for throughput only.
   - Per run: **completion rate (all trips and junction trips)**, avg travel time (completed), **censored** travel time (unfinished = `end_time − scheduled_depart`), both also restricted to junction trips (metric B), avg waiting, avg time loss, avg depart delay, avg queue (halting at junction), avg speed, throughput (veh/min through junction), **fraction of time the junction is at High congestion** (FR-EVL-02 congestion level), completed/unfinished, teleports. A run continues until all vehicles arrive or `max_sim_s`.
   - **Cross-check:** in the fixed-time run, every *completed* `route_through_junction` trip must have `passed_controlled_junction = true` (routes are fixed). Report mismatches; any unexplained mismatch → stop and ask.
-  - Re-check here that the **fixed-time** controller on `medium`/`heavy`/`rush_hour` has teleports < 1% of trips; if not, **stop and ask** (T0.4 demand may need lowering).
+  - Record fixed-time teleports for `medium`/`heavy`/`rush_hour` without blocking implementation. Per the approved 2026-10-24 amendment in Section 0.6, evaluate teleport performance after PPO is connected, against fixed-time on identical demand and seeds; preserve any failed native-baseline result and never reduce demand to pass this check.
 - **Accept:**
   ```
   pytest -q tests/test_metrics.py      # tiny hand-built tripinfo → exact expected numbers incl. unfinished, depart delay, completion rates, junction membership (a route containing an incoming edge but no controlled movement is NOT a junction trip)
@@ -395,6 +397,7 @@ Branch: `agent/phase-2-rl`
 ### T2.5 — RL sanity gate
 - **Depends on:** T2.4
 - **Do:** run fixed, rule, RL on `medium` and `heavy`, **validation seeds 3000–3002**; write `docs/rl_diagnostics.md` (table + diagnostics).
+- **Teleport performance evaluation (approved 2026-10-24):** after PPO is connected to SUMO, compare fixed-time and PPO on the same unchanged medium/heavy scenarios and validation seeds 3000–3002. Report teleports, completed trips, queues, waiting time, and time loss. The >5% result is evaluated here as a performance criterion; it does not retroactively pass the native baseline.
 - **Pass:** RL uses ≥ 2 distinct actions, serves all green phases, forced-max-green switches < 30% of switches, **and** is not worse than fixed-time by > 5% on junction travel time.
 - **If it fails**, iterate in this order, logging each attempt in `docs/experiment_log.md`: (1) reward weights/normalisation, (2) observation (add last action, per-approach wait), (3) decision interval, (4) PPO hyper-parameters (`ent_coef` 0.01–0.05, `n_steps`, `learning_rate`, `gamma`), (5) more timesteps (within the DEC-10 budget), (6) curriculum low→heavy. After 5 failed iterations → **stop and ask**. Never tune on seeds 5000+/6000+.
 
@@ -700,7 +703,7 @@ Status values: `Not started` · `In progress` · `Blocked (reason)` · `Done` ·
 **Checkboxes:** the agent changes `[ ]` to `[x]` on a task row **only when its status is `Done` and every `Accept` command has passed**, in the same commit that updates the status, date and hash. Use `[-]` for `Skipped`/`Deferred` (Phase 4/5 only) and leave T7.10 as `[ ]` unless P5 triggers it. A phase box below is ticked only when every non-skipped task in it is `[x]` **and** the human has merged the phase branch (Section 0.5).
 
 **Phase checklist**
-- [ ] Phase 0 — Foundation and scenarios (T0.1–T0.4)
+- [x] Phase 0 — Foundation and scenarios (T0.1–T0.4)
 - [ ] Phase 1 — Core: state, safety, controllers, metrics (T1.1–T1.4)
 - [ ] Phase 2 — RL environment and PPO (T2.1–T2.5)
 - [ ] Phase 3 — Fair evaluation → **M1 reached** (T3.1–T3.2)
@@ -711,11 +714,11 @@ Status values: `Not started` · `In progress` · `Blocked (reason)` · `Done` ·
 
 | Task | Status | Date | Commit | Note |
 |---|---|---|---|---|
-| [ ] T0.1 Audit | Not started | | | |
-| [ ] T0.2 Skeleton, config, tooling | Not started | | | |
-| [x] T0.3 SUMO client + TLS + suitability (M1 pilot junction) | Done | 2026-10-20 | 3a68bb5 | Static native program; rank 6/13 and above median; 4 approaches, 3 greens; foe check passed with documented permissive yielding overlaps. |
-| [ ] T0.4 Scenarios + cached pool | Not started | | | |
-| [ ] T1.1 Traffic State | Not started | | | |
+| [x] T0.1 Audit | Done | 2026-10-20 | 19d83ad | Repository and environment audit recorded; baseline replay did not reproduce. |
+| [x] T0.2 Skeleton, config, tooling | Done | 2026-10-20 | 50bda08 | Setup, config, dependency lock, lint and tests pass. |
+| [x] T0.3 SUMO client + TLS + suitability (M1 pilot junction) | Done | 2026-10-24 | e2b189d | Confirmed target; rank 3/13, 5 approaches, 4 green phases, no protected foe conflicts; 8 permissive yielding overlaps documented. |
+| [x] T0.4 Scenarios + cached pool | Done with approved deviation | 2026-10-24 | 478daff | 140/140 cached routes verified; native >5% teleport failure preserved and deferred to post-PPO comparison per Section 0.6. |
+| [x] T1.1 Traffic State | Done | 2026-10-24 | 133b0c0 | SUMO sensor aggregation, normalized vector, serialization; unit/live SUMO checks pass. |
 | [ ] T1.2 Safety layer | Not started | | | |
 | [ ] T1.3 Controllers + runner | Not started | | | |
 | [ ] T1.4 Metrics | Not started | | | |

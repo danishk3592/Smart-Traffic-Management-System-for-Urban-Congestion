@@ -14,3 +14,8 @@
 - `Ai/analytics/`: absent; lint/test status not applicable. `Ai/rl/ppo_evaluation.csv` and model are preliminary/unverified beyond archive load.
 - Missing / needs human: baseline replay and GUI/RL episode validation remain incomplete; CIM denied CPU model/video details; RAM was obtained via psutil. T0.2 setup completed on isolated Phase 0 worktree; the original checkout remains preserved.
 
+### Historical T0.1 interpreter probe
+
+- The initial T0.1 shell used the global Python 3.14.2 at `C:\Users\empow\AppData\Local\Programs\Python\Python314\python.exe`; `py -0p` reported no installed Pythons. At that time, global `traci`/`sumolib` were 1.27.1, NumPy 2.4.2, pandas 3.0.0 and matplotlib 3.10.8; Gymnasium, SB3, Torch, TensorBoard, PyYAML, pytest and Ruff were absent globally.
+- The initial check of `Ai/.venv` found Gymnasium 1.4.0, SB3 2.9.0, Torch 2.14.1+CPU and `traci`/`sumolib` 1.27.1; pandas, matplotlib, PyYAML, TensorBoard, scikit-learn, joblib, psutil, pytest and Ruff were absent then. These are historical T0.1 observations; the verified T0.2 project environment and installed package versions above are authoritative for current work.
+

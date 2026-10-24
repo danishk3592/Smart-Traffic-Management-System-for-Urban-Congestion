@@ -703,7 +703,7 @@ Status values: `Not started` · `In progress` · `Blocked (reason)` · `Done` ·
 **Checkboxes:** the agent changes `[ ]` to `[x]` on a task row **only when its status is `Done` and every `Accept` command has passed**, in the same commit that updates the status, date and hash. Use `[-]` for `Skipped`/`Deferred` (Phase 4/5 only) and leave T7.10 as `[ ]` unless P5 triggers it. A phase box below is ticked only when every non-skipped task in it is `[x]` **and** the human has merged the phase branch (Section 0.5).
 
 **Phase checklist**
-- [ ] Phase 0 — Foundation and scenarios (T0.1–T0.4)
+- [x] Phase 0 — Foundation and scenarios (T0.1–T0.4)
 - [ ] Phase 1 — Core: state, safety, controllers, metrics (T1.1–T1.4)
 - [ ] Phase 2 — RL environment and PPO (T2.1–T2.5)
 - [ ] Phase 3 — Fair evaluation → **M1 reached** (T3.1–T3.2)
@@ -716,9 +716,9 @@ Status values: `Not started` · `In progress` · `Blocked (reason)` · `Done` ·
 |---|---|---|---|---|
 | [x] T0.1 Audit | Done | 2026-10-20 | 19d83ad | Repository and environment audit recorded; baseline replay did not reproduce. |
 | [x] T0.2 Skeleton, config, tooling | Done | 2026-10-20 | 50bda08 | Setup, config, dependency lock, lint and tests pass. |
-| [x] T0.3 SUMO client + TLS + suitability (M1 pilot junction) | Done | 2026-10-20 | 3a68bb5 | Static native program; rank 6/13 and above median; 4 approaches, 3 greens; foe check passed with documented permissive yielding overlaps. |
+| [x] T0.3 SUMO client + TLS + suitability (M1 pilot junction) | Done | 2026-10-24 | e2b189d | Confirmed target; rank 3/13, 5 approaches, 4 green phases, no protected foe conflicts; 8 permissive yielding overlaps documented. |
 | [x] T0.4 Scenarios + cached pool | Done with approved deviation | 2026-10-24 | 478daff | 140/140 cached routes verified; native >5% teleport failure preserved and deferred to post-PPO comparison per Section 0.6. |
-| [ ] T1.1 Traffic State | Not started | | | |
+| [x] T1.1 Traffic State | Done | 2026-10-24 | 133b0c0 | SUMO sensor aggregation, normalized vector, serialization; unit/live SUMO checks pass. |
 | [ ] T1.2 Safety layer | Not started | | | |
 | [ ] T1.3 Controllers + runner | Not started | | | |
 | [ ] T1.4 Metrics | Not started | | | |

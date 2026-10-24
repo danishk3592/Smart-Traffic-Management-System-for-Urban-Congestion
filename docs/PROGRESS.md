@@ -4,14 +4,16 @@ Updated: 2026-10-24
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T0.4 - Scenario and demand generation | Done with approved deviation; native baseline criterion deferred | agent/phase-0-foundation | 478daff (T0.4; TLS fix e2b189d) | T0.4 completed under the human-approved 2026-10-24 amendment. Native baseline teleport failure is preserved; proceed to Phase 1 only after the required Phase 0 merge. |
+| T1.1 - Traffic State module | Done | agent/phase-1-core | 133b0c0 | Begin T1.2 Signal safety layer; its dependencies T1.1 and accepted T0.3 are met. |
 
 ## Completed
 
 - T0.1 - repository and environment audit (19d83ad).
 - T0.2 - project skeleton, configuration, dependency lock, tooling and tests (50bda08; tracker update d275491).
-- T0.3 - safe SUMO client, pilot TLS inspection, suitability ranking, approaches and controlled movements (3a68bb5).
+- T0.3 - safe SUMO client, pilot TLS inspection, suitability ranking, approaches and controlled movements (3a68bb5; confirmed-target fix e2b189d).
 - T0.3 target revalidation (2026-10-24): exact junction and TLS ID `cluster11259448953_11259448962_11259448969_cluster_11259448960_11259448961_11259448963` verified in the active net. Native run: rank 3/13, 349 crossings, 5 approaches, 4 green phases, 0 protected foe conflicts, 8 permissive yielding overlaps, 38 teleports over 1800 s. SUMO client tests 3 passed; junction tests 4 passed; zombie check clean; Ruff passed. Updated `config/stms.yaml` and `docs/tls_inspection.md`; report date now generated dynamically.
+- Phase 0 merged into `main` as `ee77f85`; Phase 1 branch `agent/phase-1-core` starts at that merge. Pre-merge backup and collision quarantine are at `C:\Users\empow\AppData\Local\Temp\STMS_premerge_preserve_20261024-173055`.
+- T1.1 - dataclasses, config-derived vector normalization, lane-level SUMO sensor aggregation, throughput sampling, and JSON conversion (`133b0c0`). Tests: unit suite 16 passed/4 deselected; SUMO-marked suite 4 passed; Ruff passed; zombie check clean. Protected map hash check: 23 files unchanged.
 
 ## T0.4 completed with explicit deviation
 
@@ -22,7 +24,8 @@ Updated: 2026-10-24
 
 ## Boundaries and next gate
 
-- Continue in `C:\Users\empow\AppData\Local\Temp\STMS_phase0_foundation_20261020`.
-- Preserve the original checkout and never write outputs under `SUMO/No_Polygon_Map/`.
+- Continue on `agent/phase-1-core` from merge commit `ee77f85`.
+- Preserve the user's modified `SUMO/No_Polygon_Map/edgeData.xml` and never write outputs under `SUMO/No_Polygon_Map/`. The existing edgeData change and HSR file remain in place; RL artifacts were restored after content/hash comparison.
 - Database, backend/API and dashboard remain out of scope.
-- The 2026-10-24 human-approved amendment changes only when the >5% teleport criterion is evaluated; it does not erase or pass the native baseline failure. T0.4 is recorded Done with deviation. Next is T1.1, after the human merges Phase 0 to main as required by roadmap Section 0.5. PPO remains sequenced after T1.4, T2.1 and T2.2.
+- The 2026-10-24 human-approved amendment changes only when teleport performance is evaluated; it does not erase or pass the native baseline failure. T0.4 is recorded Done with deviation. PPO remains sequenced after T1.4, T2.1 and T2.2.
+- Next task: T1.2 Signal safety layer, which depends on T1.1 and accepted T0.3.

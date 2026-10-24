@@ -72,7 +72,7 @@
 - SUMO fuzzer: explicit seed 731, 1200 simulation seconds, random switch/extension/approach requests; verified clearance before changing green, minimum/maximum duration, and allowed phase indices. Passed. No route or demand was changed.
 - Commands: `python -m pytest -q -p no:cacheprovider tests/test_safety_unit.py` -> 5 passed; `python -m pytest -q -p no:cacheprovider -m sumo tests/test_safety.py` -> 1 passed; full unit suite -> 21 passed, 5 deselected; full SUMO suite -> 5 passed, 21 deselected; `python -m ruff check .` -> all checks passed; `python scripts/check_zombies.py` -> no SUMO processes.
 - No experiments failed after the initial fake-clock fixture correction. The pre-existing modified `edgeData.xml` and untracked RL artifacts were not staged or modified; protected original map files were not written.
-- Decision: T1.2 implementation and safety acceptance checks pass. Next task: T1.3 Controllers + runner. Commit hash will be recorded in the progress tracker after commit.
+- Decision: T1.2 implementation and safety acceptance checks pass (`eacb7e0`). Next task: T1.3 Controllers + runner.
 
 ## 2026-10-24 - Phase 0 merge, preservation reconciliation, and T1.1
 

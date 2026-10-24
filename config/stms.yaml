@@ -1,6 +1,6 @@
 sumo:
   config: SUMO/No_Polygon_Map/osm.sumocfg
-  tls_id: cluster618250255_7478115627_cluster_11927462278_11927462280_7478115626_7479633881
+  tls_id: cluster11259448953_11259448962_11259448969_cluster_11259448960_11259448961_11259448963
   step_length: 1.0
   horizon_s: 3600
   max_sim_s: 7200
@@ -38,6 +38,28 @@ demand:
   vehicle_mix:
     passenger: 1.0
   junction_share_min: 0.30
+  junction_share_target: 0.40
+  scenario_horizon_s: 3600
+  scenario_max_sim_s: 7200
+  candidate_pool_size: 300
+  scenarios:
+    balanced:
+      vehicles: 1800
+    directional_ns:
+      vehicles: 1800
+    directional_ew:
+      vehicles: 1800
+    low:
+      vehicles: 700
+      junction_share: 0.30
+    medium:
+      vehicles: 2600
+    heavy:
+      vehicles: 3600
+    rush_hour:
+      vehicles: 3200
+      peak_window_s: [1200, 2400]
+      peak_trip_share: 0.55
   train_pool:
     scenarios:
       - balanced
@@ -126,117 +148,131 @@ intersection:
   approaches:
   - name: approach_1
     lanes:
-    - 229965236#0_0
-    - 229965236#0_1
-    incoming_edge: 229965236#0
-    bearing: 59.51
+    - 27935136#2_0
+    incoming_edge: 27935136#2
+    bearing: 73.3
   - name: approach_2
     lanes:
-    - 1196514117#0_0
-    - 1196514117#0_1
-    incoming_edge: 1196514117#0
-    bearing: 149.07
+    - -27936940#1_0
+    incoming_edge: -27936940#1
+    bearing: 79.65
   - name: approach_3
     lanes:
-    - 1105763532#3_0
-    incoming_edge: 1105763532#3
-    bearing: 328.0
+    - 735135993#2_0
+    - 735135993#2_1
+    incoming_edge: 735135993#2
+    bearing: 177.98
   - name: approach_4
     lanes:
-    - 312063814#0_0
-    - 312063814#0_1
-    - 312063814#0_2
-    incoming_edge: 312063814#0
-    bearing: 328.26
+    - 1215278281#0_0
+    - 1215278281#0_1
+    incoming_edge: 1215278281#0
+    bearing: 268.94
+  - name: approach_5
+    lanes:
+    - 1215278272#0_0
+    incoming_edge: 1215278272#0
+    bearing: 358.36
   green_phases:
   - 0
   - 2
   - 4
+  - 6
   yellow_after:
     0: 1
     2: 3
     4: 5
+    6: 7
   movements:
-  - from_edge: 1105763532#3
-    to_edge: -1105763532#3
-    link_indices:
-    - 22
-  - from_edge: 1105763532#3
-    to_edge: 1196514119#0
-    link_indices:
-    - 21
-  - from_edge: 1105763532#3
-    to_edge: 229965238#0
+  - from_edge: -27936940#1
+    to_edge: -27935136#2
     link_indices:
     - 18
-  - from_edge: 1105763532#3
-    to_edge: 312063814#4
+  - from_edge: -27936940#1
+    to_edge: 1215278273#0
+    link_indices:
+    - 21
+  - from_edge: -27936940#1
+    to_edge: 1215278280#1
     link_indices:
     - 20
-  - from_edge: 1105763532#3
-    to_edge: 744561214#0
+  - from_edge: -27936940#1
+    to_edge: 1215278284#2
     link_indices:
     - 19
-  - from_edge: 1196514117#0
-    to_edge: -1105763532#3
+  - from_edge: -27936940#1
+    to_edge: 27936940#0
     link_indices:
-    - 10
-  - from_edge: 1196514117#0
-    to_edge: 1196514119#0
-    link_indices:
-    - 7
-    - 8
-    - 9
-  - from_edge: 1196514117#0
-    to_edge: 229965238#0
-    link_indices:
-    - 11
-  - from_edge: 1196514117#0
-    to_edge: 312063814#4
-    link_indices:
-    - 13
-  - from_edge: 1196514117#0
-    to_edge: 744561214#0
-    link_indices:
-    - 12
-  - from_edge: 229965236#0
-    to_edge: -1105763532#3
-    link_indices:
-    - 17
-  - from_edge: 229965236#0
-    to_edge: 1196514119#0
-    link_indices:
-    - 16
-  - from_edge: 229965236#0
-    to_edge: 312063814#4
-    link_indices:
-    - 15
-  - from_edge: 229965236#0
-    to_edge: 744561214#0
-    link_indices:
-    - 14
-  - from_edge: 312063814#0
-    to_edge: -1105763532#3
-    link_indices:
-    - 0
-  - from_edge: 312063814#0
-    to_edge: 1196514119#0
-    link_indices:
-    - 6
-  - from_edge: 312063814#0
-    to_edge: 229965238#0
+    - 22
+  - from_edge: 1215278272#0
+    to_edge: -27935136#2
     link_indices:
     - 1
-  - from_edge: 312063814#0
-    to_edge: 312063814#4
+  - from_edge: 1215278272#0
+    to_edge: 1215278280#1
     link_indices:
-    - 4
-    - 5
-  - from_edge: 312063814#0
-    to_edge: 744561214#0
+    - 3
+  - from_edge: 1215278272#0
+    to_edge: 1215278284#2
     link_indices:
     - 2
-    - 3
+  - from_edge: 1215278272#0
+    to_edge: 27936940#0
+    link_indices:
+    - 0
+  - from_edge: 1215278281#0
+    to_edge: -27935136#2
+    link_indices:
+    - 6
+  - from_edge: 1215278281#0
+    to_edge: 1215278273#0
+    link_indices:
+    - 4
+  - from_edge: 1215278281#0
+    to_edge: 1215278284#2
+    link_indices:
+    - 7
+  - from_edge: 1215278281#0
+    to_edge: 27936940#0
+    link_indices:
+    - 5
+  - from_edge: 27935136#2
+    to_edge: -27935136#2
+    link_indices:
+    - 17
+  - from_edge: 27935136#2
+    to_edge: 1215278273#0
+    link_indices:
+    - 15
+  - from_edge: 27935136#2
+    to_edge: 1215278280#1
+    link_indices:
+    - 14
+  - from_edge: 27935136#2
+    to_edge: 1215278284#2
+    link_indices:
+    - 13
+  - from_edge: 27935136#2
+    to_edge: 27936940#0
+    link_indices:
+    - 16
+  - from_edge: 735135993#2
+    to_edge: -27935136#2
+    link_indices:
+    - 12
+  - from_edge: 735135993#2
+    to_edge: 1215278273#0
+    link_indices:
+    - 9
+    - 10
+  - from_edge: 735135993#2
+    to_edge: 1215278280#1
+    link_indices:
+    - 8
+  - from_edge: 735135993#2
+    to_edge: 27936940#0
+    link_indices:
+    - 11
 logging:
   step_log_every_s: 5
 

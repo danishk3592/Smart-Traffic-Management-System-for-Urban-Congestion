@@ -1,6 +1,6 @@
 # SUMO traffic-light inspection
 
-Measured 2026-10-20 using the existing network and demand, native programs, seed 1000. The same uninterrupted run included the first 600 s and continued to 1800 s. SUMO reports and edgeData outputs were redirected to a temporary directory; the protected source map was not written.
+Measured 2026-10-24 using the existing network and demand, native programs, seed 1000. The same uninterrupted run included the first 600 s and continued to 1800 s. SUMO reports and edgeData outputs were redirected to a temporary directory; the protected source map was not written.
 Unique vehicles are counted from subscribed road-ID transitions matching a controlled from-edge to to-edge pair.
 
 ## Suitability ranking
@@ -21,88 +21,81 @@ Unique vehicles are counted from subscribed road-ID transitions matching a contr
 | 12 | 2387385680 | actuated | 0 | 2 | 2 | 52 |
 | 13 | cluster_263386438_7432382412 | static | 0 | 4 | 2 | 16 |
 
-Median count: 243; configured pilot rank: 6; count: 298.
+Median count: 243; configured pilot rank: 3; count: 349.
 
-## Configured pilot: cluster618250255_7478115627_cluster_11927462278_11927462280_7478115626_7479633881
+## Configured pilot: cluster11259448953_11259448962_11259448969_cluster_11259448960_11259448961_11259448963
 
 - Runtime program: 0 (static).
-- Joined cluster: yes; net node(s): cluster618250255_7478115627_cluster_11927462278_11927462280_7478115626_7479633881; numeric IDs in generated cluster name: 6.
-- Approaches: 4.
-- Center (SUMO x,y): (1340.25, 6632.6); junction bounding box: (1323.68, 6617.52, 1369.93, 6655.77).
-- Distance to nearest map bounding-box edge: 1340.25 m.
+- Joined cluster: yes; net node(s): cluster11259448953_11259448962_11259448969_cluster_11259448960_11259448961_11259448963; numeric IDs in generated cluster name: 6.
+- Approaches: 5.
+- Center (SUMO x,y): (1730.06, 7233.24); junction bounding box: (1719.52, 7218.6, 1741.7, 7253.75).
+- Distance to nearest map bounding-box edge: 1730.06 m.
 
 ### Running native program phases
 
 | Phase | Duration (s) | State | Classification |
 |---:|---:|---|---|
-| 0 | 26 | ggGGGGgGGGggggrrrrrrrrr | green |
-| 1 | 4 | yyyyyyyyyyyyyyrrrrrrrrr | yellow |
-| 2 | 26 | rrrrrrrrrrrrrrGGggGrrrr | green |
-| 3 | 4 | rrrrrrrrrrrrrryyyyGrrrr | mixed |
-| 4 | 26 | GrrrrrrrrrrrrrrrrrGGGGg | green |
-| 5 | 4 | yrrrrrrrrrrrrrrrrryyyyy | yellow |
+| 0 | 20 | GGGrrrrrGGGrrrrrrrrrrrr | green |
+| 1 | 5 | yyyrrrrryyyrrrrrrrrrrrr | yellow |
+| 2 | 6 | rrrGrrrrrrrGGrrrrrrrrrr | green |
+| 3 | 5 | rrryrrrrrrryyrrrrrrrrrr | yellow |
+| 4 | 22 | rrrrGGGgrrrrrGGgggrrrrr | green |
+| 5 | 5 | rrrryyyyrrrrryyyyyrrrrr | yellow |
+| 6 | 22 | GrrrrrrrrrrrrrrrrrGGGGg | green |
+| 7 | 5 | Grrrrrrrrrrrrrrrrryyyyy | mixed |
 
 ### Approaches
 
 | Name | Incoming edge | Lanes | Bearing (degrees clockwise from north) |
 |---|---|---|---:|
-| approach_1 | 229965236#0 | 229965236#0_0, 229965236#0_1 | 59.51 |
-| approach_2 | 1196514117#0 | 1196514117#0_0, 1196514117#0_1 | 149.07 |
-| approach_3 | 1105763532#3 | 1105763532#3_0 | 328.0 |
-| approach_4 | 312063814#0 | 312063814#0_0, 312063814#0_1, 312063814#0_2 | 328.26 |
+| approach_1 | 27935136#2 | 27935136#2_0 | 73.3 |
+| approach_2 | -27936940#1 | -27936940#1_0 | 79.65 |
+| approach_3 | 735135993#2 | 735135993#2_0, 735135993#2_1 | 177.98 |
+| approach_4 | 1215278281#0 | 1215278281#0_0, 1215278281#0_1 | 268.94 |
+| approach_5 | 1215278272#0 | 1215278272#0_0 | 358.36 |
 
 ### Distinct controlled movements
 
 | From edge | To edge | TLS link indices |
 |---|---|---|
-| 1105763532#3 | -1105763532#3 | 22 |
-| 1105763532#3 | 1196514119#0 | 21 |
-| 1105763532#3 | 229965238#0 | 18 |
-| 1105763532#3 | 312063814#4 | 20 |
-| 1105763532#3 | 744561214#0 | 19 |
-| 1196514117#0 | -1105763532#3 | 10 |
-| 1196514117#0 | 1196514119#0 | 7, 8, 9 |
-| 1196514117#0 | 229965238#0 | 11 |
-| 1196514117#0 | 312063814#4 | 13 |
-| 1196514117#0 | 744561214#0 | 12 |
-| 229965236#0 | -1105763532#3 | 17 |
-| 229965236#0 | 1196514119#0 | 16 |
-| 229965236#0 | 312063814#4 | 15 |
-| 229965236#0 | 744561214#0 | 14 |
-| 312063814#0 | -1105763532#3 | 0 |
-| 312063814#0 | 1196514119#0 | 6 |
-| 312063814#0 | 229965238#0 | 1 |
-| 312063814#0 | 312063814#4 | 4, 5 |
-| 312063814#0 | 744561214#0 | 2, 3 |
+| -27936940#1 | -27935136#2 | 18 |
+| -27936940#1 | 1215278273#0 | 21 |
+| -27936940#1 | 1215278280#1 | 20 |
+| -27936940#1 | 1215278284#2 | 19 |
+| -27936940#1 | 27936940#0 | 22 |
+| 1215278272#0 | -27935136#2 | 1 |
+| 1215278272#0 | 1215278280#1 | 3 |
+| 1215278272#0 | 1215278284#2 | 2 |
+| 1215278272#0 | 27936940#0 | 0 |
+| 1215278281#0 | -27935136#2 | 6 |
+| 1215278281#0 | 1215278273#0 | 4 |
+| 1215278281#0 | 1215278284#2 | 7 |
+| 1215278281#0 | 27936940#0 | 5 |
+| 27935136#2 | -27935136#2 | 17 |
+| 27935136#2 | 1215278273#0 | 15 |
+| 27935136#2 | 1215278280#1 | 14 |
+| 27935136#2 | 1215278284#2 | 13 |
+| 27935136#2 | 27936940#0 | 16 |
+| 735135993#2 | -27935136#2 | 12 |
+| 735135993#2 | 1215278273#0 | 9, 10 |
+| 735135993#2 | 1215278280#1 | 8 |
+| 735135993#2 | 27936940#0 | 11 |
 
 ### Foe/conflict check
 
 Method: SUMO junction request foe bitsets and response/yield bitsets; all simultaneous G/g links are checked.
 **PASS:** no protected G/G foe pairs; lowercase g overlaps have a network yield response.
-Permissive/yielding foe overlaps: 21.
-- phase 0: links 0(g) and 10(g) are foes and SUMO request response grants yielding
-- phase 0: links 1(g) and 10(g) are foes and SUMO request response grants yielding
-- phase 0: links 1(g) and 11(g) are foes and SUMO request response grants yielding
-- phase 0: links 2(G) and 10(g) are foes and SUMO request response grants yielding
-- phase 0: links 2(G) and 11(g) are foes and SUMO request response grants yielding
-- phase 0: links 2(G) and 12(g) are foes and SUMO request response grants yielding
-- phase 0: links 3(G) and 10(g) are foes and SUMO request response grants yielding
-- phase 0: links 3(G) and 11(g) are foes and SUMO request response grants yielding
-- phase 0: links 3(G) and 12(g) are foes and SUMO request response grants yielding
-- phase 0: links 4(G) and 10(g) are foes and SUMO request response grants yielding
-- phase 0: links 4(G) and 11(g) are foes and SUMO request response grants yielding
-- phase 0: links 4(G) and 12(g) are foes and SUMO request response grants yielding
-- phase 0: links 4(G) and 13(g) are foes and SUMO request response grants yielding
-- phase 0: links 5(G) and 10(g) are foes and SUMO request response grants yielding
-- phase 0: links 5(G) and 11(g) are foes and SUMO request response grants yielding
-- phase 0: links 5(G) and 12(g) are foes and SUMO request response grants yielding
-- phase 0: links 5(G) and 13(g) are foes and SUMO request response grants yielding
-- phase 0: links 6(g) and 7(G) are foes and SUMO request response grants yielding
-- phase 0: links 6(g) and 8(G) are foes and SUMO request response grants yielding
-- phase 0: links 6(g) and 9(G) are foes and SUMO request response grants yielding
-- phase 4: links 0(G) and 22(g) are foes and SUMO request response grants yielding
+Permissive/yielding foe overlaps: 8.
+- phase 4: links 5(G) and 15(g) are foes and SUMO request response grants yielding
+- phase 4: links 5(G) and 16(g) are foes and SUMO request response grants yielding
+- phase 4: links 6(G) and 15(g) are foes and SUMO request response grants yielding
+- phase 4: links 6(G) and 16(g) are foes and SUMO request response grants yielding
+- phase 4: links 6(G) and 17(g) are foes and SUMO request response grants yielding
+- phase 4: links 7(g) and 13(G) are foes and SUMO request response grants yielding
+- phase 4: links 7(g) and 14(G) are foes and SUMO request response grants yielding
+- phase 6: links 0(G) and 22(g) are foes and SUMO request response grants yielding
 
-Green phases: [0, 2, 4]; yellow phases: [1, 3, 5]; yellow_after: {0: 1, 2: 3, 4: 5}.
+Green phases: [0, 2, 4, 6]; yellow phases: [1, 3, 5, 7]; yellow_after: {0: 1, 2: 3, 4: 5, 6: 7}.
 
 ## Run evidence
 

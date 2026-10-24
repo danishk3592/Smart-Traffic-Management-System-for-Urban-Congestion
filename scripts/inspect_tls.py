@@ -8,6 +8,7 @@ import math
 import re
 import xml.etree.ElementTree as ET
 from collections import defaultdict
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -279,7 +280,7 @@ def main() -> int:
 
     report = [
         "# SUMO traffic-light inspection", "",
-        "Measured 2026-10-20 using the existing network and demand, native programs, seed 1000. The same uninterrupted run included the first 600 s and continued to 1800 s. SUMO reports and edgeData outputs were redirected to a temporary directory; the protected source map was not written.",
+        f"Measured {date.today().isoformat()} using the existing network and demand, native programs, seed 1000. The same uninterrupted run included the first 600 s and continued to 1800 s. SUMO reports and edgeData outputs were redirected to a temporary directory; the protected source map was not written.",
         "Unique vehicles are counted from subscribed road-ID transitions matching a controlled from-edge to to-edge pair.", "",
         "## Suitability ranking", "",
         "| Rank | TLS ID | Program type | Program ID | Approaches | Green phases | Unique vehicles crossing |",

@@ -110,3 +110,16 @@
 - Implemented T1.1 on `agent/phase-1-core`: approach/intersection dataclasses, config-derived normalization, `SumoSensorReader`, congestion classification, JSON conversion, and fixed-size observation vector. Full checks: `python -m pytest -q -p no:cacheprovider` → 16 passed, 4 deselected; `python -m ruff check .` → all checks passed; `python -m pytest -q -p no:cacheprovider -m sumo` → 4 passed, 16 deselected; `python scripts/check_zombies.py` → no SUMO processes.
 - Full-suite verification also exposed a stale expected TLS ID and a SUMO config parser splitting Windows paths at spaces. Updated the expectation to the user-confirmed TLS and changed file-list parsing to comma/semicolon separators; the complete suites then passed.
 - T1.1 commit: `133b0c0`. Next task is T1.2 Signal safety layer.
+
+## 2026-10-24/25 - T1.3 resumed tuning: q10/w60 seeds 3000, 3001, 3002
+
+- Resumed from commit `fb1426d` (checkpoint at 6/9 cells). Verified 6 completed cells in `t13_rule_tuning_progress.json`; partial interrupted folder `20261024-224337_rule_medium_s3000` (steps.csv only, no run.json) left untouched and not counted as accepted.
+- Command: `Ai/.venv/Scripts/python.exe -m scripts.tune_rule_controller`; script skipped all 6 completed keys and ran the 3 missing q10/w60 cells in order.
+- q10/w60 seed 3000: run `20261024-231306_rule_medium_s3000`; 1,568/2,600 completed; 1,094 teleports; 0 fallbacks; avg_queue 12.211; avg_wait 210.877 s; wall 1,431.9 s.
+- q10/w60 seed 3001: run `20261024-233704_rule_medium_s3001`; 1,557/2,600 completed; 1,059 teleports; 0 fallbacks; avg_queue 11.270; avg_wait 198.708 s; wall 3,162.5 s.
+- q10/w60 seed 3002: run `20261025-002952_rule_medium_s3002`; 1,543/2,600 completed; 1,073 teleports; 0 fallbacks; avg_queue 10.743; avg_wait 170.291 s; wall 894.3 s.
+- All 9/9 cells complete; progress JSON and docs/rule_tuning.md updated automatically by script after each cell.
+- Threshold selection (lowest mean approach queue): q6/w30 mean_queue=11.256 mean_wait=185.918 s; q8/w45 mean_queue=11.317 mean_wait=211.226 s; q10/w60 mean_queue=11.408 mean_wait=193.292 s. **Selected: queue_threshold=6, wait_threshold_s=30 s** (best mean queue).
+- Updated `config/stms.yaml` rule thresholds from 8/45 to 6/30.
+- Tests: focused suite (test_controllers + test_metrics) 9 passed; full unit suite 30 passed, 5 deselected; Ruff all checks passed. Two ERROR lines in first invocation were Windows tmpdir permission issue on pytest-of-hannan; resolved by --basetemp; no code failures.
+- Decision: T1.3 tuning complete. Best threshold selected and applied. T1.4 fixed diagnostic evidence already collected at `results/raw/20261024-210315_fixed_medium_s3000`; required test rerun passes. Phase 1 acceptance pending human review gate.

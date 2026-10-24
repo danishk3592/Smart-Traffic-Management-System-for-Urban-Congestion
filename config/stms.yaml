@@ -25,8 +25,8 @@ rl:
   device: cpu
 
 rule:
-  queue_threshold: 8
-  wait_threshold_s: 45
+  queue_threshold: 6
+  wait_threshold_s: 30
 
 congestion:
   thresholds:

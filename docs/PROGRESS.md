@@ -4,7 +4,7 @@ Updated: 2026-10-25
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T2.1 environment | In progress | agent/autonomous-build | 67d8a19 (A0) | 140/140 training route caches validated (seeds 1000–1019); T2.1 Ruff/import pass. Controlled reset/action/reward/truncation/cleanup checks ran; no PPO training started. |
+| T2.2 environment tests | In progress | agent/autonomous-build | 9e0508c (T2.1) | T2.1 is complete; implement and pass the SUMO environment gate before any PPO training. |
 
 ## Completed
 
@@ -33,4 +33,4 @@ Updated: 2026-10-25
 - Phase 1 is **Done** on `agent/phase-1-core`.
 - Human performs the single merge step into `main` per Roadmap Section 0.5.
 - Preserve the user's modified `SUMO/No_Polygon_Map/edgeData.xml` and never write outputs under `SUMO/No_Polygon_Map/`.
-- Phase 2 T2.1 is **in progress** on `agent/autonomous-build`. The owner-approved reward design is documented in `docs/rl_design.md`; route preparation completed and the 140-entry training pool validated. No PPO run has started; T2.2 remains the blocking gate before training.
+- Phase 2 T2.1 is **Done** on `agent/autonomous-build` (`9e0508c`); the owner-approved reward design is documented in `docs/rl_design.md`, the 140-entry training pool validated, and required environment runtime checks completed. T2.2 is now **in progress** and remains the blocking gate before any PPO training.

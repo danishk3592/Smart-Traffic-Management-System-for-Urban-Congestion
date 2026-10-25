@@ -4,7 +4,7 @@ Updated: 2026-10-25
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T2.2 environment tests | In progress | agent/autonomous-build | 9e0508c (T2.1) | T2.1 follow-up fixes action-0 hold semantics and default cache seed range. T2.2 SUMO gate passed 6/6 selected checks; final task record/commit pending. No PPO training. |
+| T2.3 PPO training pipeline | In progress | agent/autonomous-build | 8154ed6 (T2.2) | T2.1 and T2.2 passed; implement staged resumable training. PPO is now permitted by the gates but no training has started yet. |
 
 ## Completed
 
@@ -33,4 +33,4 @@ Updated: 2026-10-25
 - Phase 1 is **Done** on `agent/phase-1-core`.
 - Human performs the single merge step into `main` per Roadmap Section 0.5.
 - Preserve the user's modified `SUMO/No_Polygon_Map/edgeData.xml` and never write outputs under `SUMO/No_Polygon_Map/`.
-- Phase 2 T2.1 is **Done** on `agent/autonomous-build` (`9e0508c`); the owner-approved reward design is documented in `docs/rl_design.md`, the 140-entry training pool validated, and required environment runtime checks completed. T2.2 is now **in progress** and remains the blocking gate before any PPO training.
+- Phase 2 T2.1 is **Done** (`9e0508c`, follow-up fix `3330439`) and T2.2 is **Done** (`8154ed6`) on `agent/autonomous-build`. The owner-approved reward design is documented, all 140 training caches validated, and the scripted-policy, safety, determinism, reset/close, and fail-fast gates passed. PPO has not yet started; T2.3 is in progress.

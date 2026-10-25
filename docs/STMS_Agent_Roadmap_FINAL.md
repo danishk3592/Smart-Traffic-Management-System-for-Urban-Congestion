@@ -763,9 +763,9 @@ Status values: `Not started` · `In progress` · `Blocked (reason)` · `Partial 
 | [x] T1.2 Safety layer | Done | 2026-10-24 | eacb7e0 | SUMO safety fuzzer 1200 s; unit/SUMO suites and Ruff pass. |
 | [x] T1.3 Controllers + runner | Done | 2026-10-25 | ef1772a | Fixed, rule, fallback controllers and runner complete; 9/9 validation tuning cells run; selected queue=6, wait=30s; unit tests pass. |
 | [x] T1.4 Metrics | Done with approved deviation | 2026-10-25 | ef1772a | 33-column Section 11 summary complete (no NaN); all 210 crossing mismatches explained by teleports (0 unexplained); teleport rates preserved per Section 0.6 deviation. |
-| [x] T2.1 Env | Done | 2026-10-25 | 9e0508c | Ruff/import pass; 140/140 cached routes valid; controlled runtime checks passed. |
-| [ ] T2.2 Env tests (gate) | In progress | | | Blocking PPO gate; required SUMO suite is being implemented and run. |
-| [ ] T2.3 PPO training (staged) | Not started | | | |
+| [x] T2.1 Env | Done | 2026-10-25 | 9e0508c | Follow-up `3330439`: keep holds safely; default seeds match the prepared cache. |
+| [x] T2.2 Env tests (gate) | Done | 2026-10-25 | 8154ed6 | `pytest -m sumo tests/test_env.py -q`: 6 passed; default seed test also passed. |
+| [ ] T2.3 PPO training (staged) | In progress | | | T2.1 and T2.2 gates passed; implement resumable staged training pipeline. |
 | [ ] T2.4 RL controller | Not started | | | |
 | [ ] T2.5 RL sanity gate | Not started | | | |
 | [ ] T3.1 Evaluation harness (M1) | Not started | | | |

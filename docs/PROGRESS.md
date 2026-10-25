@@ -4,7 +4,7 @@ Updated: 2026-10-25
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T2.2 environment tests | In progress | agent/autonomous-build | 9e0508c (T2.1) | T2.1 is complete; implement and pass the SUMO environment gate before any PPO training. |
+| T2.2 environment tests | In progress | agent/autonomous-build | 9e0508c (T2.1) | T2.1 follow-up fixes action-0 hold semantics and default cache seed range. T2.2 SUMO gate passed 6/6 selected checks; final task record/commit pending. No PPO training. |
 
 ## Completed
 

@@ -143,3 +143,12 @@
 - Reward probes on cached `medium` seed 1000: at sim time 505 s, queue delta +4 and mean wait 23.276 s produced reward -0.09091954 (matched the documented formula); at 1755 s, queue delta -2 and mean wait 122.904 s produced -0.40301424, with the queue-delta contribution positive as specified. The sampled interval throughput was 0 in both checks; throughput normalization/configuration is present, but a nonzero throughput reward was not observed in these intervals.
 - T2.1 acceptance: `ruff check Ai/rl` → `All checks passed!`; project-venv import printed `TrafficEnvironment`. T2.1 remains In progress until its final diff/progress review and task commit.
 - Completion record: final diff and `git diff --check` passed; no direct TLS phase setters or protected-map diffs were found. T2.1 implementation commit: `9e0508c`; post-commit Ruff and import acceptance both passed. T2.1 is Done; proceed to T2.2. (The preceding in-progress note records the state before that review.)
+
+## 2026-10-25 - T2.2 scripted-policy gate diagnosis and T2.1 fix
+
+- Attempt 1: `pytest -m sumo tests/test_env.py -q` → 5 passed, 1 failed, 1 deselected in 80.82 s. The always-keep and queue-triggered-switch policies both earned `-11.458646985199156` on heavy seed 1000.
+- Diagnosis: a 300 s same-seed probe showed 11 accepted switch requests but identical phase histories and rewards (`4.807532985`); action 0 let the native program cycle, so a switch at minimum green coincided with the native transition. The policy was not testing distinct behavior.
+- Fix: action 0 now requests a one-decision-interval green extension through `SignalSafetyLayer`; maximum-green enforcement still ends the hold. Default environment seeds now use `seed_min .. seed_min + seeds_per_scenario - 1`, matching the prepared cache (1000–1019), rather than the broader allowed seed block.
+- Verification: 300 s same-seed probe produced keep reward `1.769224238` and queue-triggered switch reward `4.349267999`, with 10 accepted switches and different phase histories. Targeted scripted test → `1 passed, 6 deselected in 24.97s`.
+- Full T2.2 acceptance rerun: `pytest -m sumo tests/test_env.py -q` → `6 passed, 1 deselected in 65.30s`; default selection → `1 passed, 6 deselected in 2.62s`; `ruff check .` → `All checks passed!`; zombie check → no running SUMO processes.
+- Seeds: 1000 only; no PPO training or model writes. Decision: keep the owner-approved reward formula unchanged; the gate failure was caused by keep-action semantics and is resolved by the safety-layer extension.

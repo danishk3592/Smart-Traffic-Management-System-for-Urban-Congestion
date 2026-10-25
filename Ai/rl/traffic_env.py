@@ -20,7 +20,9 @@ from scripts.make_scenarios import get_cached_routes
 class TrafficEnvironment(gym.Env[np.ndarray, int]):
     """Single-junction PPO env. Observation uses configured to_vector layout:
     eight normalized measurement/mask values per approach, green phase one-hot,
-    normalized elapsed green and mask. Actions: keep, next green, +5s, +10s.
+    normalized elapsed green and mask. Actions: keep this green for one decision
+    interval, request the next green, extend by 5s, and extend by 10s. Keeping
+    and switching are subject to SignalSafetyLayer's maximum/minimum green rules.
     Signal commands are delegated to SignalSafetyLayer, never applied directly.
     """
     metadata: ClassVar[dict[str, list[str]]] = {"render_modes": []}
@@ -31,8 +33,14 @@ class TrafficEnvironment(gym.Env[np.ndarray, int]):
         self.config = load_config(config) if not isinstance(config, Mapping) else dict(config)
         self.root = Path(__file__).resolve().parents[2]
         pool = self.config["demand"]["train_pool"]
-        self.scenario_pool = tuple(scenario_pool or pool["scenarios"])
-        self.seeds = tuple(int(s) for s in (seeds or range(pool["seed_min"], pool["seed_max"] + 1)))
+        self.scenario_pool = tuple(
+            pool["scenarios"] if scenario_pool is None else scenario_pool
+        )
+        cached_seeds = range(
+            int(pool["seed_min"]),
+            int(pool["seed_min"]) + int(pool["seeds_per_scenario"]),
+        )
+        self.seeds = tuple(int(s) for s in (cached_seeds if seeds is None else seeds))
         if not self.scenario_pool or not self.seeds:
             raise ValueError("scenario_pool and seeds must be non-empty")
         if any(s < 1000 or s > 1999 for s in self.seeds):
@@ -101,15 +109,20 @@ class TrafficEnvironment(gym.Env[np.ndarray, int]):
             raise RuntimeError("reset() must be called before step()")
         illegal = not self.action_space.contains(action)
         action = int(action) if not illegal else 0
+        decision_interval = float(self.config["rl"]["decision_interval_s"])
         result = None
-        if action == 1:
+        if action == 0:
+            result = self.safety.request_extend(decision_interval)
+        elif action == 1:
             result = self.safety.request_switch()
         elif action in (2, 3):
             result = self.safety.request_extend(5.0 if action == 2 else 10.0)
-        if result is not None and not isinstance(result, Accepted):
+        if action != 0 and result is not None and not isinstance(result, Accepted):
             illegal = True
         actual = 0 if illegal else action
-        duration = float(self.config["rl"]["decision_interval_s"]) + (5.0 if actual == 2 else 10.0 if actual == 3 else 0.0)
+        if illegal:
+            self.safety.request_extend(decision_interval)
+        duration = decision_interval + (5.0 if actual == 2 else 10.0 if actual == 3 else 0.0)
         start = self.client.sim_time
         while self.client.sim_time - start < duration:
             self.client.step()

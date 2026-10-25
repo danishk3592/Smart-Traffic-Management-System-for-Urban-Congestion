@@ -800,3 +800,17 @@ The human should replace the weeks with real dates; the agent does not change th
 2. **Within Phase 7, reduce cost, never coverage:** fewer training scenarios, shorter episodes, larger decision interval, one PPO seed, fewer evaluation seeds only if the human agrees and it is documented (DEC-14 Stage 3). The intended TLS list is not shrunk to save time unless the human changes it before dev evaluation (P4).
 3. **If shared PPO cannot cover all intended TLS or pass T7.7 within budget → stop and ask (P5).** Options: extend budget; Stage 4 fallback (task T7.10: partial-AI hybrid, or validated multi-junction rule-based controller plus M1 PPO), always labelled with the level reached and AI-coverage fraction. Single-junction control is never silently reported as the final result.
 4. **Never cut:** Phases 0–3 (M1), Phase 7 with a validated, honestly labelled result in `docs/results.md`, and lean Phase 6 (T6.1–T6.4, incl. T6.3 docs) over whatever exists.
+
+---
+
+# Owner-authorized addendum: T0.2-WIN Windows environment setup (2026-10-25)
+
+The repository owner explicitly authorized this one dedicated setup task before T2.1. It records a new task without changing earlier task results or acceptance history.
+
+**One-task exception:** For T0.2-WIN only, work may proceed in the current checkout with the owner-identified pre-existing changes present. Preserve `SUMO/No_Polygon_Map/edgeData.xml`, `Ai/rl/models/`, `Ai/rl/ppo_evaluation.csv`, and `✅ HSR Layout.txt` byte-for-byte; do not stage them or any unrelated path. This exception applies only to Sections 0.1 item 2, 0.6's dirty-worktree stop, and 0.9's corresponding stop rule. All other scope and safety rules remain in force. The owner's explicit request also authorizes a single scoped setup commit from the current branch to `origin/main`, but only as a normal fast-forward push; if remote state cannot be checked or is not a fast-forward, stop without a force push.
+
+**Scope:** Update Python dependency groups and project facts; add `scripts/setup_windows.ps1`, `scripts/check_environment.py`, and `docs/windows_setup.md`; record this authorization here. Do not modify RL implementation/artifacts or either SUMO map directory. Do not start T2.1 or training.
+
+**Accept:** dependency groups reflect actual imports; Windows setup creates/reuses `Ai/.venv` without replacing an existing environment and defaults to CPU PyTorch; the checker verifies package pins, Python, SUMO tools/version, `SUMO_HOME`, project/SUMO configuration references, and required scripts; run the environment checker and non-destructive script/package validation on the available local environment; review staged paths before commit; stage only scoped files; never force-push.
+
+**Tracker:** This appended addendum is the dedicated task record. Completion state and commit hash are reported with the task result so the historical Section 12 table is not rewritten.

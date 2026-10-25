@@ -22,7 +22,12 @@ rl:
     queue: 1.0
     wait: 1.0
     throughput: 0.5
+  reward_scales:
+    queue_change: 300.0
+    mean_wait_s: 300.0
+    throughput_vehicles: 5.0
   device: cpu
+  max_train_hours: 10
 
 rule:
   queue_threshold: 6
@@ -124,6 +129,8 @@ prediction:
 network:
   controlled_tls: []
   excluded_tls: []
+  tls_list_hash: null
+  frozen_utc: null
   max_intended: 20
   min_veh_per_1800s: 20
   max_approaches: null
@@ -295,3 +302,9 @@ vision:
     test: 300
 
 metrics_version: 1
+
+jobs:
+  parallel_runs: auto
+
+project:
+  deadline_utc: null

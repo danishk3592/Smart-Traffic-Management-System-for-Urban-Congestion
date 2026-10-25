@@ -125,3 +125,11 @@
 - User explicitly approved Phase 1 acceptance. T1.1, T1.2, T1.3, and T1.4 are marked Done.
 - High teleport count on unchanged medium demand (~40-44%) is preserved as an unresolved baseline performance characteristic under the 2026-10-24 Section 0.6 approved amendment, to be comparatively evaluated in T2.5 and Phase 3 against PPO on identical demand and seeds.
 - Phase 1 closed on `agent/phase-1-core`. Phase 2 is not started automatically. Next task at boundary: human review and merge of `agent/phase-1-core` into `main`, then T2.1 on `agent/phase-2-rl`.
+
+## 2026-10-25 - A0 v6.1 repository checkpoint
+
+- Task: A0 roadmap adoption; no random seeds used.
+- First check: `Ai/.venv/Scripts/python.exe -m ruff check .` failed with TRY004 in `scripts/make_scenarios.py:331` because a JSON manifest with the wrong top-level type was raised as `ValueError`.
+- Correction: changed that invalid-type exception to `TypeError`, preserving the clear message and fail-fast behavior.
+- Checkpoint rerun: `Ai/.venv/Scripts/ruff.exe check .` → `All checks passed!`; `Ai/.venv/Scripts/python.exe -m pytest -q` → `30 passed, 5 deselected in 4.93s`.
+- Decision: checkpoint passes; proceed with T2.1 on the v6.1 autonomous work branch.

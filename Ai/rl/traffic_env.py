@@ -1,301 +1,162 @@
+"""Gymnasium environment for safe PPO control of the configured pilot junction."""
+from __future__ import annotations
 
-import logging
 import math
+from collections.abc import Iterable, Mapping, Sequence
 from pathlib import Path
-from typing import ClassVar
+from typing import Any, ClassVar
 
 import gymnasium as gym
 import numpy as np
-import sumolib
-import traci
 from gymnasium import spaces
 
-logger = logging.getLogger(__name__)
-
-TLS_ID = (
-    "cluster618250255_7478115627_"
-    "cluster_11927462278_11927462280_"
-    "7478115626_7479633881"
-)
+from Ai.common.config import load_config
+from Ai.common.sumo_client import SumoClient
+from Ai.common.traffic_state import SumoSensorReader, to_vector, vector_norm_from_config
+from Ai.controllers.safety import Accepted, Rejected, SignalSafetyLayer
+from scripts.make_scenarios import get_cached_routes
 
 
-class TrafficEnv(gym.Env):
-    """Gymnasium environment for controlling one SUMO traffic light."""
-
+class TrafficEnvironment(gym.Env[np.ndarray, int]):
+    """Single-junction PPO env. Observation uses configured to_vector layout:
+    eight normalized measurement/mask values per approach, green phase one-hot,
+    normalized elapsed green and mask. Actions: keep, next green, +5s, +10s.
+    Signal commands are delegated to SignalSafetyLayer, never applied directly.
+    """
     metadata: ClassVar[dict[str, list[str]]] = {"render_modes": []}
-
-    GREEN_PHASES = (0, 2, 4)
-    YELLOW_PHASES: ClassVar[dict[int, int]] = {0: 1, 2: 3, 4: 5}
-    NEXT_GREEN: ClassVar[dict[int, int]] = {0: 2, 2: 4, 4: 0}
-
-    def __init__(
-        self,
-        sumo_cfg=None,
-        episode_seconds=600,
-        green_seconds=10,
-        min_green_seconds=5,
-    ):
+    def __init__(self, scenario_pool: Iterable[str] | None = None,
+                 seeds: Sequence[int] | None = None,
+                 config: Mapping[str, Any] | str | Path | None = None) -> None:
         super().__init__()
-
-        root = Path(__file__).resolve().parents[2]
-        self.sumo_cfg = Path(
-            sumo_cfg or root / "SUMO" / "No_Polygon_Map" / "osm.sumocfg"
-        ).resolve()
-
-        if not self.sumo_cfg.is_file():
-            raise FileNotFoundError(
-                f"SUMO configuration not found: {self.sumo_cfg}"
-            )
-
-        self.episode_seconds = episode_seconds
-        self.green_seconds = green_seconds
-        self.min_green_seconds = min_green_seconds
-        self.label = f"traffic_rl_{id(self)}"
-
-        # Action 0 -> green phase 0
-        # Action 1 -> green phase 2
-        # Action 2 -> green phase 4
-        self.action_space = spaces.Discrete(3)
-
-        self.conn = None
+        self.config = load_config(config) if not isinstance(config, Mapping) else dict(config)
+        self.root = Path(__file__).resolve().parents[2]
+        pool = self.config["demand"]["train_pool"]
+        self.scenario_pool = tuple(scenario_pool or pool["scenarios"])
+        self.seeds = tuple(int(s) for s in (seeds or range(pool["seed_min"], pool["seed_max"] + 1)))
+        if not self.scenario_pool or not self.seeds:
+            raise ValueError("scenario_pool and seeds must be non-empty")
+        if any(s < 1000 or s > 1999 for s in self.seeds):
+            raise ValueError("training seeds must be in 1000–1999")
+        self.tls = dict(self.config["intersection"])
+        self.tls.update({"tls_id": self.config["sumo"]["tls_id"],
+                         "min_green_s": self.config["signal"]["min_green_s"],
+                         "max_green_s": self.config["signal"]["max_green_s"]})
+        self.norm = vector_norm_from_config(self.config, self.tls)
+        self.reward_weights = {key: float(value) for key, value in self.config["rl"]["reward_weights"].items()}
+        self.reward_scales = {key: float(value) for key, value in self.config["rl"]["reward_scales"].items()}
+        required_scales = {"queue_change", "mean_wait_s", "throughput_vehicles"}
+        if set(self.reward_scales) != required_scales:
+            raise ValueError(f"rl.reward_scales must define exactly {sorted(required_scales)}")
+        if any(not math.isfinite(value) or value <= 0 for value in self.reward_scales.values()):
+            raise ValueError("rl.reward_scales values must be finite and strictly positive")
+        if any(not math.isfinite(value) for value in self.reward_weights.values()):
+            raise ValueError("rl.reward_weights values must be finite")
+        self.observation_space = spaces.Box(0.0, 1.0, (self.norm.vector_length,), dtype=np.float32)
+        self.action_space = spaces.Discrete(4)
+        self.client: SumoClient | None = None
+        self.safety: SignalSafetyLayer | None = None
+        self.sensor: SumoSensorReader | None = None
+        self.state = None
         self.elapsed = 0.0
-        self.lanes = []
-        self.phase_durations = {}
+        self._queue_previous = 0.0
+        self._sensor_time_previous = 0.0
 
-        # Four measurements per lane, plus three phase indicators.
-        self.observation_space = spaces.Box(
-            low=0.0,
-            high=np.inf,
-            shape=(35,),
-            dtype=np.float32,
-        )
-
-    def _start_sumo(self):
-        binary = sumolib.checkBinary("sumo")
-        command = [
-            binary,
-            "-c", str(self.sumo_cfg),
-            "--no-step-log", "true",
-        ]
-
-        traci.start(command, label=self.label)
-        self.conn = traci.getConnection(self.label)
-
-        traffic_lights = self.conn.trafficlight.getIDList()
-        if TLS_ID not in traffic_lights:
-            raise RuntimeError(
-                f"Traffic light {TLS_ID} not found. "
-                f"Available IDs: {traffic_lights}"
-            )
-
-        self.lanes = sorted(
-            set(self.conn.trafficlight.getControlledLanes(TLS_ID))
-        )
-
-        if not self.lanes:
-            raise RuntimeError("No controlled lanes found.")
-
-        program_id = self.conn.trafficlight.getProgram(TLS_ID)
-        programs = self.conn.trafficlight.getAllProgramLogics(TLS_ID)
-
-        matching = [
-            program for program in programs
-            if program.programID == program_id
-        ]
-
-        if not matching:
-            raise RuntimeError("Could not inspect the active signal program.")
-
-        phases = matching[0].phases
-
-        if len(phases) < 6:
-            raise RuntimeError(
-                f"Expected at least 6 phases; found {len(phases)}."
-            )
-
-        self.phase_durations = {
-            index: float(phase.duration)
-            for index, phase in enumerate(phases)
-        }
-
-        for phase in self.GREEN_PHASES:
-            if not phases[phase].state or "G" not in phases[phase].state:
-                raise RuntimeError(
-                    f"Phase {phase} does not appear to be a green phase: "
-                    f"{phases[phase].state}"
-                )
-
-        self.observation_space = spaces.Box(
-            low=0.0,
-            high=np.inf,
-            shape=(len(self.lanes) * 4 + 3,),
-            dtype=np.float32,
-        )
-
-    def _run_seconds(self, seconds):
-        delta_t = float(self.conn.simulation.getDeltaT())
-        steps = max(1, math.ceil(seconds / delta_t))
-
-        for _ in range(steps):
-            self.conn.simulationStep()
-            self.elapsed += delta_t
-
-            if self.conn.simulation.getMinExpectedNumber() == 0:
-                break
-
-    def _green_observation(self):
-        current_phase = self.conn.trafficlight.getPhase(TLS_ID)
-        values = []
-
-        for lane in self.lanes:
-            vehicle_ids = self.conn.lane.getLastStepVehicleIDs(lane)
-
-            vehicle_count = len(vehicle_ids)
-            queue_length = self.conn.lane.getLastStepHaltingNumber(lane)
-            waiting_time = sum(
-                self.conn.vehicle.getWaitingTime(vehicle_id)
-                for vehicle_id in vehicle_ids
-            )
-            mean_speed = max(
-                0.0,
-                self.conn.lane.getLastStepMeanSpeed(lane),
-            )
-
-            values.extend([
-                float(vehicle_count),
-                float(queue_length),
-                float(waiting_time),
-                float(mean_speed),
-            ])
-
-        # One-hot encoding of the currently active green phase.
-        values.extend([
-            float(current_phase == phase)
-            for phase in self.GREEN_PHASES
-        ])
-
-        return np.asarray(values, dtype=np.float32)
-
-    def _transition_to_green(self, target_phase):
-        """Reach the selected green using the configured yellow phases."""
-        for _ in range(6):
-            current = self.conn.trafficlight.getPhase(TLS_ID)
-
-            if current not in self.GREEN_PHASES:
-                if current not in (1, 3, 5):
-                    raise RuntimeError(
-                        f"Unexpected traffic-light phase: {current}"
-                    )
-
-                yellow_duration = self.phase_durations[current]
-                self._run_seconds(yellow_duration)
-
-                next_green = {1: 2, 3: 4, 5: 0}[current]
-                self.conn.trafficlight.setPhase(TLS_ID, next_green)
-                current = next_green
-
-            if current == target_phase:
-                self.conn.trafficlight.setPhaseDuration(
-                    TLS_ID, self.green_seconds
-                )
-                self._run_seconds(self.green_seconds)
-                return
-
-            # Never jump directly from one conflicting green to another.
-            yellow_phase = self.YELLOW_PHASES[current]
-            yellow_duration = self.phase_durations[yellow_phase]
-
-            self.conn.trafficlight.setPhase(TLS_ID, yellow_phase)
-            self.conn.trafficlight.setPhaseDuration(
-                TLS_ID, yellow_duration
-            )
-            self._run_seconds(yellow_duration)
-
-            next_green = self.NEXT_GREEN[current]
-            self.conn.trafficlight.setPhase(TLS_ID, next_green)
-
-            if next_green != target_phase:
-                self.conn.trafficlight.setPhaseDuration(
-                    TLS_ID, self.min_green_seconds
-                )
-                self._run_seconds(self.min_green_seconds)
-
-        raise RuntimeError(
-            f"Could not reach requested green phase {target_phase}."
-        )
-
-    def reset(self, seed=None, options=None):
+    def reset(self, *, seed: int | None = None, options: dict[str, Any] | None = None):
         super().reset(seed=seed)
         self.close()
-        self.elapsed = 0.0
-
+        options = options or {}
+        scenario = (
+            str(options["scenario"])
+            if "scenario" in options
+            else self.scenario_pool[int(self.np_random.integers(len(self.scenario_pool)))]
+        )
+        if scenario not in self.scenario_pool:
+            raise ValueError(f"scenario is outside training pool: {scenario}")
+        default_seed = seed if seed in self.seeds else self.seeds[int(self.np_random.integers(len(self.seeds)))]
+        sim_seed = int(options.get("seed", default_seed))
+        if sim_seed not in self.seeds:
+            raise ValueError(f"seed is outside training pool: {sim_seed}")
+        route = get_cached_routes(scenario, sim_seed)
+        if not route.is_file():
+            raise FileNotFoundError(f"cached routes missing: {route}")
+        self.client = SumoClient(config_path=self.root / "config" / "stms.yaml",
+                                 seed=sim_seed, route_file=route)
         try:
-            self._start_sumo()
-            return self._green_observation(), {
-                "phase": self.conn.trafficlight.getPhase(TLS_ID),
-                "lanes": len(self.lanes),
-            }
+            self.client.start()
+            self.safety = SignalSafetyLayer(self.client, self.tls)
+            self.sensor = SumoSensorReader(self.tls, self.config["congestion"]["thresholds"])
+            self.elapsed = 0.0
+            self.state = self.sensor.read(self.client)
+            self._queue_previous = float(self.state.totals["waiting_vehicles"] or 0)
+            self._sensor_time_previous = self.client.sim_time
+            return to_vector(self.state, self.norm), {
+                "scenario": scenario, "seed": sim_seed, "sim_time": self.client.sim_time,
+                "phase": self.state.phase, "phase_elapsed": self.state.phase_elapsed_s}
         except Exception:
             self.close()
             raise
 
-    def step(self, action):
-        if self.conn is None:
-            raise RuntimeError("Call reset() before step().")
-
-        target_phase = self.GREEN_PHASES[int(action)]
-
-        try:
-            self._transition_to_green(target_phase)
-
-            observation = self._green_observation()
-
-            total_queue = float(
-                sum(
-                    self.conn.lane.getLastStepHaltingNumber(lane)
-                    for lane in self.lanes
-                )
-            )
-
-            total_waiting = sum(
-                self.conn.vehicle.getWaitingTime(vehicle_id)
-                for lane in self.lanes
-                for vehicle_id in
-                self.conn.lane.getLastStepVehicleIDs(lane)
-            )
-
-            reward = -float(total_queue)
-
-            terminated = (
-                self.conn.simulation.getMinExpectedNumber() == 0
-            )
-            truncated = self.elapsed >= self.episode_seconds
-
-            info = {
-                "phase": self.conn.trafficlight.getPhase(TLS_ID),
-                "queue_length": total_queue,
-                "waiting_time": float(total_waiting),
-                "elapsed_seconds": self.elapsed,
-            }
-
-            return (
-                observation,
-                float(reward),
-                terminated,
-                truncated,
-                info,
-            )
-
-        except Exception:
-            self.close()
-            raise
+    def step(self, action: int):
+        if self.client is None or self.safety is None or self.sensor is None:
+            raise RuntimeError("reset() must be called before step()")
+        illegal = not self.action_space.contains(action)
+        action = int(action) if not illegal else 0
+        result = None
+        if action == 1:
+            result = self.safety.request_switch()
+        elif action in (2, 3):
+            result = self.safety.request_extend(5.0 if action == 2 else 10.0)
+        if result is not None and not isinstance(result, Accepted):
+            illegal = True
+        actual = 0 if illegal else action
+        duration = float(self.config["rl"]["decision_interval_s"]) + (5.0 if actual == 2 else 10.0 if actual == 3 else 0.0)
+        start = self.client.sim_time
+        while self.client.sim_time - start < duration:
+            self.client.step()
+            self.elapsed += float(self.config["sumo"]["step_length"])
+            tick = self.safety.tick()
+            match tick:
+                case Rejected(reason=reason):
+                    raise RuntimeError(f"safety tick rejected: {reason}")
+                case Accepted():
+                    pass
+            if self.client.connection.simulation.getMinExpectedNumber() == 0 or self.elapsed >= self.config["rl"]["episode_s"]:
+                break
+        self.state = self.sensor.read(self.client)
+        queue = float(self.state.totals["waiting_vehicles"] or 0)
+        queue_change = queue - self._queue_previous
+        vehicle_domain = self.client.connection.vehicle
+        vehicle_ids = vehicle_domain.getIDList()
+        mean_wait = (
+            sum(float(vehicle_domain.getWaitingTime(vehicle_id)) for vehicle_id in vehicle_ids)
+            / len(vehicle_ids)
+            if vehicle_ids else 0.0
+        )
+        interval_s = self.client.sim_time - self._sensor_time_previous
+        throughput_rate = float(self.state.totals["throughput_veh_min"] or 0)
+        passed = throughput_rate * interval_s / 60.0
+        self._sensor_time_previous = self.client.sim_time
+        scales = self.reward_scales
+        weights = self.reward_weights
+        queue_term = float(np.clip(queue_change / scales["queue_change"], -1.0, 1.0))
+        wait_term = float(np.clip(mean_wait / scales["mean_wait_s"], 0.0, 1.0))
+        throughput_term = float(np.clip(passed / scales["throughput_vehicles"], 0.0, 1.0))
+        reward = (
+            -weights["queue"] * queue_term
+            -weights["wait"] * wait_term
+            +weights["throughput"] * throughput_term
+        )
+        self._queue_previous = queue
+        terminated = self.client.connection.simulation.getMinExpectedNumber() == 0
+        truncated = self.elapsed >= self.config["rl"]["episode_s"]
+        return to_vector(self.state, self.norm), float(reward), bool(terminated), bool(truncated), {
+            "sim_time": self.client.sim_time, "phase": self.state.phase,
+            "phase_elapsed": self.state.phase_elapsed_s, "action_taken": actual,
+            "illegal_action": bool(illegal), "queue_total": queue, "wait_total": mean_wait}
 
     def close(self) -> None:
-        connection, self.conn = self.conn, None
-        if connection is None:
-            return
-
-        try:
-            connection.close()
-        except (OSError, traci.exceptions.TraCIException) as error:
-            logger.warning("TraCI connection close failed: %s", error)
+        """Stop SUMO; safe to call repeatedly."""
+        client, self.client = self.client, None
+        self.safety = self.sensor = self.state = None
+        if client is not None:
+            client.close()

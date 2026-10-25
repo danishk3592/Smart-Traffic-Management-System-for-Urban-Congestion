@@ -133,3 +133,12 @@
 - Correction: changed that invalid-type exception to `TypeError`, preserving the clear message and fail-fast behavior.
 - Checkpoint rerun: `Ai/.venv/Scripts/ruff.exe check .` → `All checks passed!`; `Ai/.venv/Scripts/python.exe -m pytest -q` → `30 passed, 5 deselected in 4.93s`.
 - Decision: checkpoint passes; proceed with T2.1 on the v6.1 autonomous work branch.
+
+## 2026-10-25 - T2.1 route pool and controlled runtime verification
+
+- Seeds used: training pool 1000–1019; controlled SUMO checks used seed 1000. No PPO training or model writes.
+- The first invocation with global Python failed before generation (`ModuleNotFoundError: No module named 'Ai'`). Re-ran the approved `python scripts/make_scenarios.py --train-pool` using `Ai/.venv/Scripts/python.exe`; it completed 140/140 route files in 755 s, with empty stderr.
+- Initial cache audit falsely reported 0/140 because its route-edge check used the generator candidate subset. Corrected lookup to validate against the full SUMO network; rerun reported `expected=140 valid=140 invalid=0` (all configured scenario/seed manifests, route hashes, vehicle counts, XML, and route edges checked).
+- Controlled runtime harness: deterministic same-seed reset and observation equality; observation shape/dtype/bounds; action 0 keep; action 1 rejected before min-green and safely kept, then accepted after min-green; actions 2/3 accepted with 10 s/15 s intervals; invalid 99 safely kept and counted; empty vehicle wait branch (TraCI vehicle ID list mocked empty); episode truncation at configured 1 s; repeated close. `scripts/check_zombies.py` reported no running SUMO processes.
+- Reward probes on cached `medium` seed 1000: at sim time 505 s, queue delta +4 and mean wait 23.276 s produced reward -0.09091954 (matched the documented formula); at 1755 s, queue delta -2 and mean wait 122.904 s produced -0.40301424, with the queue-delta contribution positive as specified. The sampled interval throughput was 0 in both checks; throughput normalization/configuration is present, but a nonzero throughput reward was not observed in these intervals.
+- T2.1 acceptance: `ruff check Ai/rl` → `All checks passed!`; project-venv import printed `TrafficEnvironment`. T2.1 remains In progress until its final diff/progress review and task commit.

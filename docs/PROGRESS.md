@@ -4,7 +4,7 @@ Updated: 2026-11-05 17:18 +05:30
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T3.2 M1 final results gate | In progress; resumed clean final-seed rerun | agent/autonomous-build | f3c6d01 (existing HEAD; task work is mixed in the pre-existing worktree) | Job `20261105-091026_edd94e34` resumes the exact frozen grid under config SHA-256 `322293c6c89cfdeba92c08b7ff65b5858095897adb733abc81200da74c5a7668`; fresh lineage audit at 17:18 accepts 29/105 cells (fixed 10/35, rule 10/35, RL 9/35; 76 missing). Evaluator is live; six workers and the log continue advancing. Do not restart, edit config, or change frozen inputs. |
+| T3.2 M1 final results gate | In progress; resumed clean final-seed rerun | agent/autonomous-build | 0317a4b (T6.3 documentation) | Job `20261105-091026_edd94e34` resumes the exact frozen grid under config SHA-256 `322293c6c89cfdeba92c08b7ff65b5858095897adb733abc81200da74c5a7668`; fresh lineage audit at 17:18 accepts 29/105 cells (fixed 10/35, rule 10/35, RL 9/35; 76 missing). Evaluator is live; six workers and the log continue advancing. Do not restart, edit config, or change frozen inputs. |
 
 ## Codex handoff snapshot (2026-11-05 17:18 +05:30)
 

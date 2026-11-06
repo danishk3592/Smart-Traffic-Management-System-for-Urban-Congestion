@@ -865,3 +865,7 @@ This chronological entry captures the implementation and early job-resume state.
 ### T2.4 selected-model CLI acceptance recheck — 2026-11-06
 - Ran `Ai/.venv/Scripts/python.exe -m Ai.rl.evaluate_ppo --model Ai/rl/models/ppo_v2_variant_waithalf/evaluations/20261026-182752/best_model.zip --seed 3000`; it exited RC 0 and wrote diagnostic run `20261106T074359Z` for medium/3000 (374 decisions, total reward −78.841486). SUMO teleport warnings occurred and are retained in the run logs; they do not change the T2.4 functionality result.
 - `Ai/.venv/Scripts/python.exe -m pytest -q tests/test_rl_controller.py`: 7 passed. `Ai/.venv/Scripts/python.exe scripts/check_zombies.py`: no running SUMO/SUMO-GUI processes.
+
+### T4.3 route-cache acceptance audit — 2026-11-06
+- Read-only `ScenarioBuilder.get_cached_routes` validation checked all configured network training routes: 100/100 manifests, hashes, vehicle counts, route edges, and controlled-trip shares passed. Existing accepted `--all`, `--all --force` byte-identical, and `--train-pool` command outputs remain recorded above; no scenario was regenerated during this recheck because the existing manifests match.
+- `Ai/.venv/Scripts/python.exe -m pytest -q tests/test_scenarios.py`: 6 passed; focused Ruff passed. No 5000+ or 6000+ tuning was performed. Generated per-seed caches remain untracked/regenerable per Section 0.4.

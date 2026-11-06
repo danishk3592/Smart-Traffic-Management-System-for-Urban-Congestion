@@ -2,7 +2,12 @@
 
 import random
 
-from scripts.make_scenarios import SCENARIOS, ScenarioBuilder, _stable_hash
+from scripts.make_scenarios import (
+    SCENARIOS,
+    ScenarioBuilder,
+    _congestion_time_shares,
+    _stable_hash,
+)
 
 
 def test_all_configured_scenarios_have_positive_counts() -> None:
@@ -43,3 +48,9 @@ def test_through_candidate_pool_contains_a_controlled_movement() -> None:
 
 def test_hash_changes_when_demand_parameters_change() -> None:
     assert _stable_hash({"vehicles": 100}) != _stable_hash({"vehicles": 101})
+
+
+def test_network_congestion_shares_use_configured_queue_bands() -> None:
+    thresholds = {"low_max_halting": 4, "medium_max_halting": 12, "high_min_halting": 13}
+    assert _congestion_time_shares([0, 4, 5, 12, 13], thresholds) == (0.4, 0.2)
+    assert _congestion_time_shares([], thresholds) == (0.0, 0.0)

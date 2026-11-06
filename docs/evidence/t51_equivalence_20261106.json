@@ -1,0 +1,25 @@
+{
+  "task": "T5.1 same-config full-column summary equivalence",
+  "baseline_run": "20261106-145034_fixed_medium_s3000",
+  "current_run": "20261106-150152_fixed_medium_s3000",
+  "controller": "fixed",
+  "scenario": "medium",
+  "seed": 3000,
+  "compared_fields": 31,
+  "excluded_fields": [
+    "wall_clock_s",
+    "run_id"
+  ],
+  "matching": true,
+  "differences": {},
+  "config_hashes": [
+    "322293c6c89cfdeba92c08b7ff65b5858095897adb733abc81200da74c5a7668",
+    "322293c6c89cfdeba92c08b7ff65b5858095897adb733abc81200da74c5a7668"
+  ],
+  "summary_sha256": [
+    "a2cef21d9a4d5af5eb7c389bd170d08a5918dabf2ee69d922ab69c6f9e04cde1",
+    "d723e6cbe7a66dbe9f384e091bcb847cbbc8d94259802b3ff8659c4336917408"
+  ],
+  "current_config_sha256": "322293c6c89cfdeba92c08b7ff65b5858095897adb733abc81200da74c5a7668",
+  "route_sha256": "c00caaa91779292ff59fdceeadf932fa1876d8aa890a85f1a266af4d9bc38bab"
+}

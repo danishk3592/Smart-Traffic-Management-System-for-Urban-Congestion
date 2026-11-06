@@ -1,10 +1,16 @@
 # Project progress
 
-Updated: 2026-11-06 14:33 +05:30
+Updated: 2026-11-06 16:49 +05:30
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T5.1 Dashboard data-layer revalidation | In progress | agent/autonomous-build | 735f863 (T4.10) | T4.10 gate rebuild exactly matches frozen JSON; hybrid tests 4 passed, evaluator regression suite 29 passed, focused Ruff clean, and final hybrid audit 75/75 cells. T4.10 is Done with 0/12 strict PPO coverage and Stage-4 hybrid; commit snapshots/code now, then audit whether T5.1 can be closed without the missing historical config bytes. T6.4 remains open; main `59e0551`, no release tag. |
+| T6.1 Dashboard demo view / T6.4 release audit | In progress | agent/autonomous-build | 735f863 (T4.10) | T5.1 is Done via same-config full-column equivalence (31 fields; evidence `docs/evidence/t51_equivalence_20261106.json`). T6.1 still lacks desktop live-view evidence. T6.4 release content audit and local merge/tag remain. Strict PPO ownership remains 0/12 under the frozen final model; this needs a separate model/coverage experiment and is recorded open. Main `59e0551`, no release tag. |
+
+## T5.1 same-config equivalence complete (2026-11-06 16:49 +05:30)
+
+- Same-config fixed/medium/seed-3000 baseline (`20261106-145034_fixed_medium_s3000`, pre-instrumentation runner) and current run (`20261106-150152_fixed_medium_s3000`) match all 31 summary fields except `run_id` and `wall_clock_s`. Both use config SHA-256 `322293c6c89cfdeba92c08b7ff65b5858095897adb733abc81200da74c5a7668` and the same cached route SHA; exact evidence and summary hashes: `docs/evidence/t51_equivalence_20261106.json`.
+- Flutter offline dependencies succeeded, `flutter analyze --no-pub` found no issues, and `flutter test --no-pub` passed 19/19. Python status tests passed 5/5; whole-repository Ruff passed. `scripts/check_zombies.py` reported no running SUMO or SUMO-GUI processes.
+- T5.1 is Done. Historical config bytes with the older SHA remain unavailable; no hash or saved result was normalized. Strict PPO coverage remains 0/12 under the accepted final model; the user's new request is tracked separately from the frozen final outputs.
 
 ## Verified update (2026-11-06 14:05 +05:30)
 

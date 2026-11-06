@@ -32,6 +32,11 @@ logger = logging.getLogger(__name__)
 _STATUS_PATH: contextvars.ContextVar[Path | None] = contextvars.ContextVar("status_path", default=None)
 
 
+def _output_run_id(generated_run_id: str, destination: Path) -> str:
+    """Keep artifact identifiers aligned with an explicitly selected run folder."""
+    return destination.name or generated_run_id
+
+
 def _write_status(path: Path, payload: dict[str, Any]) -> None:
     """Atomically publish the latest observational status for a run."""
     payload["updated_utc"] = datetime.now(timezone.utc).isoformat()
@@ -270,6 +275,7 @@ def _run_episode(
         controller_parameters["model_path"] = str(model_path)
     run_id = datetime.now().strftime("%Y%m%d-%H%M%S") + f"_{controller_name}_{scenario}_s{seed}"
     destination = Path(out_dir).expanduser().resolve() if out_dir else root / "results" / "raw" / run_id
+    run_id = _output_run_id(run_id, destination)
     if destination.exists() and any(destination.iterdir()):
         raise FileExistsError(f"Refusing to overwrite existing run output: {destination}")
     destination.mkdir(parents=True, exist_ok=True)
@@ -494,6 +500,7 @@ def _run_network_episode(
     controller_name = str(getattr(controller, "name", "controller"))
     run_id = datetime.now().strftime("%Y%m%d-%H%M%S") + f"_{controller_name}_{scenario}_s{seed}"
     destination = Path(out_dir).expanduser().resolve() if out_dir else root / "results" / "raw" / run_id
+    run_id = _output_run_id(run_id, destination)
     if destination.exists() and any(destination.iterdir()):
         raise FileExistsError(f"Refusing to overwrite existing run output: {destination}")
     destination.mkdir(parents=True, exist_ok=True)

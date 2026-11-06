@@ -4,7 +4,7 @@ Updated: 2026-11-06 14:05 +05:30
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T4.8 Network evaluation harness reconciliation | In progress | agent/autonomous-build | T4.7 task commit pending | T4.7 gate log recheck parsed all six authorized cells and matched the selected model SHA; its 6-cell controller suite, targeted Ruff and SB3 reload passed. T4.7 source/model/log artifacts are being committed with explicit paths. Next audit and commit the already completed T4.8 evaluator and evidence. T6.4 remains open; `main` is `59e0551`, with no release tag. |
+| T4.8 Network evaluation harness reconciliation | In progress | agent/autonomous-build | 44c2355 (T4.7) | T4.7 gate log recheck parsed all six authorized cells and matched the selected model SHA; its 6-cell controller suite, targeted Ruff and SB3 reload passed. Controller/model/evidence are committed in `44c2355`. Next audit and commit the already completed T4.8 evaluator and evidence. T6.4 remains open; `main` is `59e0551`, with no release tag. |
 
 ## Verified update (2026-11-06 14:05 +05:30)
 

@@ -4,7 +4,7 @@ Updated: 2026-11-06 14:05 +05:30. The authoritative tracker is `docs/STMS_Agent_
 
 ## Current verified state (2026-11-06 14:05 +05:30)
 
-- T4.7 is now reverified: the preserved gate log contains six expected cell records with 4,350/4,350 trips, 12/12 TLS coverage and the selected model hash. Controller tests passed (6), targeted Ruff passed and the SB3 model reloaded at 2,240,004 steps. The historical raw gate directories are absent, and this check does not claim fresh raw CSV lineage validation. The source/model/evidence commit and tracker hash update are in progress; then reconcile T4.8, T4.9 and T4.10 artifacts before T5.1/T6.4. `main` remains at `59e0551`; no tag exists.
+- T4.7 is reverified and committed as `44c2355`: the preserved gate log contains six expected cell records with 4,350/4,350 trips, 12/12 TLS coverage and the selected model hash. Controller tests passed (6), targeted Ruff passed and the SB3 model reloaded at 2,240,004 steps. The historical raw gate directories are absent, and this check does not claim fresh raw CSV lineage validation. Next reconcile T4.8, T4.9 and T4.10 artifacts before T5.1/T6.4. `main` remains at `59e0551`; no tag exists.
 
 - Branch: `agent/autonomous-build`. T3.2 is Done in commit `b1bae24`: job `20261106-034321_78312686` RC 0; 105/105 valid cells; report test 2 passed; M1 Metric B reduction 9.229%, target not met. All six T6.1 seed-8000 CLI demos exited RC 0. Network fixed/rule/hybrid each completed 650/650 with zero teleports; hybrid is DEC-14 Stage 4 with AI coverage none (0/12). The single RL first attempt is incomplete/preserved; retry `20261106-062613_f532dad7` succeeded.
 - T5.4 is Done after a clean post-M1 zombie check. T5.1 remains Partial because the historical config bytes are unavailable.

@@ -1,12 +1,13 @@
 # Codex continuation handoff
 
-Updated: 2026-11-06 14:26 +05:30. The authoritative tracker is `docs/STMS_Agent_Roadmap_FINAL.md` Section 12; this file only captures the current execution handoff.
+Updated: 2026-11-06 14:28 +05:30. The authoritative tracker is `docs/STMS_Agent_Roadmap_FINAL.md` Section 12; this file only captures the current execution handoff.
 
-## Current verified state (2026-11-06 14:26 +05:30)
+## Current verified state (2026-11-06 14:28 +05:30)
 
 - T4.7 is reverified and committed as `44c2355`: the preserved gate log contains six expected cell records with 4,350/4,350 trips, 12/12 TLS coverage and the selected model hash. Controller tests passed (6), targeted Ruff passed and the SB3 model reloaded at 2,240,004 steps. The historical raw gate directories are absent, and this check does not claim fresh raw CSV lineage validation. Next reconcile T4.8, T4.9 and T4.10 artifacts before T5.1/T6.4. `main` remains at `59e0551`; no tag exists.
 - T4.8 is complete and committed as `b806d96`: 29 acceptance/regression tests pass, focused Ruff passes, 75/75 network dev raw cells are structurally complete with matching routes across controllers, and accepted snapshots contain 75 run/180 junction rows. Historical development headline is 23.3451% below fixed with 11,500 common trips; `ai_coverage=none` for all 25 PPO dev cells. Raw dev config hash `99a432c2…a4408e16` differs from current config; saved snapshots remain authoritative for the historical result, and no reaggregation was performed.
 - T4.9 final PPO-only audit is complete and committed as `a1d2679`: read-only checks found 75/75 final cells with matching routes; accepted coverage snapshot confirms 0/12 (none), triggering Stage 4. `tests/test_results_doc.py` passed (2). PPO-only final headline is 25.7436% below fixed with 11,500 common trips and 100% completion. No final seeds were rerun; snapshots remain preserved.
+- T4.10 Stage-4 audit is complete, commit pending: frozen gate rebuilt exactly (11 PPO TLS / 1 rule), hybrid tests 4 passed, T4.8 acceptance tests 29 passed, Ruff clean, final grid 75/75 with 0/12 strict ownership. Preserved snapshots report 25.8429% lower common-trip Metric N versus fixed at 100% completion. No final-seed rerun; current raw config hash mismatch is disclosed.
 
 - Branch: `agent/autonomous-build`. T3.2 is Done in commit `b1bae24`: job `20261106-034321_78312686` RC 0; 105/105 valid cells; report test 2 passed; M1 Metric B reduction 9.229%, target not met. All six T6.1 seed-8000 CLI demos exited RC 0. Network fixed/rule/hybrid each completed 650/650 with zero teleports; hybrid is DEC-14 Stage 4 with AI coverage none (0/12). The single RL first attempt is incomplete/preserved; retry `20261106-062613_f532dad7` succeeded.
 - T5.4 is Done after a clean post-M1 zombie check. T5.1 remains Partial because the historical config bytes are unavailable.
@@ -22,7 +23,7 @@ Continue the Smart Traffic Management System goal through T6.4 on local branch `
 
 Send a brief update after each completed task and keep roadmap, progress, decisions, experiment log, release checklist, and handoff current.
 
-Current verified state (2026-11-06 14:26 +05:30): T3.2 Done, job `20261106-034321_78312686` RC 0, 105/105 lineage cells; M1 provisional Metric B improvement 9.229%, 10% target not met. T4.7 is committed as `44c2355` (tracker checkpoint `b139c7b`); T4.8 is committed as `b806d96`. T4.9 is committed as `a1d2679`; T4.10 outputs remain to reconcile and commit. T5.1 and T6.1 remain Partial for their documented evidence limitations; T6.2/T6.3 are Done with documented deviations. Preserve mixed owner changes; no protected map files, remote operations, or release tag changes.
+Current verified state (2026-11-06 14:28 +05:30): T3.2 Done, job `20261106-034321_78312686` RC 0, 105/105 lineage cells; M1 provisional Metric B improvement 9.229%, 10% target not met. T4.7 is committed as `44c2355` (tracker checkpoint `b139c7b`); T4.8 is committed as `b806d96`. T4.9 is committed as `a1d2679`; T4.10 outputs remain to reconcile and commit. T5.1 and T6.1 remain Partial for their documented evidence limitations; T6.2/T6.3 are Done with documented deviations. Preserve mixed owner changes; no protected map files, remote operations, or release tag changes.
 
 M2 remains DEC-14 Stage 4 hybrid with coverage 0/12 (none). Its accepted final comparison rows are preserved from `comparison_t410_hybrid_final_snapshot.csv`; raw M2 metadata uses config SHA `99a432c2912d0320ca0bf61f9435781f2d8cbdb1f282fdeddc391c3da4408e16`, differing from the current frozen config `322293c6c89cfdeba92c08b7ff65b5858095897adb733abc81200da74c5a7668`. The raw M2 grid cannot be reaggregated under the current config; do not rerun final seeds.
 

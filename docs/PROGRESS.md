@@ -1,10 +1,10 @@
 # Project progress
 
-Updated: 2026-11-06 14:26 +05:30
+Updated: 2026-11-06 14:28 +05:30
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T4.10 Stage-4 fallback reconciliation | In progress | agent/autonomous-build | a1d2679 (T4.9) | T4.9 final PPO-only raw grid recheck found 75/75 cells and 25/25 matching route groups; saved coverage snapshot says 0/12 (none), triggering Stage 4. `tests/test_results_doc.py`: 2 passed. PPO-only final headline is 277.935556 s vs fixed 375.477537 s, target met; saved results preserved, no rerun/reaggregation due config SHA mismatch. T4.7 `44c2355` and T4.8 `b806d96` are committed. Next reconcile T4.10. T6.4 remains open; `main` `59e0551`, no tag. |
+| T5.1 Dashboard data-layer revalidation | In progress | agent/autonomous-build | T4.10 commit pending | T4.10 gate rebuild exactly matches frozen JSON; hybrid tests 4 passed, evaluator regression suite 29 passed, focused Ruff clean, and final hybrid audit 75/75 cells. T4.10 is Done with 0/12 strict PPO coverage and Stage-4 hybrid; commit snapshots/code now, then audit whether T5.1 can be closed without the missing historical config bytes. T6.4 remains open; main `59e0551`, no release tag. |
 
 ## Verified update (2026-11-06 14:05 +05:30)
 
@@ -24,6 +24,13 @@ Updated: 2026-11-06 14:26 +05:30
 - Read-only final-cell scan matched all **75/75** `fixed/rule/rl ? five network scenarios ? seeds 6000?6004` outputs, each with nonempty run/evaluation/summary/steps/trips/junction files, one summary row, 12 unique TLS rows, and consistent scheduled/completed/unfinished trip counts. All **25/25** scenario/seed groups share route SHA across controllers; PPO metadata identifies the frozen candidate SHA `758711e7f28e29e69b59af6eade30ba679c3160daadf39e09ed89287f5037757`.
 - `tests/test_results_doc.py` passed **2** tests. Preserved PPO-only snapshots: comparison 3,239 rows, SHA-256 `099c621d7d1a7cc329bda2c77ca5f8c8c8407275f15bff4849ba1bc78787ccc8`; network runs 75 rows, `21fbbc8203de521e9f6649b5c7793fd6c7c35971e82858018ead35286f7e011f`; junctions 180 rows, `c847a03efecfbaf1d526a026398ea3f5c8d265d8879cd87211aeed9330ee4cbd`; coverage `80eca0bdf29de487a728911c27c4002ac0aecc0cf6c6932c073f9efd36669130`.
 - Snapshot headline Metric N common trips: fixed 375.477537 s, rule 298.470664 s, PPO 277.935556 s; PPO is 25.7436% below fixed over 11,500 common trips; `target_met=true`; all scheduled trips complete. Coverage is **0/12 (none)**, the DEC-14 Stage 4 trigger. Current raw config metadata differs from today's frozen config, so preserve the accepted snapshot and do not rerun or reaggregate final-seed work.
+
+## T4.10 Stage-4 hybrid audit (2026-11-06 14:28 +05:30)
+
+- `pytest -q -p no:cacheprovider tests/test_hybrid_controller.py` -> **4 passed**; T4.8 acceptance/regression tests -> **29 passed**; targeted Ruff -> **All checks passed**.
+- Rebuilt the validation gate in memory without writing output; it exactly matches frozen `t410_hybrid_gate.json` (SHA-256 `655e36c69382dbbbb39d3ef3144691fd0e635598a519bd63de8499672390ff55`), admitting 11 PPO TLS and one rule TLS. The latter is `GS_cluster_11178931802_11178931803_2414626606_6887565739` after +15.48% queue regression.
+- Read-only final hybrid audit validated 75/75 cells, 25/25 shared route groups, complete trip totals and 12 TLS rows per cell; final hybrid rows report coverage none (0/12). Snapshot SHA-256: comparison dev `277be427af4e9c82765547387ec70146306e2be30f08616f12c8ddb04888226f`, comparison final `8aefa3c0a2ae2ac13e9528de5da410670a1a74cc95f47adf0d706468f712dcd4`; run and junction hashes are recorded in `docs/experiment_log.md`. Final Metric N is 277.531516 s vs fixed 375.477537 s, 25.8429% lower (95% CI 22.20-29.49%), 11,500 trips, 100% complete; provisional until P1.
+- Raw historical config hash differs from current config; accepted snapshots remain authoritative. No model, config, seed, scenario, output, or final evaluation grid was changed/rerun.
 
 ## Verified update (2026-11-06 10:50 +05:30; historical; commit b1bae24)
 

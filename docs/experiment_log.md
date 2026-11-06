@@ -869,3 +869,7 @@ This chronological entry captures the implementation and early job-resume state.
 ### T4.3 route-cache acceptance audit — 2026-11-06
 - Read-only `ScenarioBuilder.get_cached_routes` validation checked all configured network training routes: 100/100 manifests, hashes, vehicle counts, route edges, and controlled-trip shares passed. Existing accepted `--all`, `--all --force` byte-identical, and `--train-pool` command outputs remain recorded above; no scenario was regenerated during this recheck because the existing manifests match.
 - `Ai/.venv/Scripts/python.exe -m pytest -q tests/test_scenarios.py`: 6 passed; focused Ruff passed. No 5000+ or 6000+ tuning was performed. Generated per-seed caches remain untracked/regenerable per Section 0.4.
+
+### T4.4 metric/baseline artifact recheck — 2026-11-06
+- `Ai/.venv/Scripts/python.exe -m pytest -q tests/test_metrics_network.py`: 3 passed; focused Ruff passed. The current paired common-trip artifact `results/summary/t44_network_common_trips.csv` has 15/15 unique scenario/seed pairs (five scenarios × seeds 3000–3002), finite fixed/rule values, and SHA-256 `cb250fe441a1f7eef0411552b53527869b3fe70df051817a7d4fff2882105c97`.
+- The historical completion record remains the evidence for the 30/30 baseline grid and final job `20261031-161439_5158dbdb` RC 0. The current raw output directory no longer contains every grid cell, so this recheck does not claim a fresh 30-cell raw-lineage audit; it preserves the accepted measured results without rerunning the completed validation grid.

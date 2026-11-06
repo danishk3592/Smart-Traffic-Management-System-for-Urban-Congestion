@@ -1,10 +1,10 @@
 # Project progress
 
-Updated: 2026-11-06 14:28 +05:30
+Updated: 2026-11-06 14:33 +05:30
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T5.1 Dashboard data-layer revalidation | In progress | agent/autonomous-build | T4.10 commit pending | T4.10 gate rebuild exactly matches frozen JSON; hybrid tests 4 passed, evaluator regression suite 29 passed, focused Ruff clean, and final hybrid audit 75/75 cells. T4.10 is Done with 0/12 strict PPO coverage and Stage-4 hybrid; commit snapshots/code now, then audit whether T5.1 can be closed without the missing historical config bytes. T6.4 remains open; main `59e0551`, no release tag. |
+| T5.1 Dashboard data-layer revalidation | In progress | agent/autonomous-build | 735f863 (T4.10) | T4.10 gate rebuild exactly matches frozen JSON; hybrid tests 4 passed, evaluator regression suite 29 passed, focused Ruff clean, and final hybrid audit 75/75 cells. T4.10 is Done with 0/12 strict PPO coverage and Stage-4 hybrid; commit snapshots/code now, then audit whether T5.1 can be closed without the missing historical config bytes. T6.4 remains open; main `59e0551`, no release tag. |
 
 ## Verified update (2026-11-06 14:05 +05:30)
 

@@ -1,10 +1,10 @@
 # Project progress
 
-Updated: 2026-11-06 14:17 +05:30
+Updated: 2026-11-06 14:20 +05:30
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T4.9 Network results gate reconciliation | In progress | agent/autonomous-build | T4.8 task commit pending | T4.8 evaluator tests passed (29), focused Ruff passed; read-only audit validated 75/75 dev raw cells, complete common routes across controllers, and snapshot rows/figure. Historical dev Metric N is 23.345% below fixed; AI ownership is none (0/12 under 0.95). Current raw config SHA differs from the current config, so retained snapshot provenance is disclosed. T4.7 is committed (`44c2355`) and checkpointed (`b139c7b`). Next reconcile T4.9/T4.10. T6.4 remains open; `main` is `59e0551`, no release tag. |
+| T4.9 Network results gate reconciliation | In progress | agent/autonomous-build | b806d96 (T4.8) | T4.8 evaluator tests passed (29), focused Ruff passed; read-only audit validated 75/75 dev raw cells, common routes across controllers, and snapshot rows/figure. Historical dev Metric N is 23.345% below fixed; AI ownership is none (0/12 under 0.95). Current raw config SHA differs from today's config, so retained snapshot provenance is disclosed. T4.7 commit `44c2355` and T4.8 commit `b806d96` are recorded. Next reconcile T4.9/T4.10. T6.4 remains open; `main` is `59e0551`, no release tag. |
 
 ## Verified update (2026-11-06 14:05 +05:30)
 

@@ -4,7 +4,7 @@ Updated: 2026-11-06 10:50 +05:30. This is a working checklist; release is not au
 
 | Area | Status | Evidence / remaining action |
 |---|---|---|
-| M1 final-seed results (T3.2) | Complete | 105/105 unique cells; job `20261106-034321_78312686` RC 0; frozen config SHA-256 `322293c6c89cfdeba92c08b7ff65b5858095897adb733abc81200da74c5a7668`. Report acceptance `tests/test_results_doc.py`: 2 passed. Metric B reduction 9.229%, 10% target not met. Phase 3 checkpoint remains outstanding for T6.2. |
+| M1 final-seed results (T3.2) | Complete | Commit `b1bae24`; 105/105 unique cells; job `20261106-034321_78312686` RC 0; frozen config SHA-256 `322293c6c89cfdeba92c08b7ff65b5858095897adb733abc81200da74c5a7668`. Report acceptance `tests/test_results_doc.py`: 2 passed. Metric B reduction 9.229%, 10% target not met. Phase 3 checkpoint remains outstanding for T6.2. |
 | M2 final result | Complete — DEC-14 Stage 4 hybrid | `docs/results.md` Part 3; Metric N 277.532 s hybrid vs 375.478 s fixed, 25.84% lower (95% CI 22.20–29.49%), 100% completion; AI coverage 0/12 (none). Provisional until P1. |
 | Dashboard (Phase 5) | Partial | T5.2 through T5.4 complete; post-evaluation zombie check reported no running SUMO/SUMO-GUI processes. T5.1 stays Partial: historical config snapshot unavailable; freshness evidence and limits are recorded in the report. |
 | Demo CLI (T6.1) | In progress | `scripts/run_demo.py` implemented and focused tests pass. Run all six controller/family demos on seed 8000, validate one-hour session and dashboard display, then check zombies. |

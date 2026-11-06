@@ -4,9 +4,9 @@ Updated: 2026-11-06 10:50 +05:30
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T6.1 Demo CLI | In progress | agent/autonomous-build | previous task commits listed in roadmap | T3.2 and T5.4 completed; next run six seed-8000 demos, one-hour session and dashboard live verification. T5.1 remains Partial because its historical config snapshot is unavailable. |
+| T6.1 Demo CLI | In progress | agent/autonomous-build | b1bae24 (T3.2 results/T5.4 closeout) | T3.2 and T5.4 completed; next run six seed-8000 demos, one-hour session and dashboard live verification. T5.1 remains Partial because its historical config snapshot is unavailable. |
 
-## Verified update (2026-11-06 10:50 +05:30)
+## Verified update (2026-11-06 10:50 +05:30; commit b1bae24)
 
 - T3.2 completed: job `20261106-034321_78312686` finished RC 0; lineage is 105/105 unique final cells (35 per controller), frozen config SHA-256 `322293c6c89cfdeba92c08b7ff65b5858095897adb733abc81200da74c5a7668`; `tests/test_results_doc.py` passed 2 tests. M1 headline Metric B reduction is 9.229% vs fixed; the 10% target is not met.
 - T5.4 completed after `python scripts/check_zombies.py` reported no running SUMO/SUMO-GUI processes. Phase 5 remains partial because T5.1 is Partial (historical config snapshot/hash unavailable).

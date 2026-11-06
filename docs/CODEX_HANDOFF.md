@@ -4,7 +4,7 @@ Updated: 2026-11-06 10:50 +05:30. The authoritative tracker is `docs/STMS_Agent_
 
 ## Current verified state (2026-11-06 10:50 +05:30)
 
-- Branch: `agent/autonomous-build`. T3.2 is Done: job `20261106-034321_78312686` RC 0; 105/105 valid cells; report test 2 passed; M1 Metric B reduction 9.229%, target not met.
+- Branch: `agent/autonomous-build`. T3.2 is Done in commit `b1bae24`: job `20261106-034321_78312686` RC 0; 105/105 valid cells; report test 2 passed; M1 Metric B reduction 9.229%, target not met.
 - T5.4 is Done after a clean post-M1 zombie check. T5.1 remains Partial because the historical config bytes are unavailable.
 - M2 coverage remains 0/12 (none), DEC-14 Stage 4 hybrid. Preserve M2 rows from the accepted final snapshot; current raw metadata config hash `99a432c2912d0320ca0bf61f9435781f2d8cbdb1f282fdeddc391c3da4408e16` differs from current config. Do not rerun final seeds or overstate raw reaggregation.
 - Current comparison composition: 1,782 M1 dev + 1,782 M1 final + 1,457 M2 final rows. Current M1 config SHA-256: `322293c6c89cfdeba92c08b7ff65b5858095897adb733abc81200da74c5a7668`.

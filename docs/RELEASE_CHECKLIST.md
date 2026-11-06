@@ -1,6 +1,6 @@
 # Release checklist
 
-Updated: 2026-11-06 16:49 +05:30. This is a working checklist; release is not complete until T6.4 passes its final checkpoint and local release steps.
+Updated: 2026-11-06 18:09 +05:30. This is a working checklist; release is not complete until T6.4 passes its final checkpoint and local release steps.
 
 | Area | Status | Evidence / remaining action |
 |---|---|---|
@@ -17,7 +17,7 @@ Updated: 2026-11-06 16:49 +05:30. This is a working checklist; release is not co
 
 - **T6.1 — Partial:** all six CLI demos exited RC 0 and the post-demo zombie check is clean. The live-view display of a completed seed-8000 demo is unverified because the desktop helper native pipe remains unavailable; no visual pass is claimed.
 - **Supervisor P1/P2 — Pending:** confirm the provisional headline metric choices and acknowledge SRS deviations; labels only, not release execution blockers.
-- **Controller level:** DEC-14 Stage 4 hybrid; **strict PPO coverage 0/12 (none)**. Do not claim full network-wide AI control. Reaching 12/12 requires a separate model/coverage experiment; accepted final artifacts remain frozen.
+- **Controller level:** DEC-14 Stage 4 hybrid; **strict PPO coverage 0/12 (none)** in the accepted final result. Four separate development candidates each reached only 1/12 on one held-out cell and were not promoted. Do not claim full network-wide AI control. A new final acceptance block still requires a documented seed-protocol decision; accepted final artifacts remain frozen.
 - **Worktree preservation:** mixed owner changes remain in the `agent/autonomous-build` worktree and are not part of commits unless explicitly listed; protected `SUMO/No_Polygon_Map/` edits remain unstaged. The local release merge contains commits only; no remote operation is authorized or performed.
 
 ## Protected and scope checks

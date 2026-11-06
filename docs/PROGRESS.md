@@ -1,16 +1,30 @@
 # Project progress
 
-Updated: 2026-11-06 16:49 +05:30
+Updated: 2026-11-06 18:09 +05:30
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T6.1 Dashboard demo view / T6.4 release audit | In progress | agent/autonomous-build | 735f863 (T4.10) | T5.1 is Done via same-config full-column equivalence (31 fields; evidence `docs/evidence/t51_equivalence_20261106.json`). T6.1 still lacks desktop live-view evidence. T6.4 release content audit and local merge/tag remain. Strict PPO ownership remains 0/12 under the frozen final model; this needs a separate model/coverage experiment and is recorded open. Main `59e0551`, no release tag. |
+| T6.1 Dashboard demo view / T6.4 release audit | In progress | agent/autonomous-build | 07f4d30 (T5.1) | T5.1 is Done via same-config full-column equivalence (31 fields; evidence `docs/evidence/t51_equivalence_20261106.json`). T6.1 still lacks desktop live-view evidence. T6.4 release content audit and local merge/tag remain. Four strict PPO development candidates each reached only 1/12 on a held-out cell; none met the 12/12 goal or changed the frozen final result. Main `59e0551`, no release tag. |
 
 ## T5.1 same-config equivalence complete (2026-11-06 16:49 +05:30)
 
 - Same-config fixed/medium/seed-3000 baseline (`20261106-145034_fixed_medium_s3000`, pre-instrumentation runner) and current run (`20261106-150152_fixed_medium_s3000`) match all 31 summary fields except `run_id` and `wall_clock_s`. Both use config SHA-256 `322293c6c89cfdeba92c08b7ff65b5858095897adb733abc81200da74c5a7668` and the same cached route SHA; exact evidence and summary hashes: `docs/evidence/t51_equivalence_20261106.json`.
 - Flutter offline dependencies succeeded, `flutter analyze --no-pub` found no issues, and `flutter test --no-pub` passed 19/19. Python status tests passed 5/5; whole-repository Ruff passed. `scripts/check_zombies.py` reported no running SUMO or SUMO-GUI processes.
 - T5.1 is Done. Historical config bytes with the older SHA remain unavailable; no hash or saved result was normalized. Strict PPO coverage remains 0/12 under the accepted final model; the user's new request is tracked separately from the frozen final outputs.
+
+## Strict PPO development candidates (2026-11-06 16:44 +05:30)
+
+- The accepted final M2 result remains DEC-14 Stage 4 hybrid with strict PPO ownership **0/12**. This was measured in the final PPO-only evaluation on 2026-11-02 and retained in the Stage 4 final result the same day; it is a recorded evaluation outcome, not a completed coverage fix.
+- Candidate 1 (`ppo_coverage_penalty_05_retry1`, SHA-256 `32be9ad6ac5dd9c5d40e5843c50e09949cce2713558808ab2b702a88bcd5c20a`) completed 120,000 training steps. Its separate `net_medium/3003` held-out cell achieved 650/650 trips and **1/12** TLS at the 0.95 PPO tick-share threshold; not promoted.
+- Candidate 2 (`ppo_coverage_penalty_10_interval5`, SHA-256 `d0c7bc4115c3546602a23b378dbf227f629d1ef20f78907150f54b919e1948aa`) stopped by validation early stopping at 80,016/120,000 steps (1,249.0 s). Its best validation censored travel time was 373.774 s at 40,008 steps; later checks were worse. Separate `net_medium/3004` held-out cell completed 650/650 trips, ended at sim time 4,964 s with zero teleports, and achieved **1/12** at the 0.95 threshold. The other 11 TLS had PPO tick shares below 0.95 (maximum 0.9426). Not promoted.
+- Candidate 3 (`ppo_coverage_penalty_05_interval5`, SHA-256 `04b09698de499f26abbaf47d641f8184ff1ca7c56bd77dc2b7854450c90378f8`) completed 120,000 steps in 1,891.7 s; best validation censored travel time was 336.537 s at 120,000. Its held-out `net_medium/3005` completed 650/650 trips with zero teleports and achieved **1/12**; the remaining eleven TLS had PPO tick shares at or below 0.93345. Not promoted; output is `results/rl/coverage_candidate_05_interval5/net_medium_s3005`.
+- The held-out candidate output is isolated under `results/rl/coverage_candidate_10_interval5/net_medium_s3004`; the route cache was prepared without rewriting scenario config. Post-run zombie check found no SUMO/SUMO-GUI processes. No accepted model/config/seeds/scenarios/metrics/outputs were changed. Any new final acceptance block remains subject to the open seed-protocol decision.
+
+## Strict PPO development candidate 4 completed (2026-11-06 18:09 +05:30)
+
+- Candidate 4 (`ppo_coverage_penalty_10_stage3`, model SHA-256 `8c46f2308f7269552cf05d4753867d8b9fcd94bd1705343842832f27a23a6074`) completed 120,000 training steps, seed 1005, network term 0.25, rejection penalty 1.0, Stage 3 1,800 s episodes / 10 s decision interval. Training wall time was 2,045.064 s; selected validation checkpoint was 100,008 steps with mean censored travel time 297.746252 s.
+- Independent `net_medium/3006` held-out run completed 650/650 trips, 3 teleports, sim end 4,652 s, wall time 219.113 s. Strict ownership was **1/12** at the configured 0.95 PPO tick-share threshold: one TLS had share 1.0; the remaining eleven were 0.8517–0.9366. Output is isolated at `results/rl/coverage_candidate_10_stage3/net_medium_s3006`.
+- Post-run `scripts/check_zombies.py` reported no running SUMO or SUMO-GUI processes. Candidate 4 is not promoted; accepted final remains DEC-14 Stage 4 hybrid, strict PPO **0/12**. No final seed, config, accepted model, scenario, metric definition or accepted output changed. A new final acceptance run still requires a documented seed protocol.
 
 ## Verified update (2026-11-06 14:05 +05:30)
 

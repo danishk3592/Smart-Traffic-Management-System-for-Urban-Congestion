@@ -4,7 +4,7 @@ Updated: 2026-11-06 14:26 +05:30
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T4.10 Stage-4 fallback reconciliation | In progress | agent/autonomous-build | T4.9 task commit pending | T4.9 final PPO-only raw grid recheck found 75/75 cells and 25/25 matching route groups; saved coverage snapshot says 0/12 (none), triggering Stage 4. `tests/test_results_doc.py`: 2 passed. PPO-only final headline is 277.935556 s vs fixed 375.477537 s, target met; saved results preserved, no rerun/reaggregation due config SHA mismatch. T4.7 `44c2355` and T4.8 `b806d96` are committed. Next reconcile T4.10. T6.4 remains open; `main` `59e0551`, no tag. |
+| T4.10 Stage-4 fallback reconciliation | In progress | agent/autonomous-build | a1d2679 (T4.9) | T4.9 final PPO-only raw grid recheck found 75/75 cells and 25/25 matching route groups; saved coverage snapshot says 0/12 (none), triggering Stage 4. `tests/test_results_doc.py`: 2 passed. PPO-only final headline is 277.935556 s vs fixed 375.477537 s, target met; saved results preserved, no rerun/reaggregation due config SHA mismatch. T4.7 `44c2355` and T4.8 `b806d96` are committed. Next reconcile T4.10. T6.4 remains open; `main` `59e0551`, no tag. |
 
 ## Verified update (2026-11-06 14:05 +05:30)
 

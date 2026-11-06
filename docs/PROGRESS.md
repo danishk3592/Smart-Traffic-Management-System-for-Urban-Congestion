@@ -1,10 +1,10 @@
 # Project progress
 
-Updated: 2026-11-06 13:29 +05:30
+Updated: 2026-11-06 13:30 +05:30
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T4.6 Shared-policy PPO staged training | In progress | agent/autonomous-build | 5ce7e99 (T4.5) | T4.1–T4.5 commits are recorded. T4.5 full SUMO suite passed 10 tests (135.24 s); Ruff and zombie check clean. T4.6 Stage 3 early-stop training was completed historically; audit accepted selected model/config and record exact artifacts without retraining. T6.4 remains open: `main` is at `59e0551`; selected models, accepted final M2 snapshots/figure and Flutter dashboard still need audit/commit. No release tag exists. |
+| T4.7 Network RL controller + sanity gate | In progress | agent/autonomous-build | 3d04392 (T4.6) | T4.1–T4.6 implementation commits are recorded. T4.6 trainer/callback tests passed (12), Ruff clean, Stage 3 early-stop and selected model load verified. Next audit T4.7 controller, six-cell gate evidence, selected model/config and per-TLS diagnostics. T6.4 remains open: `main` is at `59e0551`; final selected models, M2 snapshots/figure and Flutter dashboard still need audit/commit. No release tag exists. |
 
 ## Verified update (2026-11-06 10:50 +05:30; historical; commit b1bae24)
 

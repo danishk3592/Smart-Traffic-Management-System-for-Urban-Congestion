@@ -1,12 +1,12 @@
 # Project progress
 
-Updated: 2026-11-06 10:50 +05:30
+Updated: 2026-11-06 13:02 +05:30
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T6.1 Demo CLI | In progress | agent/autonomous-build | b1bae24 (T3.2 results/T5.4 closeout) | T3.2 and T5.4 completed; next run six seed-8000 demos, one-hour session and dashboard live verification. T5.1 remains Partial because its historical config snapshot is unavailable. |
+| T6.2 Quality pass + blocker sweep | Done with deviation | agent/autonomous-build | pending local task commit | `ruff check .` clean; default pytest 102 passed/23 deselected; full SUMO suite job `20261106-065551_97ee54e3`: 23 passed/102 deselected; pip check and zombie check clean. Scope/secret/ignore/database/ODbL audit passed. Four pre-existing tracked files exceed 10 MiB (including protected map inputs and approved SRS); none changed or staged. T5.1 snapshot and T6.1 desktop blockers remain open. |
 
-## Verified update (2026-11-06 10:50 +05:30; commit b1bae24)
+## Verified update (2026-11-06 10:50 +05:30; historical; commit b1bae24)
 
 - T3.2 completed: job `20261106-034321_78312686` finished RC 0; lineage is 105/105 unique final cells (35 per controller), frozen config SHA-256 `322293c6c89cfdeba92c08b7ff65b5858095897adb733abc81200da74c5a7668`; `tests/test_results_doc.py` passed 2 tests. M1 headline Metric B reduction is 9.229% vs fixed; the 10% target is not met.
 - T5.4 completed after `python scripts/check_zombies.py` reported no running SUMO/SUMO-GUI processes. Phase 5 remains partial because T5.1 is Partial (historical config snapshot/hash unavailable).
@@ -15,6 +15,51 @@ Updated: 2026-11-06 10:50 +05:30
 - Preserve mixed owner work. Never modify/stage `SUMO/No_Polygon_Map/`; stage only explicit task paths; do not push/fetch/pull.
 
 Historical checkpoints below precede the verified completion update above.
+
+## Verified continuation checkpoint (2026-11-06 11:56 +05:30)
+
+- The first single RL seed-8000 demo job `20261106-055458_e62da661` is incomplete: its `status.json` remained `running` at 6,340/7,200 simulated seconds (last update 11:39:38), no `summary.json` exists, and both recorded PIDs (19656 evaluator, 22008 monitor) are absent. The stale job record is preserved; this was not treated as complete.
+- Retried the same demo command with the same seed and frozen inputs into a new timestamped output. Job `20261106-062613_f532dad7` is running (evaluator PID 4732, monitor PID 24984). The failed attempt remains preserved as `results/raw/20261106-112510_rl_medium_s8000`.
+- No frozen evaluation configuration, model, seed, scenario, or metric was changed. The two prior single fixed/rule demos remain complete; no network demo has started.
+
+## T6.1 single-family demos verified (2026-11-06 12:09 +05:30)
+
+- Single fixed and rule demos remain complete (RC 0, 7200/7200 simulated seconds).
+- Single RL retry job `20261106-062613_f532dad7` finished RC 0. Run `20261106-115628_rl_medium_s8000` wrote `summary.csv`: 2,600 scheduled trips, 1,582 completed (60.85%), 1,042 teleports, 7200 simulated seconds, 705.8379135 s wall. First incomplete RL attempt remains preserved and excluded.
+- `scripts/check_zombies.py` reported `No running sumo or sumo-gui processes detected.` No SUMO processes were found by the follow-up process scan.
+- Remaining: three network demos, then zombie check; dashboard live-view verification remains unverified due to the desktop automation pipe failure.
+- Network fixed demo `net_medium`, seed 8000, job `20261106-063955_8baad647`; at 12:12 +05:30 evaluator/monitor PIDs 1716/26428 were live and status advanced to 3,525/7,200 simulated seconds.
+
+## T6.1 network fixed demo verified (2026-11-06 12:44 +05:30)
+
+- Job `20261106-063955_8baad647` finished RC 0. Run `20261106-121006_fixed_net_medium_s8000` (`results/raw/20261106-121005_fixed_net_medium_s8000/summary.csv`) reports 650/650 completed, 0 teleports, 12 TLS controlled, AI coverage none, and 4,545 simulated seconds (demand ended before the 7,200-second cap).
+- `scripts/check_zombies.py` reported no running SUMO/SUMO-GUI processes. Network rule and RL demos remain.
+- Network rule demo started as job `20261106-064511_afa0beb2`; evaluator PID 13752 and monitor PID 4288 were recorded at launch.
+
+## T6.1 network rule demo verified (2026-11-06 12:49 +05:30)
+
+- Job `20261106-064511_afa0beb2` finished RC 0. Run `20261106-121530_rule_net_medium_s8000`: 650/650 trips, zero teleports, 12 TLS controlled, coverage none, 4,310 simulated seconds, 204.218195 s wall.
+- Post-run `scripts/check_zombies.py` reported no running SUMO/SUMO-GUI processes. Network RL remains.
+
+## T6.1 six CLI demo runs (2026-11-06 12:54 +05:30)
+
+- All six required fixed/rule/RL × single/network CLI runs at seed 8000 now have RC 0 and completed output artifacts. Network RL job `20261106-064946_4a8d4b7c` produced run `20261106-121958_hybrid_net_medium_s8000`: 650/650 trips, zero teleports, 12 controlled TLS, DEC-14 Stage 4 hybrid, AI coverage none (0/12), 4,189 simulated seconds.
+- A one-hour-plus single run reached 7,200/7,200 simulated seconds (single fixed and rule; RL retry also reached 7,200). The three network demos ended after all 650 scheduled trips completed (4,545/4,310/4,189 s); all exited normally.
+- Final zombie check after network RL reported no running SUMO/SUMO-GUI processes.
+- T6.1 remains In progress pending actual dashboard live-view verification. `@oai/sky.list_apps()` again failed with `Computer Use native pipe is unavailable: failed to connect native pipe: The system cannot find the file specified. (os error 2)` after the two-second retry. No visual/dashboard pass is claimed.
+
+## T6.2 full SUMO suite started (2026-11-06 12:55 +05:30)
+
+- Started the complete `Ai/.venv/Scripts/python.exe -m pytest -m sumo` suite through `scripts.job_runner`, job `20261106-065551_97ee54e3`; recorded monitor PID 26004. Results are pending; no concurrent SUMO demo is running.
+
+## T6.2 quality pass and blocker sweep complete (2026-11-06 13:02 +05:30)
+
+- Whole-repository `ruff check .`: `All checks passed!`; `pytest -q`: **102 passed, 23 deselected** in 16.98 s (one nonfatal Windows pytest-cache warning); `pip check`: `No broken requirements found.`
+- Full SUMO suite job `20261106-065551_97ee54e3` finished RC 0: **23 passed, 102 deselected** in 294.48 s (same nonfatal cache warning). Post-suite `scripts/check_zombies.py` reported no running SUMO/SUMO-GUI processes.
+- Credential-pattern grep's only hit was `_STATUS_PATH` ContextVar `token` set/reset in `Ai/common/run_episode.py`; no credential values. Prohibited database/backend/server/vision/prediction dependency search returned no matches; no tracked DB files. `.gitignore` probes passed for `.env`, `.venv`, results/raw, results/jobs. README ODbL attribution is present.
+- Size audit found four existing tracked files above 10 MiB: approved SRS DOCX (14.93 MiB) and three existing SUMO network assets (17.72–17.77 MiB), including protected map files. None were changed or staged by this audit; generated results/models remain ignored. `tmp/pdfs/build_report.py` and its PNG outputs remain the pre-existing documented scratch helper, excluded by exact path in `docs/lint_exclusions.md`.
+- Retested open blockers: no archived `stms.yaml*` snapshot exists under `results/` (T5.1 stays Partial); the T6.1 desktop helper again failed during app discovery, so live-view acceptance remains unverified. Both blockers remain recorded in `docs/decisions.md`; independent work continues.
+- Network `rl` demo (DEC-14 hybrid mapping) started as job `20261106-064946_4a8d4b7c`; recorded evaluator/monitor PIDs are 12764/10700.
 
 ## Historical handoff snapshot (2026-11-06 10:32 +05:30)
 
@@ -166,3 +211,16 @@ The saved fixed/medium/seed-3000 summaries `20261027-133344_fixed_medium_s3000` 
 - Retry command: `Ai/.venv/Scripts/python.exe -m Ai.rl.train_ppo --timesteps 20000 --out Ai/rl/models/ppo_v2_smoke`. Job `20261026-120929_5d8baa60` finished with return code 0. `training_log` reports 20,480 timesteps due to PPO rollout alignment, 3,703.6 active seconds, 19,907 steps/hour, and 44.91 simulated seconds/real second. Validation means on seeds 3000–3009 were -68.24 (SD 11.16) at 10k and -67.83 (SD 13.30) at 20k; the selected model is the 20k checkpoint.
 - Smoke artifacts verified: `model.zip`, `config.json`, training and validation monitor CSVs, TensorBoard event file, evaluation NPZ, and 5k/10k/15k/20k checkpoints. `scripts/check_zombies.py` reported no running SUMO processes after the job completed.
 - 50k pilot command is running in job `20261026-131453_9b2ca791` at `Ai/rl/models/ppo_v2`; reached 40,000/50,000 and completed validation: mean reward -165.97 (SD 54.52), following -166.03 (SD 54.63) at 30k; both are below the 10k/20k smoke results. Job remains running. T2.3 remains In progress until pilot and main stage, validation/model evidence, and acceptance checks are complete; T2.4 and T2.5 have not started.
+
+## Active execution checkpoint (2026-11-06 11:13 +05:30)
+
+- T6.1 first real CLI demo passed: fixed / single / medium / seed 8000, run `20261106-105751_fixed_medium_s8000`, job `20261106-052725_d4e8ce19`, RC 0. It reached 7200/7200 sim seconds; 1,586 of 2,600 trips completed, 1,086 teleports; wall 641.629 s.
+- Active second demo: single / rule / medium / seed 8000, job `20261106-053927_6b91d5db`; latest verified live process PID 22900 and log at 2675/7200 sim seconds. Do not restart if polling stalls; recheck this job/process and log.
+- `ruff check .` passed; `pytest -q` passed 102 tests with 23 deselected (34.70 s; nonfatal pytest-cache warning). `T5.1` blocker retest found no `stms.yaml*` snapshot under `results/`.
+- Dashboard live-view verification remains unverified because the `@oai/sky` native pipe failed on initial and recovery attempts. Do not claim a visual pass; retry later if helper availability changes.
+
+### T6.1 demo checkpoint ? 2026-11-06 11:25 +05:30
+- Completed 2/6 demos: single fixed and single rule at seed 8000. Both reached 7200 sim seconds and exited RC 0. Raw run ids and counts are in `docs/experiment_log.md`; both had high teleports, retained as demo observations.
+- Active single RL job `20261106-055458_e62da661`, evaluator PID 19656, at startup (sim time 0) when checked. Continue polling this exact job.
+
+- 11:32 live poll: T6.1 single RL job `20261106-055458_e62da661` remained running with PID 19656 alive; log had advanced to 3660/7200 simulated seconds. Continue polling the same job.

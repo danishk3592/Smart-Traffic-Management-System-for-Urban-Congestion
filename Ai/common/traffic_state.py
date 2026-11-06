@@ -11,7 +11,7 @@ from typing import Any, Literal
 import numpy as np
 import traci
 
-Source = Literal["sumo", "camera"]
+Source = Literal["sumo"]
 DEFAULT_THRESHOLDS = {
     "low_max_halting": 4,
     "medium_max_halting": 12,
@@ -54,8 +54,8 @@ class IntersectionState:
     source: Source
 
     def __post_init__(self) -> None:
-        if self.source not in {"sumo", "camera"}:
-            raise ValueError("source must be 'sumo' or 'camera'")
+        if self.source != "sumo":
+            raise ValueError("source must be 'sumo'")
         if self.timestamp_utc.tzinfo is None or self.timestamp_utc.utcoffset() is None:
             raise ValueError("timestamp_utc must be timezone-aware")
         if self.timestamp_utc.utcoffset().total_seconds() != 0:

@@ -89,7 +89,7 @@ def test_vector_encodes_unavailable_fields_and_missing_approaches() -> None:
         phase_elapsed_s=None,
         mode="yellow",
         totals={"waiting_vehicles": 1, "avg_wait": 0.0, "throughput_veh_min": 0.0},
-        source="camera",
+        source="sumo",
     )
 
     vector = to_vector(state, norm)
@@ -110,7 +110,7 @@ def test_state_to_dict_is_json_serializable_utc() -> None:
         phase_elapsed_s=4.0,
         mode="green",
         totals={"waiting_vehicles": 0, "avg_wait": 0.0, "throughput_veh_min": 0.0},
-        source="camera",
+        source="sumo",
     )
     encoded = json.dumps(state.to_dict())
     decoded = json.loads(encoded)

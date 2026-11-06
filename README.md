@@ -97,14 +97,16 @@ Select the repository root to read `results/`. More detail is in [`docs/dashboar
 
 The network is derived from OpenStreetMap data. **© OpenStreetMap contributors**; the data is available under the Open Database License (ODbL). See the [OpenStreetMap copyright and license page](https://www.openstreetmap.org/copyright).
 
-## Commands not run in this Windows workspace
+## README command audit
 
 | Command group | Execution status |
 |---|---|
 | Windows setup check and environment check shown above | Executed 2026-11-05; both passed (Python 3.14.10, SUMO 1.27.1). |
+| M1 final evaluation: `Ai/.venv/Scripts/python.exe -m Ai.evaluation.evaluate --controllers fixed rule rl --seed-set final --jobs 6` | Executed/resumed 2026-11-06; job `20261106-034321_78312686` RC 0; 105/105 lineage cells; report-value tests 2 passed. |
 | Ubuntu setup block (`python3.14 -m venv`, activation, package install, environment check) | Not run; no Ubuntu host or VM is available in this workspace. |
-| Network `rl` demo: `Ai/.venv/Scripts/python.exe -m scripts.run_demo --family network --controller rl --scenario net_medium --seed 8000` | Pending T6.1 and completion of the active M1 final-seed evaluation; the demo and live dashboard view will be checked together. |
-| Windows dashboard: `cd dashboard_flutter` then `C:\src\flutter\bin\flutter.bat run -d windows` | The Release app was previously built and used for dashboard checks, but this exact launch command and the T6.1 demo live-view check remain unverified. |
+| Network `rl` demo: `Ai/.venv/Scripts/python.exe -m scripts.run_demo --family network --controller rl --scenario net_medium --seed 8000` | Executed 2026-11-06; job `20261106-064946_4a8d4b7c` RC 0; Stage 4 hybrid, 650/650 completed, AI coverage none (0/12). |
+| Six fixed/rule/RL single/network seed-8000 demos | Executed 2026-11-06; all six CLI jobs exited RC 0. Dashboard live-view verification remains unverified because the desktop helper native pipe is unavailable. |
+| Windows dashboard: `cd dashboard_flutter` then `C:\src\flutter\bin\flutter.bat run -d windows` | The Release app was previously built and used for dashboard checks. This exact launch command and the T6.1 live-view check remain unverified; `@oai/sky.list_apps()` failed again with a native-pipe error, so no visual pass is claimed. |
 | Fresh Windows setup: `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup_windows.ps1` | Not run; this checkout uses an existing `Ai/.venv` and no fresh installation was performed. |
 | Clean-clone installation from public package indexes | Not run; this checkout uses the existing `Ai/.venv`, and no fresh network install was performed. |
 

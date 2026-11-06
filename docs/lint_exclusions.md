@@ -1,2 +1,3 @@
 - Rule N999 for Ai/*.py and Ai/**/*.py: the roadmap and existing imports require the uppercase package name Ai; renaming it would break documented imports.
 - Rule PYI034 for Ai/common/sumo_client.py: keep Python 3.10 support without adding typing_extensions only to type __enter__ with Self.
+- `tmp/pdfs/build_report.py`: exact-path exclusion for the pre-existing untracked PDF-generation helper in the scratch directory; preserve this user artifact without extending lint exceptions to project source files.

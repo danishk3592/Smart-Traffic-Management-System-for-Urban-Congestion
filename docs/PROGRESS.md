@@ -1,10 +1,10 @@
 # Project progress
 
-Updated: 2026-11-06 13:16 +05:30
+Updated: 2026-11-06 13:18 +05:30
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T4.4 Network metrics + baselines | In progress | agent/autonomous-build | ecd2e1b (T4.3) | T4.1–T4.3 are committed (`2d27280`, `88c7579`, `ecd2e1b`). T4.3 cache audit validated 100/100 training routes read-only; scenario tests 6 passed and Ruff clean. Next audit and commit network metrics/baselines using exact accepted paths. T6.4 remains open: `main` is at `59e0551`; the branch has network code but selected models, accepted M2 summary/figure artifacts and Flutter dashboard still need audit/commit. No release tag exists. |
+| T4.5 Network RL environment | In progress | agent/autonomous-build | 1507fce (T4.4) | T4.1–T4.4 are committed (`2d27280`, `88c7579`, `ecd2e1b`, `1507fce`). T4.4 metric tests passed (3); paired baseline CSV has 15 validated pairs. Historical record reports the 30-cell grid complete; all raw cell outputs are no longer present. Next audit the shared-clock network VecEnv and its acceptance suite. T6.4 remains open: `main` is at `59e0551`; selected models, accepted M2 summary/figure snapshots and Flutter dashboard still need audit/commit. No release tag exists. |
 
 ## Verified update (2026-11-06 10:50 +05:30; historical; commit b1bae24)
 

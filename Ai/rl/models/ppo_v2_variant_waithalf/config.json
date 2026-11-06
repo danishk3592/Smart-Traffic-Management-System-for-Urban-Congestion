@@ -1,0 +1,100 @@
+{
+  "command": [
+    "D:\\smart-traffic-management-system\\Ai\\rl\\train_ppo.py",
+    "--timesteps",
+    "300000",
+    "--seed",
+    "1000",
+    "--reward-weights",
+    "queue=1,wait=0.5,throughput=0.5",
+    "--out",
+    "Ai/rl/models/ppo_v2_variant_waithalf",
+    "--resume"
+  ],
+  "created_utc": "2026-10-27T06:15:57Z",
+  "git_commit": "f3c6d018862f88fe0aaf17136285aa4a678a8395",
+  "hyperparameters": {
+    "batch_size": 128,
+    "device": "cpu",
+    "ent_coef": 0.01,
+    "gamma": 0.99,
+    "learning_rate": 0.0003,
+    "n_steps": 512
+  },
+  "library_versions": {
+    "gymnasium": "1.4.0",
+    "numpy": "2.5.4",
+    "python": "3.14.7",
+    "stable-baselines3": "2.9.0",
+    "tensorboard": "2.21.0",
+    "torch": "2.14.1+cpu"
+  },
+  "num_timesteps": 0,
+  "out_dir": "D:\\smart-traffic-management-system\\Ai\\rl\\models\\ppo_v2_variant_waithalf",
+  "reward_scales": {
+    "mean_wait_s": 300.0,
+    "queue_change": 300.0,
+    "throughput_vehicles": 5.0
+  },
+  "reward_weights": {
+    "queue": 1.0,
+    "throughput": 0.5,
+    "wait": 0.5
+  },
+  "run_id": "20261027-061557",
+  "scenarios": [
+    "balanced",
+    "directional_ns",
+    "directional_ew",
+    "low",
+    "medium",
+    "heavy",
+    "rush_hour"
+  ],
+  "schema_version": 1,
+  "seed": 1000,
+  "selected_validation_mean_reward": null,
+  "selected_validation_run": null,
+  "selected_validation_timestep": null,
+  "starting_timesteps": 200000,
+  "target_timesteps": 300000,
+  "training_seed_block": [
+    1000,
+    1999
+  ],
+  "training_seeds": [
+    1000,
+    1001,
+    1002,
+    1003,
+    1004,
+    1005,
+    1006,
+    1007,
+    1008,
+    1009,
+    1010,
+    1011,
+    1012,
+    1013,
+    1014,
+    1015,
+    1016,
+    1017,
+    1018,
+    1019
+  ],
+  "training_wall_clock_s": 30104.044239099996,
+  "validation_seeds": [
+    3000,
+    3001,
+    3002,
+    3003,
+    3004,
+    3005,
+    3006,
+    3007,
+    3008,
+    3009
+  ]
+}

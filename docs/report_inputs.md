@@ -29,6 +29,6 @@ SUMO-GUI and dashboard screenshots are optional supplements. Historical dashboar
 
 ## Current reporting gates
 
-- M1 final result: pending T3.2 completion and exact-value validation.
+- M1 final result: `docs/results.md` Part 1, sourced from the frozen final comparison CSV; `tests/test_results_doc.py` passed 2 tests. Headline Metric B reduction 9.229%, 10% target not met.
 - M2 final result: complete as Stage 4 hybrid, provisional until P1; full AI coverage was not achieved.
-- T5.1 data provenance remains partial. T5.4's 30-sample live freshness evidence is `docs/evidence/t54_live_freshness_20261105.json` (maximum observed age 1676.448 ms); the post-evaluation zombie check remains pending. See `docs/decisions.md` and `docs/PROGRESS.md` for current task state.
+- T5.1 data provenance remains partial. T5.4's 30-sample live freshness evidence is `docs/evidence/t54_live_freshness_20261105.json` (maximum observed age 1676.448 ms); the post-evaluation zombie check passed with no running SUMO/SUMO-GUI processes. See `docs/decisions.md` and `docs/PROGRESS.md` for current task state.

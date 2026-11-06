@@ -80,7 +80,7 @@ Select the repository root to read `results/`. More detail is in [`docs/dashboar
 - `docs/results.md`: M1 milestone and M2 network result, with provenance and limitations.
 - `docs/experiment_log.md`: append-only experiment history.
 
-**M1 single-junction milestone:** the final-seed results gate is being resumed; no final M1 headline is reported until its 105-cell audit and acceptance check pass.
+**M1 single-junction milestone:** the frozen final-seed grid passed lineage (105/105 unique cells) and the report-value test. The provisional controlled-junction common-trip headline is a 9.229% reduction versus fixed-time; the configured 10% target was not met. See `docs/results.md` Part 1.
 
 **M2 final network result (provisional until supervisor item P1):** DEC-14 Stage 4 hybrid common-trip Metric N is **277.532 s**, versus **375.478 s** fixed-time, a **25.84% reduction** (paired 95% CI **22.20–29.49%**), with **100% completion** over 11,500 headline trips. The 10% target is met. **AI coverage: 0/12 (none)** under the frozen 0.95 per-TLS PPO ownership threshold. This is a hybrid-stack performance result and does not demonstrate full AI control of all intended lights.
 
@@ -88,8 +88,8 @@ Select the repository root to read `results/`. More detail is in [`docs/dashboar
 
 - The simulations use synthetic demand on an OSM-derived SUMO network. Results are not real-world deployment evidence.
 - The final policy uses the documented DEC-14 Stage 4 hybrid fallback. Full PPO ownership was not achieved; see `docs/results.md`.
-- The M1 final-seed results report is pending.
-- Dashboard requirement T5.1 remains partial because its pre-instrumentation config snapshot is missing for the strict same-config comparison. A 30-sample Windows Release freshness measurement for T5.4 recorded a maximum producer-to-frame age of 1676.448 ms against the SRS ≤2 s criterion; this is one measured interval, not a universal bound. T5.4's post-evaluation zombie check remains pending. Raw measurements are in `docs/evidence/t54_live_freshness_20261105.json`.
+
+- Dashboard requirement T5.1 remains partial because its pre-instrumentation config snapshot is missing for the strict same-config comparison. A 30-sample Windows Release freshness measurement for T5.4 recorded a maximum producer-to-frame age of 1676.448 ms against the SRS ≤2 s criterion; this is one measured interval, not a universal bound. T5.4's post-evaluation zombie check passed with no running SUMO/SUMO-GUI processes. Raw measurements are in `docs/evidence/t54_live_freshness_20261105.json`.
 - No database, backend/API, authentication, computer vision, camera detection, or traffic-prediction model is in scope or implemented.
 - The dashboard is local, unauthenticated and read-only. Raw run artifacts are machine-local and are not committed.
 

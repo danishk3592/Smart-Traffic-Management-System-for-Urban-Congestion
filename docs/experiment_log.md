@@ -873,3 +873,7 @@ This chronological entry captures the implementation and early job-resume state.
 ### T4.4 metric/baseline artifact recheck — 2026-11-06
 - `Ai/.venv/Scripts/python.exe -m pytest -q tests/test_metrics_network.py`: 3 passed; focused Ruff passed. The current paired common-trip artifact `results/summary/t44_network_common_trips.csv` has 15/15 unique scenario/seed pairs (five scenarios × seeds 3000–3002), finite fixed/rule values, and SHA-256 `cb250fe441a1f7eef0411552b53527869b3fe70df051817a7d4fff2882105c97`.
 - The historical completion record remains the evidence for the 30/30 baseline grid and final job `20261031-161439_5158dbdb` RC 0. The current raw output directory no longer contains every grid cell, so this recheck does not claim a fresh 30-cell raw-lineage audit; it preserves the accepted measured results without rerunning the completed validation grid.
+
+### T4.5 network VecEnv acceptance recheck — 2026-11-06
+- `Ai/.venv/Scripts/python.exe -m pytest -m sumo tests/test_network_env.py -q`: 10 passed in 135.24 s (Windows pytest-cache warning only). The suite covers the VecEnv/SB3 contract, 100-step VecCheckNan, safety across all intended TLS, reward comparison on `net_heavy` seed 1000, same-seed determinism, five reset/close cycles, missing-pool failure, padding, synchronized truncation/autoreset, hold lockouts, slot order, and the rejection-penalty case.
+- `Ai/.venv/Scripts/python.exe -m ruff check Ai/rl`: all checks passed. `Ai/.venv/Scripts/python.exe scripts/check_zombies.py`: no running SUMO/SUMO-GUI processes.

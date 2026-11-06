@@ -1,16 +1,23 @@
 # Project progress
 
-Updated: 2026-11-06 14:05 +05:30
+Updated: 2026-11-06 14:17 +05:30
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T4.8 Network evaluation harness reconciliation | In progress | agent/autonomous-build | 44c2355 (T4.7) | T4.7 gate log recheck parsed all six authorized cells and matched the selected model SHA; its 6-cell controller suite, targeted Ruff and SB3 reload passed. Controller/model/evidence are committed in `44c2355`. Next audit and commit the already completed T4.8 evaluator and evidence. T6.4 remains open; `main` is `59e0551`, with no release tag. |
+| T4.9 Network results gate reconciliation | In progress | agent/autonomous-build | T4.8 task commit pending | T4.8 evaluator tests passed (29), focused Ruff passed; read-only audit validated 75/75 dev raw cells, complete common routes across controllers, and snapshot rows/figure. Historical dev Metric N is 23.345% below fixed; AI ownership is none (0/12 under 0.95). Current raw config SHA differs from the current config, so retained snapshot provenance is disclosed. T4.7 is committed (`44c2355`) and checkpointed (`b139c7b`). Next reconcile T4.9/T4.10. T6.4 remains open; `main` is `59e0551`, no release tag. |
 
 ## Verified update (2026-11-06 14:05 +05:30)
 
 - T4.7 source and selected rejection-penalty model were rechecked without rerunning SUMO. Controller tests passed (6), targeted Ruff passed, and SB3 loaded the selected model at 2,240,004 steps with observation `(54,)` and `Discrete(4)`.
 - Read-only parsing of `results/raw/t47_candidate_gate.log` (SHA-256 `82d2038a925e98e4735a45fb986b069c01aaf4c6a4d8d703d7664a09aedd7089`) found all six `net_medium`/`net_heavy` × seeds 3000–3002 run records. All report 12 controlled TLS, full T4.7 gate coverage, completed scheduled trips (4,350 total), and selected-model SHA-256 `758711e7f28e29e69b59af6eade30ba679c3160daadf39e09ed89287f5037757`. The original per-run raw output directories are absent now; the gate log and detailed diagnostic table are retained, so this recheck does not claim fresh raw CSV lineage validation.
 - T4.7 acceptance is Done. Next work is reconciling/committing the already completed T4.8 artifacts, then T4.9/T4.10, before continuing with T5.1 and T6.4. Preserve the remaining mixed owner work and protected map edits.
+
+## T4.8 network evaluator recheck (2026-11-06 14:17 +05:30)
+
+- Acceptance tests: `pytest -q -p no:cacheprovider tests/test_evaluation_network.py tests/test_evaluation.py tests/test_metrics_network.py tests/test_run_episode.py tests/test_scenarios.py` → **29 passed**; targeted Ruff → **All checks passed**.
+- Read-only raw audit matched all **75/75** expected `fixed/rule/rl × five network scenarios × seeds 5000–5004` dev cells. Every cell had six nonempty artifacts, one summary row, 12 unique TLS junction rows, consistent trip counts, and the selected candidate model SHA for PPO runs. All **25/25** scenario/seed groups shared the same route SHA across the three controllers. This verifies raw structure/paired route lineage, not current-config reproducibility: raw config metadata SHA is `99a432c2912d0320ca0bf61f9435781f2d8cbdb1f282fdeddc391c3da4408e16`, while current `config/stms.yaml` is `322293c6c89cfdeba92c08b7ff65b5858095897adb733abc81200da74c5a7668`.
+- Preserved development snapshots: `comparison_dev_snapshot.csv` (3,239 rows; SHA-256 `047cf3e163156d9f6db82b36de80ddc43cadd612ea9898d8389bc70ba17cef45`), `network_runs_dev_snapshot.csv` (75 rows; `66c3096449bc2778abddcc38c28e01ece4913a0b986a082cf2bbb25c8513d01`), and `network_junctions_dev_snapshot.csv` (180 rows; `e34478782286bcd2efc1e711d59a1fb21bc35395a5d0bf1e941101edb22743d9`). The 1,782 M1 dev rows match `comparison.csv` exactly by key and values. Dev Metric N common-trip headline: fixed 364.007238 s, RL 278.895423 s, 23.3451% reduction; 11,500 common trips, 100% completion. All 25 RL dev cells classify `ai_coverage=none`; this is a development result, not a final result or full-AI claim.
+- `network_junction_congestion.png` is a valid 1800×825 PNG (SHA-256 `7fe719b522c7452e2ae30209bb7e00e5ca83713959c3d00ec7cec267f84b6340`). The saved T4.8 result and figure are preserved; `comparison.csv` currently contains later final M2 rows, so no overwrite or fresh dev reaggregation was performed.
 
 ## Verified update (2026-11-06 10:50 +05:30; historical; commit b1bae24)
 

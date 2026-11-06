@@ -311,6 +311,67 @@ class ScenarioBuilder:
         }
         return _stable_hash(parameters)
 
+    def get_cached_routes(self, scenario: str, seed: int) -> Path:
+        """Validate and return a training route cache without writing or routing."""
+        values = self._scenario_values(scenario)
+        seed = int(seed)
+        if seed < 0:
+            raise ValueError("seed must be non-negative")
+        seed_dir = self.root / "SUMO" / "scenarios" / scenario / f"seed_{seed}"
+        route_path = seed_dir / "routes.rou.xml"
+        manifest_path = seed_dir / "manifest.json"
+        if not route_path.is_file() or not manifest_path.is_file():
+            raise FileNotFoundError(
+                f"validated cached routes missing for {scenario}/seed_{seed}; "
+                "prepare the training pool before starting the environment"
+            )
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            if not isinstance(manifest, dict):
+                raise TypeError("route manifest must be a JSON object")
+            route_hash = _sha256(route_path)
+            expected = {
+                "generator_version": GENERATOR_VERSION,
+                "config_hash": self._config_hash(scenario),
+                "net_sha256": _sha256(self.net_path),
+                "scenario": scenario,
+                "seed": seed,
+                "route_sha256": route_hash,
+            }
+            mismatches = [
+                key for key, value in expected.items()
+                if manifest.get(key) != value
+            ]
+            if mismatches:
+                raise ValueError(
+                    f"invalid route cache for {scenario}/seed_{seed}; "
+                    f"manifest mismatch: {', '.join(mismatches)}"
+                )
+            root = ET.parse(route_path).getroot()
+            vehicles = root.findall("vehicle")
+            expected_count = int(values["vehicles"])
+            if (
+                len(vehicles) != expected_count
+                or manifest.get("vehicle_count") != expected_count
+            ):
+                raise ValueError(
+                    f"invalid route cache for {scenario}/seed_{seed}; "
+                    f"expected {expected_count} vehicles, found {len(vehicles)}"
+                )
+            for vehicle in vehicles:
+                route = vehicle.find("route")
+                edges = route.get("edges", "").split() if route is not None else []
+                if not edges or any(self.net.getEdge(edge) is None for edge in edges):
+                    raise ValueError(
+                        f"invalid route cache for {scenario}/seed_{seed}; "
+                        f"vehicle {vehicle.get('id')} has a missing or unknown route edge"
+                    )
+        except (OSError, json.JSONDecodeError, ET.ParseError) as exc:
+            raise ValueError(
+                f"invalid route cache for {scenario}/seed_{seed}: {exc}"
+            ) from exc
+        return route_path
+
     def ensure_routes(self, scenario: str, seed: int, *, force: bool = False) -> Path:
         """Return a cached route file, regenerating it when its manifest becomes stale."""
         values = self._scenario_values(scenario)
@@ -545,6 +606,14 @@ class ScenarioBuilder:
 
 
 _DEFAULT_BUILDER: ScenarioBuilder | None = None
+
+
+def get_cached_routes(scenario: str, seed: int) -> Path:
+    """Return a validated cached route file; never generate or rewrite demand."""
+    global _DEFAULT_BUILDER
+    if _DEFAULT_BUILDER is None:
+        _DEFAULT_BUILDER = ScenarioBuilder()
+    return _DEFAULT_BUILDER.get_cached_routes(scenario, seed)
 
 
 def ensure_routes(scenario: str, seed: int) -> Path:

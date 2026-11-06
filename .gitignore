@@ -25,6 +25,7 @@ SUMO/scenarios/*/seed_*/
 
 # Generated experiment data
 results/raw/
+results/jobs/
 prediction/data/raw/
 vision/data/
 

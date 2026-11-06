@@ -1,12 +1,12 @@
 # Windows 11 setup
 
-This is the supported fresh-clone path for the current Phase 1 checkpoint. The setup is pinned to the versions verified in the repository's local Windows environment on 2026-10-25. It uses CPU-only PyTorch by default; an NVIDIA GPU and CUDA are optional.
+This is the supported fresh-clone path for the current Phase 1 checkpoint. The setup is pinned to the versions verified in the repository's local Windows environment on 2026-11-05. It uses CPU-only PyTorch by default; an NVIDIA GPU and CUDA are optional.
 
 ## Prerequisites
 
 Install these before cloning:
 
-1. **64-bit Python 3.14**, preferably 3.14.2, from [python.org](https://www.python.org/downloads/release/python-3142/). The repository metadata permits Python 3.10+, but the complete current dependency set was verified locally only on Python 3.14.2. PyTorch's Windows support currently covers Python 3.10 through 3.14.
+1. **64-bit Python 3.14** from [python.org](https://www.python.org/downloads/). The repository metadata permits Python 3.10+, but this dependency set was verified locally on Python 3.14.10 on 2026-11-05. The Windows lock file was originally captured on Python 3.14.2 and rechecked on 3.14.10. PyTorch's Windows support in the verified environment covers this Python version.
 2. **Eclipse SUMO 1.27.1 for Windows** from the [official SUMO downloads](https://sumo.dlr.de/userdoc/Downloads.php). This matches the repository's pinned `traci` and `sumolib` packages. The newer SUMO release may need a coordinated package/config update; the setup checker intentionally requires 1.27.1.
 3. **Git for Windows**.
 
@@ -47,8 +47,7 @@ CUDA acceleration is not required for setup or for the environment checker. The 
 
 - `requirements.txt`: pinned project runtime, SUMO/TraCI, and PPO stack.
 - `requirements-dev.txt`: pinned pytest and Ruff tools.
-- `requirements.lock.txt`: pinned transitive dependency set captured from the verified Windows CPython 3.14.2 environment. The setup script installs the CPU Torch wheel first, then this lock.
-- `requirements-vision.txt`: optional OpenCV/Ultralytics bounds for the later vision phase. These packages are not installed by the setup script and have not been validated in the current environment.
+- `requirements.lock.txt`: pinned transitive dependency set for Windows CPython 3.14.x; it was captured on Python 3.14.2 and rechecked on the installed Python 3.14.10 environment on 2026-11-04. The setup script installs the CPU Torch wheel first, then this lock.
 - `Ai/requirements.txt`: compatibility include for the root runtime and development files. Use the root files for new setup work.
 
 ## Phase 1 checkpoint

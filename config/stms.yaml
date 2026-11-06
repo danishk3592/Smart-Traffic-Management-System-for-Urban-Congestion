@@ -22,7 +22,12 @@ rl:
     queue: 1.0
     wait: 1.0
     throughput: 0.5
+  reward_scales:
+    queue_change: 300.0
+    mean_wait_s: 300.0
+    throughput_vehicles: 5.0
   device: cpu
+  max_train_hours: 10
 
 rule:
   queue_threshold: 6
@@ -110,20 +115,11 @@ eval:
   ai_coverage_min_share: 0.95
   completion_gap_flag_pp: 2.0
 
-prediction:
-  split:
-    full:
-      train: [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019]
-      val: [2020, 2021, 2022, 2023, 2024]
-      test: [2025, 2026, 2027, 2028, 2029]
-    reduced:
-      train: [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011]
-      val: [2020, 2021, 2022, 2023]
-      test: [2025, 2026, 2027, 2028]
-
 network:
   controlled_tls: []
   excluded_tls: []
+  tls_list_hash: null
+  frozen_utc: null
   max_intended: 20
   min_veh_per_1800s: 20
   max_approaches: null
@@ -283,15 +279,10 @@ intersection:
 logging:
   step_log_every_s: 5
 
-vision:
-  width: 1280
-  height: 720
-  capture_every_s: 5
-  confidence: 0.25
-  recall_gate: 0.85
-  max_frames:
-    train: 2000
-    val: 300
-    test: 300
-
 metrics_version: 1
+
+jobs:
+  parallel_runs: auto
+
+project:
+  deadline_utc: null

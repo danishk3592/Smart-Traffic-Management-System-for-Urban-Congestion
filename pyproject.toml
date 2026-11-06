@@ -10,11 +10,12 @@ requires-python = ">=3.10"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["Ai*", "prediction*", "scripts*", "vision*"]
+include = ["Ai*", "scripts*"]
 
 [tool.ruff]
 line-length = 100
 target-version = "py310"
+extend-exclude = ["tmp/pdfs/build_report.py"]
 
 [tool.ruff.lint.per-file-ignores]
 # The roadmap and existing imports require the uppercase package name Ai.

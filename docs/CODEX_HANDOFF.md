@@ -1,14 +1,16 @@
 # Codex continuation handoff
 
-Updated: 2026-11-06 13:02 +05:30. The authoritative tracker is `docs/STMS_Agent_Roadmap_FINAL.md` Section 12; this file only captures the current execution handoff.
+Updated: 2026-11-06 13:10 +05:30. The authoritative tracker is `docs/STMS_Agent_Roadmap_FINAL.md` Section 12; this file only captures the current execution handoff.
 
-## Current verified state (2026-11-06 13:02 +05:30)
+## Current verified state (2026-11-06 13:10 +05:30)
+
+- Continuation update: T4.1 was rechecked and committed as `2d27280`. The project-interpreter TLS inspection exited 0 (13 inspected, 12 intended, one excluded, frozen hash unchanged); config and SUMO TLS tests passed (one each), Ruff passed, and zombie check was clean. The native inventory probe recorded 38 teleports; it is not a comparative result. Current active task is T4.2. `main` remains at `59e0551`; the agent branch has advanced to `2d27280`; no release tag exists.
 
 - Branch: `agent/autonomous-build`. T3.2 is Done in commit `b1bae24`: job `20261106-034321_78312686` RC 0; 105/105 valid cells; report test 2 passed; M1 Metric B reduction 9.229%, target not met. All six T6.1 seed-8000 CLI demos exited RC 0. Network fixed/rule/hybrid each completed 650/650 with zero teleports; hybrid is DEC-14 Stage 4 with AI coverage none (0/12). The single RL first attempt is incomplete/preserved; retry `20261106-062613_f532dad7` succeeded.
 - T5.4 is Done after a clean post-M1 zombie check. T5.1 remains Partial because the historical config bytes are unavailable.
 - M2 coverage remains 0/12 (none), DEC-14 Stage 4 hybrid. Preserve M2 rows from the accepted final snapshot; current raw metadata config hash `99a432c2912d0320ca0bf61f9435781f2d8cbdb1f282fdeddc391c3da4408e16` differs from current config. Do not rerun final seeds or overstate raw reaggregation.
 - Current comparison composition: 1,782 M1 dev + 1,782 M1 final + 1,457 M2 final rows. Current M1 config SHA-256: `322293c6c89cfdeba92c08b7ff65b5858095897adb733abc81200da74c5a7668`.
-- T6.2 is Done with documented existing-artifact deviation: Ruff passed, pytest 102 passed, full SUMO suite 23 passed, pip check and zombie check clean. T6.3 is Done with deviation (commit `0317a4b`). T5.1 remains Partial; no matching historical config snapshot is present. T6.1 remains In progress only because dashboard live-view verification cannot be performed: `@oai/sky.list_apps()` again failed with native-pipe error after retry. Next is T6.4 local release/final audit, while preserving these blockers honestly.
+- T6.2 is Done with documented existing-artifact deviation (commit `55fdc54`): Ruff passed, pytest 102 passed, full SUMO suite 23 passed, pip check and zombie check clean. T6.3 is Done with deviation (commit `0317a4b`). T5.1 is Partial because matching historical config bytes are unavailable. T6.1 is Partial: six CLI demos passed, but dashboard live-view verification remains unverified because `@oai/sky.list_apps()` failed with native-pipe error after retry. T6.4 local-only merge/tag is in progress; no remote operations.
 - Preserve mixed owner work. Never touch/stage `SUMO/No_Polygon_Map/`; use explicit git paths only; stay on this branch; never push/fetch/pull.
 
 ## Prompt for the next Codex

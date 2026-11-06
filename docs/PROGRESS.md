@@ -1,10 +1,10 @@
 # Project progress
 
-Updated: 2026-11-06 13:02 +05:30
+Updated: 2026-11-06 13:03 +05:30
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T6.2 Quality pass + blocker sweep | Done with deviation | agent/autonomous-build | pending local task commit | `ruff check .` clean; default pytest 102 passed/23 deselected; full SUMO suite job `20261106-065551_97ee54e3`: 23 passed/102 deselected; pip check and zombie check clean. Scope/secret/ignore/database/ODbL audit passed. Four pre-existing tracked files exceed 10 MiB (including protected map inputs and approved SRS); none changed or staged. T5.1 snapshot and T6.1 desktop blockers remain open. |
+| T4.2 Network state/safety/controllers | In progress | agent/autonomous-build | 2d27280 (T4.1) | T4.1 inventory/config are committed and rechecked. Continue T4.2 acceptance and commit only its audited code/tests/docs; keep protected map files unstaged. T6.4 audit remains open: `main` is at `59e0551`, branch has advanced to `2d27280`, and required network/model/M2-results/Flutter deliverables remain to be audited and committed. No release tag exists. |
 
 ## Verified update (2026-11-06 10:50 +05:30; historical; commit b1bae24)
 

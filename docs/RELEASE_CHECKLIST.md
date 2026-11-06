@@ -1,6 +1,6 @@
 # Release checklist
 
-Updated: 2026-11-06 13:02 +05:30. This is a working checklist; release is not complete until T6.4 passes its final checkpoint and local release steps.
+Updated: 2026-11-06 13:10 +05:30. This is a working checklist; release is not complete until T6.4 passes its final checkpoint and local release steps.
 
 | Area | Status | Evidence / remaining action |
 |---|---|---|
@@ -8,10 +8,18 @@ Updated: 2026-11-06 13:02 +05:30. This is a working checklist; release is not co
 | M2 final result | Complete — DEC-14 Stage 4 hybrid | `docs/results.md` Part 3; Metric N 277.532 s hybrid vs 375.478 s fixed, 25.84% lower (95% CI 22.20–29.49%), 100% completion; AI coverage 0/12 (none). Provisional until P1. |
 | Dashboard (Phase 5) | Partial | T5.2 through T5.4 complete; post-evaluation zombie check reported no running SUMO/SUMO-GUI processes. T5.1 stays Partial: historical config snapshot unavailable; freshness evidence and limits are recorded in the report. |
 | Demo CLI (T6.1) | In progress | All six required fixed/rule/RL × single/network seed-8000 CLI runs completed RC 0. Network runs completed all 650 trips with zero teleports; network RL is Stage 4 hybrid, AI coverage none (0/12). Post-demo zombie check clean. Dashboard live-view remains unverified because `@oai/sky.list_apps()` still fails with native-pipe error after retry. |
-| Whole-repository quality (T6.2) | Done with documented existing-artifact deviation | Whole-repo Ruff passed; default pytest: 102 passed/23 deselected; full SUMO suite job `20261106-065551_97ee54e3`: 23 passed/102 deselected, RC 0; pip check and post-suite zombie check clean. Credential-pattern search found only a ContextVar named `token`, no credential; prohibited-scope dependency search empty; no tracked DB; ignore probes and ODbL attribution pass. T5.1 snapshot and T6.1 desktop blockers were retested and remain open. Four pre-existing tracked files >10 MiB (approved SRS and existing SUMO assets, including protected map files) were left untouched; no generated artifacts were tracked. The existing PDF scratch helper remains documented and exact-path excluded. |
+| Whole-repository quality (T6.2) | Done with documented existing-artifact deviation (`55fdc54`) | Whole-repo Ruff passed; default pytest: 102 passed/23 deselected; full SUMO suite job `20261106-065551_97ee54e3`: 23 passed/102 deselected, RC 0; pip check and post-suite zombie check clean. Credential-pattern search found only a ContextVar named `token`, no credential; prohibited-scope dependency search empty; no tracked DB; ignore probes and ODbL attribution pass. T5.1 snapshot and T6.1 desktop blockers were retested and remain open. Four pre-existing tracked files >10 MiB (approved SRS and existing SUMO assets, including protected map files) were left untouched; no generated artifacts were tracked. The existing PDF scratch helper remains documented and exact-path excluded. |
 | Documentation (T6.3) | Done with deviation | Commit `0317a4b`. README overview, architecture, setup, config, command order, outputs, limitations, ODbL attribution and dashboard pointer are documented. SRS deviations, limitations and report/PPT sources are listed. Local Markdown-link audit passed 8/8. Windows checks and the saved M2 job are verified; Ubuntu/fresh-install, demo and exact dashboard launch commands are listed as unrun in README. M1 final values are included and checked against the final comparison CSV. |
 | Supervisor items | Pending | P1 headline metric confirmation and P2 SRS deviation acknowledgement remain labels/items; neither blocks release execution. |
-| Release merge/tag | Not started | After final checkpoint, merge `agent/autonomous-build` locally into `main`, create `v1.0-ai-core` on `main`; do not push. |
+| Release merge/tag | In progress — content gap | Local `main` remains at merge `59e0551`; branch now includes T4.1 commit `2d27280`. No tag exists. The release tree still needs the network implementation, selected models, M2 summary snapshots and Flutter dashboard. Commit audited deliverable paths explicitly, fast-forward `main`, then tag only if T6.4 content and final checks pass. No remote operations. |
+
+## Tasks still Partial or unverified
+
+- **T5.1 — Partial:** no archived `stms.yaml` bytes with the required historical SHA-256 were found under `results/`; preserve the original `config_hash` evidence and do not normalize it. Exact action: recover those bytes or produce a permitted same-config baseline comparison.
+- **T6.1 — Partial:** all six CLI demos exited RC 0 and the post-demo zombie check is clean. The live-view display of a completed seed-8000 demo is unverified because the desktop helper native pipe remains unavailable; no visual pass is claimed.
+- **Supervisor P1/P2 — Pending:** confirm the provisional headline metric choices and acknowledge SRS deviations; labels only, not release execution blockers.
+- **Controller level:** DEC-14 Stage 4 hybrid; **AI coverage 0/12 (none)**. Do not claim full network-wide AI control.
+- **Worktree preservation:** mixed owner changes remain in the `agent/autonomous-build` worktree and are not part of commits unless explicitly listed; protected `SUMO/No_Polygon_Map/` edits remain unstaged. The local release merge contains commits only; no remote operation is authorized or performed.
 
 ## Protected and scope checks
 

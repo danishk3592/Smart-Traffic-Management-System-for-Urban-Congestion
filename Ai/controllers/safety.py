@@ -36,6 +36,10 @@ class SignalSafetyLayer:
         self.min_green = float(tls_config["min_green_s"])
         self.max_green = float(tls_config["max_green_s"])
         self.approaches = tls_config.get("approaches", ())
+        self.forced_max_green_switches = 0
+        self.green_durations_by_phase: dict[int, list[float]] = {
+            phase: [] for phase in self.green_phases
+        }
         self._validate_config()
         self._phases = self._load_verified_program()
         self._allowed_phases = (
@@ -93,6 +97,10 @@ class SignalSafetyLayer:
             return Rejected(f"SUMO entered unverified phase {phase}")
         if phase != self._last_phase:
             previous = self._last_phase
+            if previous in self.green_phases:
+                self.green_durations_by_phase[previous].append(
+                    max(0.0, self._now() - self._green_started)
+                )
             self._last_phase = phase
             if self._is_clearance(phase):
                 self._clearance_seen = True
@@ -112,6 +120,7 @@ class SignalSafetyLayer:
                 else:
                     self._target_green = None
         if phase in self.green_phases and self.elapsed_green >= self.max_green:
+            self.forced_max_green_switches += 1
             yellow = self.yellow_after[phase]
             self._target_green = self._next_green(phase)
             self._clearance_seen = False
@@ -238,3 +247,62 @@ class SignalSafetyLayer:
         if phase not in self._allowed_phases:
             raise ValueError(f"refusing to apply unverified phase {phase}")
         self._trafficlight().setPhase(self.tls_id, phase)
+
+
+class NetworkSafetyManager:
+    """Own one verified safety layer per intended TLS and tick all layers together."""
+
+    def __init__(
+        self,
+        client: Any,
+        tls_configs: list[dict[str, Any]],
+        *,
+        excluded_tls: tuple[str, ...] | list[str] = (),
+        static_program_ids: dict[str, str] | None = None,
+    ) -> None:
+        if not tls_configs:
+            raise ValueError("network safety requires at least one intended TLS")
+        ids = [str(config["tls_id"]) for config in tls_configs]
+        if len(ids) != len(set(ids)):
+            raise ValueError("network safety TLS IDs must be unique")
+        excluded = set(map(str, excluded_tls))
+        if set(ids) & excluded:
+            raise ValueError("a TLS cannot be both intended and excluded")
+        runtime_ids = set(client.connection.trafficlight.getIDList())
+        missing = set(ids) - runtime_ids
+        if missing:
+            raise ValueError(f"intended TLS missing from active SUMO network: {sorted(missing)}")
+        self.client = client
+        self.excluded_tls = frozenset(excluded)
+        self.static_program_ids = dict(static_program_ids or {})
+        self.layers: dict[str, SignalSafetyLayer] = {}
+        for config in tls_configs:
+            tls_id = str(config["tls_id"])
+            static_program = self.static_program_ids.get(tls_id)
+            if static_program is not None:
+                available = {
+                    logic.programID
+                    for logic in client.connection.trafficlight.getAllProgramLogics(tls_id)
+                }
+                if static_program not in available:
+                    raise ValueError(f"static program {static_program!r} is missing for {tls_id}")
+                # Program selection is centralized here before the safety wrapper reads phases.
+                client.connection.trafficlight.setProgram(tls_id, static_program)
+            self.layers[tls_id] = SignalSafetyLayer(client, config)
+
+    def tick_all(self) -> dict[str, ActionResult]:
+        """Enforce phase-transition and green-duration invariants for every TLS."""
+        return {tls_id: layer.tick() for tls_id, layer in self.layers.items()}
+
+    def request(self, tls_id: str, action: str, seconds: float | None = None) -> ActionResult:
+        """Route a typed network action through that junction's safety layer."""
+        layer = self.layers.get(tls_id)
+        if layer is None:
+            return Rejected(f"TLS {tls_id!r} is not in the intended safety set")
+        if action == "switch":
+            return layer.request_switch()
+        if action == "extend":
+            return layer.request_extend(seconds if seconds is not None else 0)
+        if action == "hold":
+            return layer.request_extend(seconds) if seconds is not None else Accepted("hold")
+        return Rejected(f"unsupported network safety action {action!r}")

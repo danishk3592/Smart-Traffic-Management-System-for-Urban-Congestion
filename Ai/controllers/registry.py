@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
+from pathlib import Path
 from typing import Any
 
 from Ai.common.config import load_config
@@ -10,7 +11,25 @@ from Ai.common.sumo_client import SumoClient
 from Ai.controllers.base import Controller
 from Ai.controllers.fallback import FallbackController
 from Ai.controllers.fixed_time import FixedTimeController
+from Ai.controllers.rl_controller import RLController
 from Ai.controllers.rule_based import RuleBasedController
+
+
+class _UnavailableRLController:
+    """Raise on each decision so FallbackController latches to fixed-time."""
+
+    name = "rl"
+    decision_interval_s = 1.0
+
+    def __init__(self, error: Exception, decision_interval_s: float) -> None:
+        self.error = error
+        self.decision_interval_s = decision_interval_s
+
+    def decide(self, state: Any) -> Any:
+        raise RuntimeError(f"PPO controller could not load its model: {self.error}") from self.error
+
+    def reset(self) -> None:
+        return None
 
 
 def phase_approaches_from_network(
@@ -55,8 +74,9 @@ def get_controller(
     project_config: Mapping[str, Any] | None = None,
     *,
     tls_config: Mapping[str, Any] | None = None,
+    model_path: str | Path | None = None,
 ) -> Controller:
-    """Build a configured fixed or rule policy; RL arrives with T2.4."""
+    """Build a configured fixed, rule, or safely wrapped PPO policy."""
     config = dict(project_config or load_config())
     if tls_config is None:
         tls = dict(config["intersection"])
@@ -83,5 +103,14 @@ def get_controller(
         )
         return FallbackController(controller, fixed)
     if key == "rl":
-        raise NotImplementedError("RL controller is introduced by roadmap task T2.4")
+        selected_path = model_path or config["rl"].get(
+            "model_path", "Ai/rl/models/ppo_v2/model.zip"
+        )
+        try:
+            controller = RLController(selected_path, config, tls_config=tls)
+        except Exception as exc:  # noqa: BLE001 - a corrupt/missing model must fail safe
+            controller = _UnavailableRLController(
+                exc, float(config["rl"]["decision_interval_s"])
+            )
+        return FallbackController(controller, fixed)
     raise ValueError(f"Unknown controller {name!r}; choose fixed, rule, or rl")

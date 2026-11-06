@@ -1,10 +1,10 @@
 # Codex continuation handoff
 
-Updated: 2026-11-06 13:10 +05:30. The authoritative tracker is `docs/STMS_Agent_Roadmap_FINAL.md` Section 12; this file only captures the current execution handoff.
+Updated: 2026-11-06 13:15 +05:30. The authoritative tracker is `docs/STMS_Agent_Roadmap_FINAL.md` Section 12; this file only captures the current execution handoff.
 
-## Current verified state (2026-11-06 13:10 +05:30)
+## Current verified state (2026-11-06 13:15 +05:30)
 
-- Continuation update: T4.1 was rechecked and committed as `2d27280`. The project-interpreter TLS inspection exited 0 (13 inspected, 12 intended, one excluded, frozen hash unchanged); config and SUMO TLS tests passed (one each), Ruff passed, and zombie check was clean. The native inventory probe recorded 38 teleports; it is not a comparative result. Current active task is T4.2. `main` remains at `59e0551`; the agent branch has advanced to `2d27280`; no release tag exists.
+- Continuation update: T4.1 committed as `2d27280`; T4.2 committed as `88c7579`. T4.2 state/controller tests (3) and all-TLS 1200-second SUMO safety fuzzer (1) passed; targeted Ruff and zombie checks are clean. Current active task is T4.3. `main` remains at `59e0551`; no release tag exists. The agent branch still needs selected model, M2 results and Flutter dashboard deliverables committed before T6.4 can pass.
 
 - Branch: `agent/autonomous-build`. T3.2 is Done in commit `b1bae24`: job `20261106-034321_78312686` RC 0; 105/105 valid cells; report test 2 passed; M1 Metric B reduction 9.229%, target not met. All six T6.1 seed-8000 CLI demos exited RC 0. Network fixed/rule/hybrid each completed 650/650 with zero teleports; hybrid is DEC-14 Stage 4 with AI coverage none (0/12). The single RL first attempt is incomplete/preserved; retry `20261106-062613_f532dad7` succeeded.
 - T5.4 is Done after a clean post-M1 zombie check. T5.1 remains Partial because the historical config bytes are unavailable.

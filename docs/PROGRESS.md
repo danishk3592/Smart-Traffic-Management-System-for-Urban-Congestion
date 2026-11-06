@@ -1,10 +1,10 @@
 # Project progress
 
-Updated: 2026-11-06 13:03 +05:30
+Updated: 2026-11-06 13:15 +05:30
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T4.2 Network state/safety/controllers | In progress | agent/autonomous-build | 2d27280 (T4.1) | T4.1 inventory/config are committed and rechecked. Continue T4.2 acceptance and commit only its audited code/tests/docs; keep protected map files unstaged. T6.4 audit remains open: `main` is at `59e0551`, branch has advanced to `2d27280`, and required network/model/M2-results/Flutter deliverables remain to be audited and committed. No release tag exists. |
+| T4.3 Network scenarios + cached pool | In progress | agent/autonomous-build | 88c7579 (T4.2) | T4.1 (`2d27280`) and T4.2 (`88c7579`) are committed. Next, audit and commit T4.3 scenario generation/route evidence with exact paths. T6.4 remains open: local `main` is at `59e0551`, while the agent branch contains the new task commits; network implementation is now committed but models, M2 summary snapshots and Flutter dashboard still need audit/commit. No release tag exists. |
 
 ## Verified update (2026-11-06 10:50 +05:30; historical; commit b1bae24)
 

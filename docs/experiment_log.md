@@ -861,3 +861,7 @@ This chronological entry captures the implementation and early job-resume state.
 ### T4.2 network runner/safety acceptance recheck — 2026-11-06
 - `Ai/.venv/Scripts/python.exe -m pytest -q tests/test_network_state.py tests/test_network_controllers.py`: 3 passed. `Ai/.venv/Scripts/python.exe -m pytest -m sumo tests/test_network_safety.py -q`: 1 passed; the test fuzzed random commands across all intended TLS for 1200 sim seconds. Targeted Ruff passed; zombie check found no running SUMO/SUMO-GUI processes.
 - Audited existing speed probe `results/raw/20261031-125924_fixed_medium_s3000`: `run.json` records family `network`, 12 controlled TLS, sim end 7200.0 s, wall 816.5936188 s (8.8171 sim-s/real-s). `junctions.csv` has 12 unique TLS; `steps.csv` has 69,120 rows across 12 TLS and 1,440 timestamps from 5.0 through 7200.0 s. No `summary.csv` exists for this probe; these claims use the available run record and detail files only.
+
+### T2.4 selected-model CLI acceptance recheck — 2026-11-06
+- Ran `Ai/.venv/Scripts/python.exe -m Ai.rl.evaluate_ppo --model Ai/rl/models/ppo_v2_variant_waithalf/evaluations/20261026-182752/best_model.zip --seed 3000`; it exited RC 0 and wrote diagnostic run `20261106T074359Z` for medium/3000 (374 decisions, total reward −78.841486). SUMO teleport warnings occurred and are retained in the run logs; they do not change the T2.4 functionality result.
+- `Ai/.venv/Scripts/python.exe -m pytest -q tests/test_rl_controller.py`: 7 passed. `Ai/.venv/Scripts/python.exe scripts/check_zombies.py`: no running SUMO/SUMO-GUI processes.

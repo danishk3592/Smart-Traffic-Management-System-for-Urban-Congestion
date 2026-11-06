@@ -26,6 +26,10 @@ Updated: 2026-11-06 18:09 +05:30
 - Independent `net_medium/3006` held-out run completed 650/650 trips, 3 teleports, sim end 4,652 s, wall time 219.113 s. Strict ownership was **1/12** at the configured 0.95 PPO tick-share threshold: one TLS had share 1.0; the remaining eleven were 0.8517–0.9366. Output is isolated at `results/rl/coverage_candidate_10_stage3/net_medium_s3006`.
 - Post-run `scripts/check_zombies.py` reported no running SUMO or SUMO-GUI processes. Candidate 4 is not promoted; accepted final remains DEC-14 Stage 4 hybrid, strict PPO **0/12**. No final seed, config, accepted model, scenario, metric definition or accepted output changed. A new final acceptance run still requires a documented seed protocol.
 
+## T6.1 release-code verification (2026-11-06 18:09 +05:30)
+
+- Focused acceptance `Ai/.venv/Scripts/pytest.exe -q -p no:cacheprovider tests/test_run_demo.py tests/test_no_database.py tests/test_results_doc.py` passed **7 tests**; focused Ruff over the same files and `scripts/run_demo.py` passed. T6.1 remains Partial because dashboard live-view verification is still blocked by the unavailable native pipe.
+
 ## Verified update (2026-11-06 14:05 +05:30)
 
 - T4.7 source and selected rejection-penalty model were rechecked without rerunning SUMO. Controller tests passed (6), targeted Ruff passed, and SB3 loaded the selected model at 2,240,004 steps with observation `(54,)` and `Discrete(4)`.

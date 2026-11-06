@@ -1,10 +1,10 @@
 # Codex continuation handoff
 
-Updated: 2026-11-06 13:30 +05:30. The authoritative tracker is `docs/STMS_Agent_Roadmap_FINAL.md` Section 12; this file only captures the current execution handoff.
+Updated: 2026-11-06 14:05 +05:30. The authoritative tracker is `docs/STMS_Agent_Roadmap_FINAL.md` Section 12; this file only captures the current execution handoff.
 
-## Current verified state (2026-11-06 13:30 +05:30)
+## Current verified state (2026-11-06 14:05 +05:30)
 
-- Continuation update: T4.1–T4.6 implementation commits are recorded through `3d04392`. T4.6 Stage 3 training was accepted under its early-stop rule; 12 trainer/callback tests passed and the selected model reloads at 940,008 steps. Current active task is T4.7 controller/gate/model artifact audit. `main` remains at `59e0551`; no tag exists. Selected M1/M2 release models, final M2 snapshots/figure and Flutter dashboard remain to be audited and committed before T6.4.
+- T4.7 is now reverified: the preserved gate log contains six expected cell records with 4,350/4,350 trips, 12/12 TLS coverage and the selected model hash. Controller tests passed (6), targeted Ruff passed and the SB3 model reloaded at 2,240,004 steps. The historical raw gate directories are absent, and this check does not claim fresh raw CSV lineage validation. The source/model/evidence commit and tracker hash update are in progress; then reconcile T4.8, T4.9 and T4.10 artifacts before T5.1/T6.4. `main` remains at `59e0551`; no tag exists.
 
 - Branch: `agent/autonomous-build`. T3.2 is Done in commit `b1bae24`: job `20261106-034321_78312686` RC 0; 105/105 valid cells; report test 2 passed; M1 Metric B reduction 9.229%, target not met. All six T6.1 seed-8000 CLI demos exited RC 0. Network fixed/rule/hybrid each completed 650/650 with zero teleports; hybrid is DEC-14 Stage 4 with AI coverage none (0/12). The single RL first attempt is incomplete/preserved; retry `20261106-062613_f532dad7` succeeded.
 - T5.4 is Done after a clean post-M1 zombie check. T5.1 remains Partial because the historical config bytes are unavailable.
@@ -20,7 +20,7 @@ Continue the Smart Traffic Management System goal through T6.4 on local branch `
 
 Send a brief update after each completed task and keep roadmap, progress, decisions, experiment log, release checklist, and handoff current.
 
-Current verified state (2026-11-06 13:02 +05:30): T3.2 Done, job `20261106-034321_78312686` RC 0, 105/105 lineage cells, report acceptance 2 passed; M1 provisional Metric B improvement 9.229%, 10% target not met. T5.4 Done; T5.1 remains Partial because the matching historical config snapshot is unavailable. All six T6.1 seed-8000 CLI runs exited RC 0, with a clean post-demo zombie check; the required dashboard live-view check remains open because the native desktop pipe failed on retry. T6.2 whole-repo Ruff, default suite (102 passed), SUMO suite (23 passed), pip check and blocker/artifact sweep passed with four documented pre-existing tracked large assets left untouched. T6.3 is Done with deviation. Next active work: T6.4 final audit and local release steps.
+Current verified state (2026-11-06 14:05 +05:30): T3.2 Done, job `20261106-034321_78312686` RC 0, 105/105 lineage cells; M1 provisional Metric B improvement 9.229%, 10% target not met. T4.7 gate evidence and selected model were rechecked as recorded in `docs/PROGRESS.md`; current raw gate directories are absent. Next active work: reconcile the completed T4.8–T4.10 deliverables into explicit local commits, then proceed through T5.1/T6.4. T5.1 and T6.1 remain Partial for their documented evidence limitations; T6.2/T6.3 are Done with documented deviations. Preserve mixed owner changes; no protected map files, remote operations, or release tag changes.
 
 M2 remains DEC-14 Stage 4 hybrid with coverage 0/12 (none). Its accepted final comparison rows are preserved from `comparison_t410_hybrid_final_snapshot.csv`; raw M2 metadata uses config SHA `99a432c2912d0320ca0bf61f9435781f2d8cbdb1f282fdeddc391c3da4408e16`, differing from the current frozen config `322293c6c89cfdeba92c08b7ff65b5858095897adb733abc81200da74c5a7668`. The raw M2 grid cannot be reaggregated under the current config; do not rerun final seeds.
 

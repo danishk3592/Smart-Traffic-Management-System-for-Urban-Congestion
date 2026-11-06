@@ -1,10 +1,16 @@
 # Project progress
 
-Updated: 2026-11-06 13:30 +05:30
+Updated: 2026-11-06 14:05 +05:30
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T4.7 Network RL controller + sanity gate | In progress | agent/autonomous-build | 3d04392 (T4.6) | T4.1–T4.6 implementation commits are recorded. T4.6 trainer/callback tests passed (12), Ruff clean, Stage 3 early-stop and selected model load verified. Next audit T4.7 controller, six-cell gate evidence, selected model/config and per-TLS diagnostics. T6.4 remains open: `main` is at `59e0551`; final selected models, M2 snapshots/figure and Flutter dashboard still need audit/commit. No release tag exists. |
+| T4.8 Network evaluation harness reconciliation | In progress | agent/autonomous-build | T4.7 task commit pending | T4.7 gate log recheck parsed all six authorized cells and matched the selected model SHA; its 6-cell controller suite, targeted Ruff and SB3 reload passed. T4.7 source/model/log artifacts are being committed with explicit paths. Next audit and commit the already completed T4.8 evaluator and evidence. T6.4 remains open; `main` is `59e0551`, with no release tag. |
+
+## Verified update (2026-11-06 14:05 +05:30)
+
+- T4.7 source and selected rejection-penalty model were rechecked without rerunning SUMO. Controller tests passed (6), targeted Ruff passed, and SB3 loaded the selected model at 2,240,004 steps with observation `(54,)` and `Discrete(4)`.
+- Read-only parsing of `results/raw/t47_candidate_gate.log` (SHA-256 `82d2038a925e98e4735a45fb986b069c01aaf4c6a4d8d703d7664a09aedd7089`) found all six `net_medium`/`net_heavy` × seeds 3000–3002 run records. All report 12 controlled TLS, full T4.7 gate coverage, completed scheduled trips (4,350 total), and selected-model SHA-256 `758711e7f28e29e69b59af6eade30ba679c3160daadf39e09ed89287f5037757`. The original per-run raw output directories are absent now; the gate log and detailed diagnostic table are retained, so this recheck does not claim fresh raw CSV lineage validation.
+- T4.7 acceptance is Done. Next work is reconciling/committing the already completed T4.8 artifacts, then T4.9/T4.10, before continuing with T5.1 and T6.4. Preserve the remaining mixed owner work and protected map edits.
 
 ## Verified update (2026-11-06 10:50 +05:30; historical; commit b1bae24)
 

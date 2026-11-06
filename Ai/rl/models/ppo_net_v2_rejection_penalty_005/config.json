@@ -1,0 +1,194 @@
+{
+  "budget_stop_reserve_s": 300.0,
+  "command": [
+    "D:\\smart-traffic-management-system\\Ai\\rl\\train_ppo_network.py",
+    "--timesteps",
+    "2296476",
+    "--seed",
+    "1001",
+    "--network-term",
+    "0.25",
+    "--rejected-action-penalty",
+    "0.05",
+    "--max-cumulative-train-seconds",
+    "43000",
+    "--out",
+    "Ai/rl/models/ppo_net_v2_rejection_penalty_005",
+    "--resume",
+    "--stage3-cost-reductions",
+    "--disable-validation-early-stop"
+  ],
+  "completed_utc": "2026-11-01T12:06:38Z",
+  "created_utc": "2026-10-31T19:36:32Z",
+  "final_model": "D:\\smart-traffic-management-system\\Ai\\rl\\models\\ppo_net_v2_rejection_penalty_005\\model.zip",
+  "git_commit": "f3c6d018862f88fe0aaf17136285aa4a678a8395",
+  "hyperparameters": {
+    "batch_size": 128,
+    "device": "cpu",
+    "ent_coef": 0.01,
+    "gamma": 0.99,
+    "learning_rate": 0.0003,
+    "n_steps": 512
+  },
+  "intended_tls_hash": "4fc1323e1885d0763d8ac0598a1ec5e7446c6a835a63b62136f657c735979bcd",
+  "library_versions": {
+    "gymnasium": "1.4.0",
+    "numpy": "2.5.4",
+    "python": "3.14.7",
+    "stable-baselines3": "2.9.0",
+    "tensorboard": "2.21.0",
+    "torch": "2.14.1+cpu"
+  },
+  "max_cumulative_train_seconds": 43000.0,
+  "network_term_weight": 0.25,
+  "num_timesteps": 2296476,
+  "out_dir": "D:\\smart-traffic-management-system\\Ai\\rl\\models\\ppo_net_v2_rejection_penalty_005",
+  "rejected_action_penalty": 0.05,
+  "reward_weights": {
+    "queue": 1.0,
+    "throughput": 0.5,
+    "wait": 0.5
+  },
+  "run_id": "20261101-113228",
+  "scenarios": [
+    "net_medium",
+    "net_heavy",
+    "net_rush_hour"
+  ],
+  "schema_version": 1,
+  "seed": 1001,
+  "selected_validation_checkpoint": "evaluations/best_model.zip",
+  "selected_validation_mean_censored_time": 253.4326303205128,
+  "selected_validation_timestep": 2240004,
+  "slot_order": [
+    "2387385680",
+    "GS_2407671508",
+    "GS_cluster_11178931802_11178931803_2414626606_6887565739",
+    "GS_cluster_12067305554_6017833806_6017833807_6131076159",
+    "cluster11259448953_11259448962_11259448969_cluster_11259448960_11259448961_11259448963",
+    "cluster11260122965_12067305543_12067305544_cluster_11260122968_1608973468_2110371293",
+    "cluster11374930007_11374930012_cluster_11374930008_11374930009_11374930010_11374930011",
+    "cluster618250255_7478115627_cluster_11927462278_11927462280_7478115626_7479633881",
+    "cluster_2447849296_306618051",
+    "cluster_266273090_4377707444",
+    "cluster_306608060_6131903446",
+    "cluster_6633301856_7432359269_7432359283_7432359284"
+  ],
+  "starting_timesteps": 2196480,
+  "state": "complete",
+  "stopped_by_budget": false,
+  "target_reached": true,
+  "target_timesteps": 2296476,
+  "training_schedule": {
+    "decision_interval_s": 10,
+    "early_stop_patience": null,
+    "episode_s": 1800,
+    "scenarios": [
+      "net_medium",
+      "net_heavy",
+      "net_rush_hour"
+    ],
+    "stage": "stage3"
+  },
+  "training_seeds": [
+    1000,
+    1001,
+    1002,
+    1003,
+    1004,
+    1005,
+    1006,
+    1007,
+    1008,
+    1009,
+    1010,
+    1011,
+    1012,
+    1013,
+    1014,
+    1015,
+    1016,
+    1017,
+    1018,
+    1019
+  ],
+  "training_stage_history": [
+    {
+      "cumulative_wall_clock_s_before_stage3": 34497.76747939999,
+      "decision_interval_s": 5,
+      "episode_s": 3600,
+      "num_timesteps_before_stage3": 2076672,
+      "scenarios": [
+        "net_balanced",
+        "net_low",
+        "net_medium",
+        "net_heavy",
+        "net_rush_hour"
+      ],
+      "stage": "stage2"
+    },
+    {
+      "decision_interval_s": 10,
+      "early_stop_patience": 2,
+      "episode_s": 1800,
+      "scenarios": [
+        "net_medium",
+        "net_heavy",
+        "net_rush_hour"
+      ],
+      "stage": "stage3",
+      "started_utc": "2026-11-01T08:29:56Z"
+    },
+    {
+      "decision_interval_s": 10,
+      "early_stop_patience": 2,
+      "episode_s": 1800,
+      "scenarios": [
+        "net_medium",
+        "net_heavy",
+        "net_rush_hour"
+      ],
+      "stage": "stage3",
+      "started_utc": "2026-11-01T09:35:30Z"
+    },
+    {
+      "decision_interval_s": 10,
+      "early_stop_patience": 2,
+      "episode_s": 1800,
+      "scenarios": [
+        "net_medium",
+        "net_heavy",
+        "net_rush_hour"
+      ],
+      "stage": "stage3",
+      "started_utc": "2026-11-01T09:38:03Z"
+    },
+    {
+      "decision_interval_s": 10,
+      "early_stop_patience": null,
+      "episode_s": 1800,
+      "scenarios": [
+        "net_medium",
+        "net_heavy",
+        "net_rush_hour"
+      ],
+      "stage": "stage3",
+      "started_utc": "2026-11-01T11:32:28Z"
+    }
+  ],
+  "training_wall_clock_s": 38893.104638399986,
+  "validation_pairs": [
+    {
+      "scenario": "net_medium",
+      "seed": 3000
+    },
+    {
+      "scenario": "net_heavy",
+      "seed": 3001
+    },
+    {
+      "scenario": "net_rush_hour",
+      "seed": 3002
+    }
+  ]
+}

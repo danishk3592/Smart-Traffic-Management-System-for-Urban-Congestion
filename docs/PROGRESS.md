@@ -1,10 +1,10 @@
 # Project progress
 
-Updated: 2026-11-06 14:20 +05:30
+Updated: 2026-11-06 14:26 +05:30
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T4.9 Network results gate reconciliation | In progress | agent/autonomous-build | b806d96 (T4.8) | T4.8 evaluator tests passed (29), focused Ruff passed; read-only audit validated 75/75 dev raw cells, common routes across controllers, and snapshot rows/figure. Historical dev Metric N is 23.345% below fixed; AI ownership is none (0/12 under 0.95). Current raw config SHA differs from today's config, so retained snapshot provenance is disclosed. T4.7 commit `44c2355` and T4.8 commit `b806d96` are recorded. Next reconcile T4.9/T4.10. T6.4 remains open; `main` is `59e0551`, no release tag. |
+| T4.10 Stage-4 fallback reconciliation | In progress | agent/autonomous-build | T4.9 task commit pending | T4.9 final PPO-only raw grid recheck found 75/75 cells and 25/25 matching route groups; saved coverage snapshot says 0/12 (none), triggering Stage 4. `tests/test_results_doc.py`: 2 passed. PPO-only final headline is 277.935556 s vs fixed 375.477537 s, target met; saved results preserved, no rerun/reaggregation due config SHA mismatch. T4.7 `44c2355` and T4.8 `b806d96` are committed. Next reconcile T4.10. T6.4 remains open; `main` `59e0551`, no tag. |
 
 ## Verified update (2026-11-06 14:05 +05:30)
 
@@ -18,6 +18,12 @@ Updated: 2026-11-06 14:20 +05:30
 - Read-only raw audit matched all **75/75** expected `fixed/rule/rl × five network scenarios × seeds 5000–5004` dev cells. Every cell had six nonempty artifacts, one summary row, 12 unique TLS junction rows, consistent trip counts, and the selected candidate model SHA for PPO runs. All **25/25** scenario/seed groups shared the same route SHA across the three controllers. This verifies raw structure/paired route lineage, not current-config reproducibility: raw config metadata SHA is `99a432c2912d0320ca0bf61f9435781f2d8cbdb1f282fdeddc391c3da4408e16`, while current `config/stms.yaml` is `322293c6c89cfdeba92c08b7ff65b5858095897adb733abc81200da74c5a7668`.
 - Preserved development snapshots: `comparison_dev_snapshot.csv` (3,239 rows; SHA-256 `047cf3e163156d9f6db82b36de80ddc43cadd612ea9898d8389bc70ba17cef45`), `network_runs_dev_snapshot.csv` (75 rows; `66c3096449bc2778abddcc38c28e01ece4913a0b986a082cf2bbb25c8513d01`), and `network_junctions_dev_snapshot.csv` (180 rows; `e34478782286bcd2efc1e711d59a1fb21bc35395a5d0bf1e941101edb22743d9`). The 1,782 M1 dev rows match `comparison.csv` exactly by key and values. Dev Metric N common-trip headline: fixed 364.007238 s, RL 278.895423 s, 23.3451% reduction; 11,500 common trips, 100% completion. All 25 RL dev cells classify `ai_coverage=none`; this is a development result, not a final result or full-AI claim.
 - `network_junction_congestion.png` is a valid 1800×825 PNG (SHA-256 `7fe719b522c7452e2ae30209bb7e00e5ca83713959c3d00ec7cec267f84b6340`). The saved T4.8 result and figure are preserved; `comparison.csv` currently contains later final M2 rows, so no overwrite or fresh dev reaggregation was performed.
+
+## T4.9 final PPO-only evidence recheck (2026-11-06 14:26 +05:30)
+
+- Read-only final-cell scan matched all **75/75** `fixed/rule/rl ? five network scenarios ? seeds 6000?6004` outputs, each with nonempty run/evaluation/summary/steps/trips/junction files, one summary row, 12 unique TLS rows, and consistent scheduled/completed/unfinished trip counts. All **25/25** scenario/seed groups share route SHA across controllers; PPO metadata identifies the frozen candidate SHA `758711e7f28e29e69b59af6eade30ba679c3160daadf39e09ed89287f5037757`.
+- `tests/test_results_doc.py` passed **2** tests. Preserved PPO-only snapshots: comparison 3,239 rows, SHA-256 `099c621d7d1a7cc329bda2c77ca5f8c8c8407275f15bff4849ba1bc78787ccc8`; network runs 75 rows, `21fbbc8203de521e9f6649b5c7793fd6c7c35971e82858018ead35286f7e011f`; junctions 180 rows, `c847a03efecfbaf1d526a026398ea3f5c8d265d8879cd87211aeed9330ee4cbd`; coverage `80eca0bdf29de487a728911c27c4002ac0aecc0cf6c6932c073f9efd36669130`.
+- Snapshot headline Metric N common trips: fixed 375.477537 s, rule 298.470664 s, PPO 277.935556 s; PPO is 25.7436% below fixed over 11,500 common trips; `target_met=true`; all scheduled trips complete. Coverage is **0/12 (none)**, the DEC-14 Stage 4 trigger. Current raw config metadata differs from today's frozen config, so preserve the accepted snapshot and do not rerun or reaggregate final-seed work.
 
 ## Verified update (2026-11-06 10:50 +05:30; historical; commit b1bae24)
 

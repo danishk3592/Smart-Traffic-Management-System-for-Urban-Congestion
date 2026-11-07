@@ -16,6 +16,7 @@ fixed:
   green_s: 30
 
 rl:
+  model_path: Ai/rl/models/ppo_v2_variant_waithalf/evaluations/20261026-182752/best_model.zip
   decision_interval_s: 5
   episode_s: 3600
   reward_weights:
@@ -28,6 +29,14 @@ rl:
     throughput_vehicles: 5.0
   device: cpu
   max_train_hours: 10
+  ppo:
+    learning_rate: 0.0003
+    n_steps: 512
+    batch_size: 128
+    gamma: 0.99
+    ent_coef: 0.01
+    checkpoint_every_timesteps: 5000
+    eval_every_timesteps: 10000
 
 rule:
   queue_threshold: 6
@@ -109,6 +118,7 @@ eval:
     - rush_hour
   scenarios_separate:
     - low
+  validation_seeds: [3000, 3001, 3002, 3003, 3004, 3005, 3006, 3007, 3008, 3009]
   dev_seeds: [5000, 5001, 5002, 5003, 5004]
   final_seeds: [6000, 6001, 6002, 6003, 6004]
   target_reduction_pct: 10.0
@@ -116,31 +126,524 @@ eval:
   completion_gap_flag_pp: 2.0
 
 network:
-  controlled_tls: []
-  excluded_tls: []
-  tls_list_hash: null
-  frozen_utc: null
+  controlled_tls:
+  - '2387385680'
+  - GS_2407671508
+  - GS_cluster_11178931802_11178931803_2414626606_6887565739
+  - GS_cluster_12067305554_6017833806_6017833807_6131076159
+  - cluster11259448953_11259448962_11259448969_cluster_11259448960_11259448961_11259448963
+  - cluster11260122965_12067305543_12067305544_cluster_11260122968_1608973468_2110371293
+  - cluster11374930007_11374930012_cluster_11374930008_11374930009_11374930010_11374930011
+  - cluster618250255_7478115627_cluster_11927462278_11927462280_7478115626_7479633881
+  - cluster_2447849296_306618051
+  - cluster_266273090_4377707444
+  - cluster_306608060_6131903446
+  - cluster_6633301856_7432359269_7432359283_7432359284
+  excluded_tls:
+  - cluster_263386438_7432382412
+  tls_list_hash: 4fc1323e1885d0763d8ac0598a1ec5e7446c6a835a63b62136f657c735979bcd
+  frozen_utc: '2026-10-31T07:20:08Z'
   max_intended: 20
   min_veh_per_1800s: 20
-  max_approaches: null
-  max_phases: null
+  max_approaches: 6
+  max_phases: 4
   scenarios:
-    - net_balanced
-    - net_low
-    - net_medium
-    - net_heavy
-    - net_rush_hour
-  headline_scenarios: [net_balanced, net_medium, net_heavy, net_rush_hour]
-  primary_scenarios: [net_medium, net_heavy, net_rush_hour]
-  separate_scenarios: [net_low]
+  - net_balanced
+  - net_low
+  - net_medium
+  - net_heavy
+  - net_rush_hour
+  scenario_demand:
+    net_balanced: {vehicles: 350, junction_share: 0.65}
+    net_low: {vehicles: 250, junction_share: 0.55}
+    net_medium: {vehicles: 650, junction_share: 0.50}
+    net_heavy: {vehicles: 800, junction_share: 0.50}
+    net_rush_hour: {vehicles: 500, junction_share: 0.50, peak_window_s: [1200, 2400], peak_trip_share: 0.50}
+  headline_scenarios:
+  - net_balanced
+  - net_medium
+  - net_heavy
+  - net_rush_hour
+  primary_scenarios:
+  - net_medium
+  - net_heavy
+  - net_rush_hour
+  separate_scenarios:
+  - net_low
   min_controlled_trip_share: 0.5
+  tls_configs:
+  - tls_id: '2387385680'
+    green_phases:
+    - 0
+    - 2
+    yellow_after:
+      0: 1
+      2: 3
+    all_red_phases: []
+    min_green_s: 10.0
+    max_green_s: 60.0
+    approaches:
+    - name: approach_1
+      incoming_edge: 760125907#1
+      lanes:
+      - 760125907#1_0
+      bearing: 86.62
+    - name: approach_2
+      incoming_edge: 631197942#0
+      lanes:
+      - 631197942#0_0
+      - 631197942#0_1
+      bearing: 96.56
+    program_type: actuated
+    program_id: '0'
+    static_program_id: stms_static
+  - tls_id: GS_2407671508
+    green_phases:
+    - 0
+    - 2
+    yellow_after:
+      0: 1
+      2: 3
+    all_red_phases: []
+    min_green_s: 10.0
+    max_green_s: 60.0
+    approaches:
+    - name: approach_1
+      incoming_edge: '-1196120506'
+      lanes:
+      - '-1196120506_0'
+      - '-1196120506_1'
+      bearing: 88.52
+    - name: approach_2
+      incoming_edge: 1196120473#0
+      lanes:
+      - 1196120473#0_0
+      bearing: 175.17
+    - name: approach_3
+      incoming_edge: '1196120542'
+      lanes:
+      - '1196120542_0'
+      - '1196120542_1'
+      bearing: 268.3
+    - name: approach_4
+      incoming_edge: -1196120470#1
+      lanes:
+      - -1196120470#1_0
+      bearing: 351.81
+    program_type: actuated
+    program_id: '0'
+    static_program_id: stms_static
+  - tls_id: GS_cluster_11178931802_11178931803_2414626606_6887565739
+    green_phases:
+    - 0
+    - 2
+    yellow_after:
+      0: 1
+      2: 3
+    all_red_phases: []
+    min_green_s: 10.0
+    max_green_s: 60.0
+    approaches:
+    - name: approach_1
+      incoming_edge: 916909920#0
+      lanes:
+      - 916909920#0_0
+      - 916909920#0_1
+      bearing: 92.87
+    - name: approach_2
+      incoming_edge: 1206400802#2
+      lanes:
+      - 1206400802#2_0
+      - 1206400802#2_1
+      bearing: 175.39
+    - name: approach_3
+      incoming_edge: '1110166139'
+      lanes:
+      - '1110166139_0'
+      - '1110166139_1'
+      bearing: 247.9
+    - name: approach_4
+      incoming_edge: '1473869989'
+      lanes:
+      - '1473869989_0'
+      - '1473869989_1'
+      bearing: 359.43
+    program_type: actuated
+    program_id: '0'
+    static_program_id: stms_static
+  - tls_id: GS_cluster_12067305554_6017833806_6017833807_6131076159
+    green_phases:
+    - 0
+    - 2
+    yellow_after:
+      0: 1
+      2: 3
+    all_red_phases: []
+    min_green_s: 10.0
+    max_green_s: 60.0
+    approaches:
+    - name: approach_1
+      incoming_edge: 610166550#13
+      lanes:
+      - 610166550#13_0
+      - 610166550#13_1
+      bearing: 23.21
+    - name: approach_2
+      incoming_edge: 1434254320#1
+      lanes:
+      - 1434254320#1_0
+      - 1434254320#1_1
+      bearing: 110.18
+    - name: approach_3
+      incoming_edge: 151676283#1
+      lanes:
+      - 151676283#1_0
+      - 151676283#1_1
+      bearing: 290.31
+    program_type: actuated
+    program_id: '0'
+    static_program_id: stms_static
+  - tls_id: cluster11259448953_11259448962_11259448969_cluster_11259448960_11259448961_11259448963
+    green_phases:
+    - 0
+    - 2
+    - 4
+    - 6
+    yellow_after:
+      0: 1
+      2: 3
+      4: 5
+      6: 7
+    all_red_phases: []
+    min_green_s: 10.0
+    max_green_s: 60.0
+    approaches:
+    - name: approach_1
+      incoming_edge: 27935136#2
+      lanes:
+      - 27935136#2_0
+      bearing: 73.3
+    - name: approach_2
+      incoming_edge: -27936940#1
+      lanes:
+      - -27936940#1_0
+      bearing: 79.65
+    - name: approach_3
+      incoming_edge: 735135993#2
+      lanes:
+      - 735135993#2_0
+      - 735135993#2_1
+      bearing: 177.98
+    - name: approach_4
+      incoming_edge: 1215278281#0
+      lanes:
+      - 1215278281#0_0
+      - 1215278281#0_1
+      bearing: 268.94
+    - name: approach_5
+      incoming_edge: 1215278272#0
+      lanes:
+      - 1215278272#0_0
+      bearing: 358.36
+    program_type: static
+    program_id: '0'
+    static_program_id: null
+  - tls_id: cluster11260122965_12067305543_12067305544_cluster_11260122968_1608973468_2110371293
+    green_phases:
+    - 0
+    - 3
+    - 5
+    - 8
+    yellow_after:
+      0: 1
+      3: 4
+      5: 6
+      8: 9
+    all_red_phases:
+    - 2
+    - 7
+    - 10
+    min_green_s: 10.0
+    max_green_s: 60.0
+    approaches:
+    - name: approach_1
+      incoming_edge: '1473496401'
+      lanes:
+      - '1473496401_0'
+      - '1473496401_1'
+      bearing: 1.37
+    - name: approach_2
+      incoming_edge: 1303669687#1
+      lanes:
+      - 1303669687#1_0
+      - 1303669687#1_1
+      bearing: 90.76
+    - name: approach_3
+      incoming_edge: '152582633'
+      lanes:
+      - '152582633_0'
+      bearing: 94.92
+    - name: approach_4
+      incoming_edge: 147695810#1
+      lanes:
+      - 147695810#1_0
+      - 147695810#1_1
+      bearing: 181.69
+    - name: approach_5
+      incoming_edge: '152582635'
+      lanes:
+      - '152582635_0'
+      bearing: 261.35
+    - name: approach_6
+      incoming_edge: '1387946771'
+      lanes:
+      - '1387946771_0'
+      - '1387946771_1'
+      bearing: 261.47
+    program_type: static
+    program_id: '0'
+    static_program_id: null
+  - tls_id: cluster11374930007_11374930012_cluster_11374930008_11374930009_11374930010_11374930011
+    green_phases:
+    - 0
+    - 2
+    - 4
+    - 6
+    yellow_after:
+      0: 1
+      2: 3
+      4: 5
+      6: 7
+    all_red_phases: []
+    min_green_s: 10.0
+    max_green_s: 60.0
+    approaches:
+    - name: approach_1
+      incoming_edge: 1534247766#1
+      lanes:
+      - 1534247766#1_0
+      - 1534247766#1_1
+      - 1534247766#1_2
+      bearing: 95.61
+    - name: approach_2
+      incoming_edge: 160333099#1
+      lanes:
+      - 160333099#1_0
+      - 160333099#1_1
+      bearing: 274.95
+    - name: approach_3
+      incoming_edge: 1203851289#2
+      lanes:
+      - 1203851289#2_0
+      - 1203851289#2_1
+      - 1203851289#2_2
+      bearing: 276.59
+    - name: approach_4
+      incoming_edge: 735135995#2
+      lanes:
+      - 735135995#2_0
+      - 735135995#2_1
+      bearing: 359.13
+    program_type: static
+    program_id: '0'
+    static_program_id: null
+  - tls_id: cluster618250255_7478115627_cluster_11927462278_11927462280_7478115626_7479633881
+    green_phases:
+    - 0
+    - 2
+    - 4
+    yellow_after:
+      0: 1
+      2: 3
+      4: 5
+    all_red_phases: []
+    min_green_s: 10.0
+    max_green_s: 60.0
+    approaches:
+    - name: approach_1
+      incoming_edge: 229965236#0
+      lanes:
+      - 229965236#0_0
+      - 229965236#0_1
+      bearing: 59.51
+    - name: approach_2
+      incoming_edge: 1196514117#0
+      lanes:
+      - 1196514117#0_0
+      - 1196514117#0_1
+      bearing: 149.07
+    - name: approach_3
+      incoming_edge: 1105763532#3
+      lanes:
+      - 1105763532#3_0
+      bearing: 328.0
+    - name: approach_4
+      incoming_edge: 312063814#0
+      lanes:
+      - 312063814#0_0
+      - 312063814#0_1
+      - 312063814#0_2
+      bearing: 328.26
+    program_type: static
+    program_id: '0'
+    static_program_id: null
+  - tls_id: cluster_2447849296_306618051
+    green_phases:
+    - 0
+    - 2
+    yellow_after:
+      0: 1
+      2: 3
+    all_red_phases: []
+    min_green_s: 10.0
+    max_green_s: 60.0
+    approaches:
+    - name: approach_1
+      incoming_edge: 237089966#2
+      lanes:
+      - 237089966#2_0
+      bearing: 87.74
+    - name: approach_2
+      incoming_edge: 1340257806#2
+      lanes:
+      - 1340257806#2_0
+      - 1340257806#2_1
+      bearing: 177.92
+    - name: approach_3
+      incoming_edge: 27935847#3
+      lanes:
+      - 27935847#3_0
+      bearing: 274.72
+    - name: approach_4
+      incoming_edge: '-413271593'
+      lanes:
+      - '-413271593_0'
+      - '-413271593_1'
+      bearing: 357.77
+    program_type: static
+    program_id: '0'
+    static_program_id: null
+  - tls_id: cluster_266273090_4377707444
+    green_phases:
+    - 0
+    - 2
+    yellow_after:
+      0: 1
+      2: 3
+    all_red_phases: []
+    min_green_s: 10.0
+    max_green_s: 60.0
+    approaches:
+    - name: approach_1
+      incoming_edge: -440067070#0
+      lanes:
+      - -440067070#0_0
+      bearing: 8.73
+    - name: approach_2
+      incoming_edge: 1427896667#2
+      lanes:
+      - 1427896667#2_0
+      bearing: 57.91
+    - name: approach_3
+      incoming_edge: 24488892#6
+      lanes:
+      - 24488892#6_0
+      bearing: 181.44
+    - name: approach_4
+      incoming_edge: -45194398#1
+      lanes:
+      - -45194398#1_0
+      bearing: 279.32
+    program_type: static
+    program_id: '0'
+    static_program_id: null
+  - tls_id: cluster_306608060_6131903446
+    green_phases:
+    - 0
+    - 2
+    - 4
+    yellow_after:
+      0: 1
+      2: 3
+      4: 5
+    all_red_phases: []
+    min_green_s: 10.0
+    max_green_s: 60.0
+    approaches:
+    - name: approach_1
+      incoming_edge: '-1196120539'
+      lanes:
+      - '-1196120539_0'
+      bearing: 88.92
+    - name: approach_2
+      incoming_edge: '1391538489'
+      lanes:
+      - '1391538489_0'
+      - '1391538489_1'
+      bearing: 178.39
+    - name: approach_3
+      incoming_edge: '1196120520'
+      lanes:
+      - '1196120520_0'
+      bearing: 269.88
+    - name: approach_4
+      incoming_edge: '655504666'
+      lanes:
+      - '655504666_0'
+      bearing: 354.01
+    program_type: static
+    program_id: '0'
+    static_program_id: null
+  - tls_id: cluster_6633301856_7432359269_7432359283_7432359284
+    green_phases:
+    - 0
+    - 2
+    yellow_after:
+      0: 1
+      2: 3
+    all_red_phases: []
+    min_green_s: 10.0
+    max_green_s: 60.0
+    approaches:
+    - name: approach_1
+      incoming_edge: 631316440#0
+      lanes:
+      - 631316440#0_0
+      - 631316440#0_1
+      bearing: 91.25
+    - name: approach_2
+      incoming_edge: 24480656#2
+      lanes:
+      - 24480656#2_0
+      - 24480656#2_1
+      bearing: 180.62
+    - name: approach_3
+      incoming_edge: 794634832#0
+      lanes:
+      - 794634832#0_0
+      - 794634832#0_1
+      bearing: 270.98
+    - name: approach_4
+      incoming_edge: 794634831#1
+      lanes:
+      - 794634831#1_0
+      - 794634831#1_1
+      bearing: 359.57
+    program_type: static
+    program_id: '0'
+    static_program_id: null
 
 rl_net:
   decision_interval_s: 5
   episode_s: 3600
   device: cpu
+  model_path: Ai/rl/models/ppo_net_v2/evaluations/best_model.zip
+  reward_weights:
+    queue: 1.0
+    wait: 0.5
+    throughput: 0.5
   network_term_weight: 0.0
-  max_train_hours: 10
+  max_train_hours: 11.1111111111  # owner-authorized cumulative cap: 40,000 s; original cap 10 h
   validation_pairs:
     - [net_medium, 3000]
     - [net_heavy, 3001]

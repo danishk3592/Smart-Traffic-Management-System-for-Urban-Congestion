@@ -32,6 +32,7 @@ class SumoClient:
         label: str | None = None,
         repo_root: str | Path | None = None,
         route_file: str | Path | None = None,
+        extra_additional_files: tuple[str | Path, ...] = (),
     ) -> None:
         root = Path(repo_root).resolve() if repo_root else Path(__file__).resolve().parents[2]
         self.config_path = (
@@ -44,6 +45,7 @@ class SumoClient:
         self.label = label or f"stms_{uuid.uuid4().hex[:12]}"
         self._repo_root = root
         self.route_file = Path(route_file).expanduser().resolve() if route_file else None
+        self.extra_additional_files = tuple(Path(item).expanduser().resolve() for item in extra_additional_files)
         self._connection: Any = None
         self._process: Any = None
         self._temp_dir: tempfile.TemporaryDirectory[str] | None = None
@@ -130,6 +132,10 @@ class SumoClient:
             ET.parse(route_file)
         for additional_file in files["additional-files"]:
             ET.parse(additional_file)
+        for additional_file in self.extra_additional_files:
+            if not additional_file.is_file():
+                raise FileNotFoundError(f"Additional SUMO file not found: {additional_file}")
+            ET.parse(additional_file)
 
         return {
             "sumo_config": sumo_config,
@@ -193,7 +199,8 @@ class SumoClient:
         """Copy configured additional elements while redirecting edge/lane output files."""
         root = ET.Element("additional")
         output_index = 0
-        for source in self._resolved["files"]["additional-files"]:
+        sources = [*self._resolved["files"]["additional-files"], *self.extra_additional_files]
+        for source in sources:
             original = ET.parse(source).getroot()
             for child in original:
                 safe_child = copy.deepcopy(child)

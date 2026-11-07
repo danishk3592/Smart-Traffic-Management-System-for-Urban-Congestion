@@ -18,10 +18,15 @@ from pathlib import Path
 from typing import Any
 
 import sumolib
+import traci.constants as tc
 import yaml
 
 from Ai.common.config import load_config
-from Ai.common.junction import controlled_movements, route_uses_controlled_movement
+from Ai.common.junction import (
+    controlled_movements,
+    controlled_route_movements,
+    route_uses_controlled_movement,
+)
 from Ai.common.sumo_client import SumoClient
 
 GENERATOR_VERSION = "1"
@@ -34,6 +39,7 @@ SCENARIOS = (
     "heavy",
     "rush_hour",
 )
+NETWORK_SCENARIOS = ("net_balanced", "net_low", "net_medium", "net_heavy", "net_rush_hour")
 
 
 def _sha256(path: Path) -> str:
@@ -47,6 +53,19 @@ def _sha256(path: Path) -> str:
 def _stable_hash(value: Any) -> str:
     encoded = json.dumps(value, sort_keys=True, separators=(",", ":")).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
+
+
+def _congestion_time_shares(queues: list[int], thresholds: dict[str, Any]) -> tuple[float, float]:
+    """Return medium and high queue shares using configured congestion bands."""
+    if not queues:
+        return 0.0, 0.0
+    medium_min = int(thresholds["low_max_halting"]) + 1
+    medium_max = int(thresholds["medium_max_halting"])
+    high_min = int(thresholds["high_min_halting"])
+    return (
+        sum(medium_min <= value <= medium_max for value in queues) / len(queues),
+        sum(value >= high_min for value in queues) / len(queues),
+    )
 
 
 def _bearing(edge: Any) -> float:
@@ -93,8 +112,12 @@ def _backup_existing(path: Path) -> None:
 class ScenarioBuilder:
     """Generate, cache and measure scenarios from one verified SUMO network."""
 
-    def __init__(self, root: Path | None = None) -> None:
+    def __init__(self, root: Path | None = None, *, family: str = "single") -> None:
         self.root = (root or Path(__file__).resolve().parents[1]).resolve()
+        if family not in {"single", "network"}:
+            raise ValueError("family must be 'single' or 'network'")
+        self.family = family
+        self.scenarios = SCENARIOS if family == "single" else NETWORK_SCENARIOS
         self.config = load_config(self.root / "config" / "stms.yaml")
         self.demand = self.config["demand"]
         self.sumo = self.config["sumo"]
@@ -104,10 +127,26 @@ class ScenarioBuilder:
         self.net_path = (self.net_path.parent / net_value).resolve()
         self.net = sumolib.net.readNet(str(self.net_path), withPrograms=True)
         self.tls_id = self.sumo["tls_id"]
-        self.movements = controlled_movements(self.net, self.tls_id)
+        if family == "network":
+            self.tls_ids = tuple(self.config["network"]["controlled_tls"])
+            if not self.tls_ids or self.config["network"].get("tls_list_hash") is None:
+                raise ValueError("network TLS list must be frozen before network route generation")
+            self.movements = [
+                {**movement, "tls_id": tls_id}
+                for tls_id in self.tls_ids
+                for movement in controlled_movements(self.net, tls_id)
+            ]
+        else:
+            self.tls_ids = (self.tls_id,)
+            self.movements = controlled_movements(self.net, self.tls_id)
         self.movement_pairs = {
             (item["from_edge"], item["to_edge"]) for item in self.movements
         }
+        self.movement_tls: dict[tuple[str, str], set[str]] = {}
+        for movement in self.movements:
+            self.movement_tls.setdefault(
+                (movement["from_edge"], movement["to_edge"]), set()
+            ).add(str(movement.get("tls_id", self.tls_id)))
         self.edges = sorted(
             (edge for edge in self.net.getEdges()
              if not edge.getFunction() and edge.getLength() >= 25),
@@ -123,20 +162,21 @@ class ScenarioBuilder:
             raise ValueError(f"No controlled movements found for configured TLS {self.tls_id}")
 
     def _scenario_values(self, scenario: str) -> dict[str, Any]:
-        try:
-            values = self.demand["scenarios"][scenario]
-        except KeyError as exc:
-            raise ValueError(f"Unknown scenario: {scenario}") from exc
-        if scenario not in SCENARIOS:
+        if self.family == "network":
+            values = self.config["network"].get("scenario_demand", {}).get(scenario)
+        else:
+            values = self.demand["scenarios"].get(scenario)
+        if values is None or scenario not in self.scenarios:
             raise ValueError(f"Unknown scenario: {scenario}")
         if not isinstance(values.get("vehicles"), int) or values["vehicles"] < 1:
             raise ValueError(f"Invalid vehicle count for scenario {scenario}")
         return values
 
     def _origin_edges(self, scenario: str) -> list[Any]:
-        if scenario not in {"directional_ns", "directional_ew"}:
+        scenario_base = scenario.removeprefix("net_")
+        if scenario_base not in {"directional_ns", "directional_ew"}:
             return self.edges
-        axis = 0.0 if scenario == "directional_ns" else 90.0
+        axis = 0.0 if scenario_base == "directional_ns" else 90.0
 
         def score(edge: Any) -> tuple[float, str]:
             angle = _bearing(edge)
@@ -152,7 +192,7 @@ class ScenarioBuilder:
         if scenario in self._catalogs:
             return self._catalogs[scenario]
         target = int(self.demand.get("candidate_pool_size", 300))
-        rng = random.Random(741_000 + SCENARIOS.index(scenario))
+        rng = random.Random(741_000 + self.scenarios.index(scenario))
         origins = self._origin_edges(scenario)
         destinations = self.edges
         movements = self.movements
@@ -209,7 +249,7 @@ class ScenarioBuilder:
     ) -> list[float]:
         horizon = int(self.demand["scenario_horizon_s"])
         scenario_values = self._scenario_values(scenario)
-        if scenario != "rush_hour":
+        if scenario.removeprefix("net_") != "rush_hour":
             times = [rng.random() * horizon for _ in range(count)]
         else:
             start, end = scenario_values["peak_window_s"]
@@ -273,13 +313,13 @@ class ScenarioBuilder:
             ET.SubElement(root, "trip", attrs)
         return _xml_bytes(root)
 
-    def _scenario_config(self, scenario: str) -> Path:
+    def _scenario_config(self, scenario: str, seed: int = 1000) -> Path:
         scenario_dir = self.root / "SUMO" / "scenarios" / scenario
         scenario_dir.mkdir(parents=True, exist_ok=True)
         root = ET.Element("configuration")
         inputs = ET.SubElement(root, "input")
         ET.SubElement(inputs, "net-file", {"value": "../../No_Polygon_Map/osm.net.xml"})
-        ET.SubElement(inputs, "route-files", {"value": "seed_1000/routes.rou.xml"})
+        ET.SubElement(inputs, "route-files", {"value": f"seed_{int(seed)}/routes.rou.xml"})
         time = ET.SubElement(root, "time")
         ET.SubElement(time, "begin", {"value": "0"})
         ET.SubElement(
@@ -309,6 +349,9 @@ class ScenarioBuilder:
             "tls_id": self.tls_id,
             "movements": self.movements,
         }
+        if self.family == "network":
+            parameters["family"] = "network"
+            parameters["tls_list_hash"] = self.config["network"]["tls_list_hash"]
         return _stable_hash(parameters)
 
     def get_cached_routes(self, scenario: str, seed: int) -> Path:
@@ -338,6 +381,9 @@ class ScenarioBuilder:
                 "seed": seed,
                 "route_sha256": route_hash,
             }
+            if self.family == "network":
+                expected["family"] = "network"
+                expected["tls_list_hash"] = self.config["network"]["tls_list_hash"]
             mismatches = [
                 key for key, value in expected.items()
                 if manifest.get(key) != value
@@ -358,6 +404,14 @@ class ScenarioBuilder:
                     f"invalid route cache for {scenario}/seed_{seed}; "
                     f"expected {expected_count} vehicles, found {len(vehicles)}"
                 )
+            if self.family == "network":
+                min_share = float(self.config["network"]["min_controlled_trip_share"])
+                share = self._route_share(vehicles)
+                if share < min_share:
+                    raise ValueError(
+                        f"invalid route cache for {scenario}/seed_{seed}; "
+                        f"controlled-trip share {share:.3f} < {min_share:.3f}"
+                    )
             for vehicle in vehicles:
                 route = vehicle.find("route")
                 edges = route.get("edges", "").split() if route is not None else []
@@ -372,14 +426,17 @@ class ScenarioBuilder:
             ) from exc
         return route_path
 
-    def ensure_routes(self, scenario: str, seed: int, *, force: bool = False) -> Path:
+    def ensure_routes(
+        self, scenario: str, seed: int, *, force: bool = False, write_config: bool = True
+    ) -> Path:
         """Return a cached route file, regenerating it when its manifest becomes stale."""
         values = self._scenario_values(scenario)
         del values
         seed = int(seed)
         if seed < 0:
             raise ValueError("seed must be non-negative")
-        self._scenario_config(scenario)
+        if write_config:
+            self._scenario_config(scenario, seed)
         seed_dir = self.root / "SUMO" / "scenarios" / scenario / f"seed_{seed}"
         seed_dir.mkdir(parents=True, exist_ok=True)
         route_path = seed_dir / "routes.rou.xml"
@@ -456,6 +513,14 @@ class ScenarioBuilder:
                     f"{scenario} junction share {planned_share:.3f} is below "
                     f"demand.junction_share_min={self.demand['junction_share_min']}"
                 )
+            if (
+                self.family == "network"
+                and planned_share < float(self.config["network"]["min_controlled_trip_share"])
+            ):
+                raise RuntimeError(
+                    f"{scenario} controlled-trip share {planned_share:.3f} is below "
+                    f"network.min_controlled_trip_share={self.config['network']['min_controlled_trip_share']}"
+                )
             if force and route_path.is_file() and route_path.read_bytes() != canonical:
                 raise RuntimeError(
                     f"Forced regeneration was not byte-identical for {scenario}/seed_{seed}; "
@@ -481,6 +546,9 @@ class ScenarioBuilder:
                 "trip_input_sha256": hashlib.sha256(trip_bytes).hexdigest(),
                 "route_sha256": route_hash,
             }
+            if self.family == "network":
+                manifest["family"] = "network"
+                manifest["tls_list_hash"] = self.config["network"]["tls_list_hash"]
             manifest_bytes = (
                 json.dumps(manifest, indent=2, sort_keys=True) + "\n"
             ).encode("utf-8")
@@ -512,13 +580,150 @@ class ScenarioBuilder:
                 count += 1
         return count / len(vehicles)
 
+    def _route_tls_ids(self, edges: list[str]) -> set[str]:
+        result: set[str] = set()
+        for movement in controlled_route_movements(edges, self.movements):
+            result.update(self.movement_tls.get(movement, ()))
+        return result
+
+    def _measure_network(self, scenario: str, seed: int, route_path: Path) -> dict[str, Any]:
+        """Measure whole-map traffic, controlled-route coverage and TLS crossings."""
+        route_root = ET.parse(route_path).getroot()
+        vehicles = route_root.findall("vehicle")
+        route_tls = {
+            str(vehicle.get("id")): self._route_tls_ids(
+                vehicle.find("route").get("edges", "").split()
+            )
+            for vehicle in vehicles
+            if vehicle.get("id") and vehicle.find("route") is not None
+        }
+        planned_counts = {
+            tls_id: sum(tls_id in controlled for controlled in route_tls.values())
+            for tls_id in self.tls_ids
+        }
+        config_path = self._scenario_config(scenario, seed)
+        relative_config = config_path.relative_to(self.root).as_posix()
+        with tempfile.TemporaryDirectory(prefix="stms_network_config_") as temp_dir:
+            yaml_path = Path(temp_dir) / "sumo.yaml"
+            yaml_path.write_text(
+                yaml.safe_dump({"sumo": {"config": relative_config, "tls_id": self.tls_id}}, sort_keys=False),
+                encoding="utf-8",
+            )
+            tls_lanes = {
+                tls_id: sorted({
+                    lane.getID()
+                    for movement in self.movements if movement["tls_id"] == tls_id
+                    for lane in self.net.getEdge(movement["from_edge"]).getLanes()
+                })
+                for tls_id in self.tls_ids
+            }
+            queues: dict[str, list[int]] = {tls_id: [] for tls_id in self.tls_ids}
+            teleports: set[str] = set()
+            arrived: set[str] = set()
+            departed: set[str] = set()
+            passed_tls: dict[str, set[str]] = {}
+            previous_edge: dict[str, str] = {}
+            subscribed: set[str] = set()
+            pair_tls = self.movement_tls
+            pending_max = 0
+            pending_at_horizon = 0
+            horizon_recorded = False
+            horizon = int(self.demand["scenario_horizon_s"])
+            max_sim = int(self.demand["scenario_max_sim_s"])
+            with SumoClient(config_path=yaml_path, seed=seed) as client:
+                connection = client.connection
+
+                def observe(vehicle_id: str, road_id: str) -> None:
+                    if not road_id or road_id.startswith(":"):
+                        return
+                    prior = previous_edge.get(vehicle_id)
+                    if prior and prior != road_id:
+                        tls_ids = pair_tls.get((prior, road_id), set())
+                        if tls_ids:
+                            passed_tls.setdefault(vehicle_id, set()).update(tls_ids)
+                    previous_edge[vehicle_id] = road_id
+
+                for vehicle_id in connection.vehicle.getIDList():
+                    connection.vehicle.subscribe(vehicle_id, (tc.VAR_ROAD_ID,))
+                    subscribed.add(vehicle_id)
+                    observe(vehicle_id, connection.vehicle.getRoadID(vehicle_id))
+                while client.sim_time < max_sim and connection.simulation.getMinExpectedNumber() > 0:
+                    client.step()
+                    for vehicle_id, result in (connection.vehicle.getAllSubscriptionResults() or {}).items():
+                        observe(vehicle_id, str(result.get(tc.VAR_ROAD_ID, "")))
+                    for vehicle_id in connection.simulation.getDepartedIDList():
+                        departed.add(vehicle_id)
+                        if vehicle_id not in subscribed:
+                            connection.vehicle.subscribe(vehicle_id, (tc.VAR_ROAD_ID,))
+                            subscribed.add(vehicle_id)
+                            observe(vehicle_id, connection.vehicle.getRoadID(vehicle_id))
+                    arrived.update(connection.simulation.getArrivedIDList())
+                    teleports.update(connection.simulation.getStartingTeleportIDList())
+                    pending_max = max(pending_max, len(connection.simulation.getPendingVehicles()))
+                    if client.sim_time >= horizon and not horizon_recorded:
+                        pending_at_horizon = len(connection.simulation.getPendingVehicles())
+                        horizon_recorded = True
+                    for tls_id, lanes in tls_lanes.items():
+                        queues[tls_id].append(sum(
+                            int(connection.lane.getLastStepHaltingNumber(lane_id)) for lane_id in lanes
+                        ))
+                sim_time = client.sim_time
+                min_expected = int(connection.simulation.getMinExpectedNumber())
+            warning_lines = [
+                line for line in client.sumo_output.splitlines() if "warning" in line.casefold()
+            ]
+
+        all_ids = set(route_tls)
+        planned_covered = sum(bool(value) for value in route_tls.values())
+        actual_covered = sum(bool(passed_tls.get(vehicle_id)) for vehicle_id in departed)
+        actual_controlled_counts = {
+            tls_id: sum(tls_id in passed_tls.get(vehicle_id, set()) for vehicle_id in departed)
+            for tls_id in self.tls_ids
+        }
+        congestion_thresholds = self.config["congestion"]["thresholds"]
+        per_tls = {
+            tls_id: {
+                "planned_trips": planned_counts[tls_id],
+                "actual_crossing_trips": actual_controlled_counts[tls_id],
+                "mean_halting_queue": sum(queues[tls_id]) / len(queues[tls_id]) if queues[tls_id] else 0.0,
+                "max_halting_queue": max(queues[tls_id], default=0),
+                "medium_congestion_time_share": _congestion_time_shares(
+                    queues[tls_id], congestion_thresholds
+                )[0],
+                "high_congestion_time_share": _congestion_time_shares(
+                    queues[tls_id], congestion_thresholds
+                )[1],
+            }
+            for tls_id in self.tls_ids
+        }
+        return {
+            "family": "network", "scenario": scenario, "seed": seed,
+            "total_trips": len(vehicles), "planned_controlled_trips": planned_covered,
+            "planned_controlled_trip_share": planned_covered / max(1, len(all_ids)),
+            "mean_planned_controlled_tls_per_trip": sum(map(len, route_tls.values())) / max(1, len(all_ids)),
+            "departed": len(departed), "arrived": len(arrived),
+            "completion_rate": len(arrived) / max(1, len(vehicles)),
+            "actual_controlled_trips": actual_covered,
+            "actual_controlled_trip_share": actual_covered / max(1, len(departed)),
+            "mean_actual_controlled_tls_per_departed_trip": (
+                sum(len(passed_tls.get(vehicle_id, set())) for vehicle_id in departed) / max(1, len(departed))
+            ),
+            "per_tls": per_tls, "teleported_unique": len(teleports),
+            "teleport_share": len(teleports) / max(1, len(vehicles)),
+            "pending_max": pending_max, "pending_at_horizon": pending_at_horizon,
+            "simulated_s": sim_time, "min_expected_at_end": min_expected,
+            "warning_lines": len(warning_lines),
+        }
+
     def measure(self, scenario: str, seed: int = 1000) -> dict[str, Any]:
         """Measure demand, completion, teleports, backlog and pilot queue natively."""
         route_path = self.ensure_routes(scenario, seed)
+        if self.family == "network":
+            return self._measure_network(scenario, seed, route_path)
         route_root = ET.parse(route_path).getroot()
         vehicles = route_root.findall("vehicle")
         planned_through = self._route_share(vehicles)
-        scenario_config = self._scenario_config(scenario)
+        scenario_config = self._scenario_config(scenario, seed)
         relative_config = scenario_config.relative_to(self.root).as_posix()
         with tempfile.TemporaryDirectory(prefix="stms_scenario_config_") as temp_dir:
             yaml_path = Path(temp_dir) / "sumo.yaml"
@@ -662,25 +867,68 @@ def _write_measurements(results: list[dict[str, Any]], root: Path) -> None:
     (root / "docs" / "scenarios.md").write_text("\n".join(lines), encoding="utf-8")
 
 
+def _write_network_measurements(results: list[dict[str, Any]], root: Path, builder: ScenarioBuilder) -> None:
+    """Append measured M2 demand-design evidence without touching M1 data."""
+    path = root / "docs" / "scenarios.md"
+    existing = path.read_text(encoding="utf-8") if path.exists() else "# Scenario generation and native-program measurements\n"
+    marker = "## Network scenarios (M2 demand design)"
+    if marker in existing:
+        existing = existing.split(marker, maxsplit=1)[0].rstrip() + "\n\n"
+    lines = [
+        marker, "",
+        f"Measured with the native SUMO traffic programs, using the unchanged network and seed {results[0]['seed']}.",
+        f"Frozen intended TLS count: {len(builder.tls_ids)}; list SHA-256: `{builder.config['network']['tls_list_hash']}`.",
+        f"Target controlled-route share: {builder.config['network']['min_controlled_trip_share']:.3f}; route design minimum: {builder.demand['junction_share_min']:.3f}; teleport design target: <0.010.",
+        "", "| Scenario | Trips | Planned controlled trips | Planned share | Mean planned TLS/trip | Actual crossing trips | Actual share of departed | Arrived | Completion | Unique teleports | Teleport share | Pending max | Pending at horizon | Sim seconds | Warnings |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+    ]
+    for row in results:
+        lines.append(
+            f"| {row['scenario']} | {row['total_trips']} | {row['planned_controlled_trips']} | "
+            f"{row['planned_controlled_trip_share']:.3f} | {row['mean_planned_controlled_tls_per_trip']:.3f} | "
+            f"{row['actual_controlled_trips']} | {row['actual_controlled_trip_share']:.3f} | "
+            f"{row['arrived']} | {row['completion_rate']:.3f} | {row['teleported_unique']} | "
+            f"{row['teleport_share']:.3f} | {row['pending_max']} | {row['pending_at_horizon']} | "
+            f"{row['simulated_s']:.0f} | {row['warning_lines']} |"
+        )
+    lines += ["", "### Per-TLS network measurements", "",
+              "Congestion bands use `config/stms.yaml`: low ≤4, medium 5–12, high ≥13 halting vehicles. The design gate requires at least one controlled TLS to reach the medium band in each primary scenario; the native teleport target remains <1%.",
+              "", "| Scenario | TLS ID | Planned route trips | Actual crossing trips | Mean halting queue | Max halting queue | Medium-congestion time share | High-congestion time share |",
+              "|---|---|---:|---:|---:|---:|---:|---:|"]
+    for row in results:
+        for tls_id in builder.tls_ids:
+            tls = row["per_tls"][tls_id]
+            lines.append(
+                f"| {row['scenario']} | `{tls_id}` | {tls['planned_trips']} | {tls['actual_crossing_trips']} | "
+                f"{tls['mean_halting_queue']:.3f} | {tls['max_halting_queue']} | "
+                f"{tls['medium_congestion_time_share']:.3f} | {tls['high_congestion_time_share']:.3f} |"
+            )
+    lines += ["", "These are demand-design measurements under native programs, not fixed/rule/PPO comparisons.", ""]
+    path.write_text(existing + "\n".join(lines), encoding="utf-8")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     group = parser.add_mutually_exclusive_group()
-    group.add_argument("--all", action="store_true", help="Generate and measure all seven scenarios")
+    group.add_argument("--all", action="store_true", help="Generate and measure all scenarios in the selected family")
     group.add_argument("--train-pool", action="store_true", help="Pre-generate the configured training pool")
-    parser.add_argument("--scenario", choices=SCENARIOS, help="Generate one scenario without measuring it")
+    parser.add_argument("--scenario", help="Generate one scenario without measuring it")
+    parser.add_argument("--family", choices=("single", "network"), default="single")
     parser.add_argument("--seed", type=int, default=1000)
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
-    builder = ScenarioBuilder(root)
+    builder = ScenarioBuilder(root, family=args.family)
     selected_modes = sum((args.all, args.train_pool, args.scenario is not None))
     if selected_modes != 1:
         parser.error("choose exactly one of --all, --train-pool, or --scenario")
     if not args.all and not args.train_pool and not args.scenario:
         parser.error("choose --all, --train-pool, or --scenario")
+    if args.scenario is not None and args.scenario not in builder.scenarios:
+        parser.error(f"unknown scenario for family {args.family}: {args.scenario}")
 
     if args.train_pool:
-        pool = builder.demand["train_pool"]
+        pool = builder.demand["net_train_pool"] if args.family == "network" else builder.demand["train_pool"]
         seeds = range(
             int(pool["seed_min"]),
             int(pool["seed_min"]) + int(pool["seeds_per_scenario"]),
@@ -704,44 +952,45 @@ def main() -> int:
 
     if args.seed < 0:
         parser.error("--seed must be non-negative")
-    scenarios = [args.scenario] if args.scenario else SCENARIOS
+    scenarios = [args.scenario] if args.scenario else builder.scenarios
     for scenario in scenarios:
         route_path = builder.ensure_routes(scenario, args.seed, force=args.force)
         print(f"Cached {scenario}/seed_{args.seed}: {route_path}")
     if args.scenario:
         return 0
     if args.force:
-        print("Forced regeneration matched the existing route-file SHA256 for all seven scenarios.")
+        print(f"Forced regeneration matched existing route-file SHA256 for all {len(scenarios)} scenarios.")
         return 0
 
     measurements = []
-    for index, scenario in enumerate(SCENARIOS, start=1):
+    for index, scenario in enumerate(builder.scenarios, start=1):
         print(f"[{index}/{len(SCENARIOS)}] measuring {scenario} with its native SUMO program")
         row = builder.measure(scenario, args.seed)
         measurements.append(row)
+        share_key = "planned_controlled_trip_share" if args.family == "network" else "planned_junction_share"
         print(
-            f"  trips={row['total_trips']} share={row['planned_junction_share']:.3f} "
+            f"  trips={row['total_trips']} share={row[share_key]:.3f} "
             f"arrived={row['arrived']} teleport_share={row['teleport_share']:.4f} "
-            f"pending_max={row['pending_max']} queue_mean={row['mean_pilot_halting']:.2f}"
+            f"pending_max={row['pending_max']}"
         )
-        if (
+        if args.family == "network":
+            if row[share_key] < float(builder.config["network"]["min_controlled_trip_share"]):
+                _write_network_measurements(measurements, root, builder)
+                raise RuntimeError(f"{scenario} controlled-route share is below the frozen network minimum.")
+        elif (
             scenario in {"medium", "heavy", "rush_hour"}
-            and row["planned_junction_share"] < float(builder.demand["junction_share_min"])
+            and row[share_key] < float(builder.demand["junction_share_min"])
         ):
             _write_measurements(measurements, root)
-            raise RuntimeError(
-                f"{scenario} junction share is below 30%; stop and review the routing mix."
-            )
-    _write_measurements(measurements, root)
-    over_five_percent = [
-        row["scenario"] for row in measurements if row["teleport_share"] > 0.05
-    ]
-    if over_five_percent:
-        print(
-            "Native baseline exceeds 5% teleports in "
-            f"{over_five_percent}; preserving as a failed baseline result. "
-            "Per the approved roadmap amendment, evaluate this criterion after PPO is connected."
-        )
+            raise RuntimeError(f"{scenario} junction share is below 30%; stop and review the routing mix.")
+    if args.family == "network":
+        _write_network_measurements(measurements, root, builder)
+    else:
+        _write_measurements(measurements, root)
+    teleport_limit = 0.01 if args.family == "network" else 0.05
+    over_limit = [row["scenario"] for row in measurements if row["teleport_share"] > teleport_limit]
+    if over_limit:
+        print(f"Native demand exceeded the {teleport_limit:.0%} teleport target in {over_limit}; preserving measured results.")
     print(f"Wrote measured scenario table to {root / 'docs' / 'scenarios.md'}.")
     return 0
 

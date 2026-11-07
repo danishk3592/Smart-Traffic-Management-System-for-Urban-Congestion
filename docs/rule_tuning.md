@@ -18,3 +18,24 @@ Selection uses the lowest mean approach queue over all nine runs; waiting time a
 Completed trials: 9/9.
 
 Selected thresholds: queue `6`, wait `30s`; mean queue/wait = `11.256` / `185.918`.
+
+## Part 2 — Network validation tuning
+
+# Rule controller validation tuning
+
+Network `net_medium`; validation seeds 3000–3002; three shared threshold settings. Selection minimizes mean network queue, with waiting and completed travel time retained as context.
+
+| Queue threshold | Wait threshold (s) | Seed | Network queue | Network wait (s) | Completed/trips | Teleports | Wall time (s) | Run |
+|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| 6 | 30 | 3000 | 5.976 | 104.331 | 650/650 | 6 | 245.6 | `20261031-204719_rule_net_medium_s3000` |
+| 6 | 30 | 3001 | 5.307 | 41.206 | 650/650 | 0 | 313.3 | `20261031-205538_rule_net_medium_s3001` |
+| 6 | 30 | 3002 | 4.716 | 42.192 | 650/650 | 0 | 333.2 | `20261031-205538_rule_net_medium_s3002` |
+| 8 | 45 | 3000 | 4.065 | 31.792 | 650/650 | 0 | 348.0 | `20261031-205518_rule_net_medium_s3000` |
+| 8 | 45 | 3001 | 4.134 | 28.700 | 650/650 | 0 | 311.1 | `20261031-205538_rule_net_medium_s3001` |
+| 8 | 45 | 3002 | 4.115 | 30.711 | 650/650 | 0 | 334.8 | `20261031-210104_rule_net_medium_s3002` |
+| 10 | 60 | 3000 | 4.065 | 31.792 | 650/650 | 0 | 366.0 | `20261031-210105_rule_net_medium_s3000` |
+| 10 | 60 | 3001 | 4.134 | 28.700 | 650/650 | 0 | 329.0 | `20261031-210121_rule_net_medium_s3001` |
+| 10 | 60 | 3002 | 4.115 | 30.711 | 650/650 | 0 | 337.4 | `20261031-210125_rule_net_medium_s3002` |
+
+Tuning coverage: 9/9.
+Selected shared network thresholds: queue `8`, wait `45s`. Mean network queue was 4.104627 for both q8/w45 and q10/w60; the exact tie resolves by the declared candidate order, so q8/w45 is selected.

@@ -1,10 +1,65 @@
 # Project progress
 
-Updated: 2026-11-06 13:02 +05:30
+Updated: 2026-11-07 18:55 +05:30
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T6.2 Quality pass + blocker sweep | Done with deviation | agent/autonomous-build | pending local task commit | `ruff check .` clean; default pytest 102 passed/23 deselected; full SUMO suite job `20261106-065551_97ee54e3`: 23 passed/102 deselected; pip check and zombie check clean. Scope/secret/ignore/database/ODbL audit passed. Four pre-existing tracked files exceed 10 MiB (including protected map inputs and approved SRS); none changed or staged. T5.1 snapshot and T6.1 desktop blockers remain open. |
+| T6.1 Partial / T6.4 release | In progress | agent/autonomous-build | 189f044 (T6.4 aggregates) | T6.1 demo CLI commit `a2b92fa`; six seed-8000 demos passed, dashboard live-view unverified. T6.4 content audit/checkpoint passed; local merge/tag pending. Main `59e0551` is an ancestor; no tag exists. Final checkpoint Ruff clean, pytest 104 passed/23 deselected, SUMO suite 23 passed/104 deselected, zombie check clean. M1 model/config `7242ae0`; canonical M2 aggregates `189f044`. Four PPO development candidates each reached 1/12; accepted final remains 0/12.
+
+## T5.1 same-config equivalence complete (2026-11-06 16:49 +05:30)
+
+- Same-config fixed/medium/seed-3000 baseline (`20261106-145034_fixed_medium_s3000`, pre-instrumentation runner) and current run (`20261106-150152_fixed_medium_s3000`) match all 31 summary fields except `run_id` and `wall_clock_s`. Both use config SHA-256 `322293c6c89cfdeba92c08b7ff65b5858095897adb733abc81200da74c5a7668` and the same cached route SHA; exact evidence and summary hashes: `docs/evidence/t51_equivalence_20261106.json`.
+- Flutter offline dependencies succeeded, `flutter analyze --no-pub` found no issues, and `flutter test --no-pub` passed 19/19. Python status tests passed 5/5; whole-repository Ruff passed. `scripts/check_zombies.py` reported no running SUMO or SUMO-GUI processes.
+- T5.1 is Done. Historical config bytes with the older SHA remain unavailable; no hash or saved result was normalized. Strict PPO coverage remains 0/12 under the accepted final model; the user's new request is tracked separately from the frozen final outputs.
+
+## Strict PPO development candidates (2026-11-06 16:44 +05:30)
+
+- The accepted final M2 result remains DEC-14 Stage 4 hybrid with strict PPO ownership **0/12**. This was measured in the final PPO-only evaluation on 2026-11-02 and retained in the Stage 4 final result the same day; it is a recorded evaluation outcome, not a completed coverage fix.
+- Candidate 1 (`ppo_coverage_penalty_05_retry1`, SHA-256 `32be9ad6ac5dd9c5d40e5843c50e09949cce2713558808ab2b702a88bcd5c20a`) completed 120,000 training steps. Its separate `net_medium/3003` held-out cell achieved 650/650 trips and **1/12** TLS at the 0.95 PPO tick-share threshold; not promoted.
+- Candidate 2 (`ppo_coverage_penalty_10_interval5`, SHA-256 `d0c7bc4115c3546602a23b378dbf227f629d1ef20f78907150f54b919e1948aa`) stopped by validation early stopping at 80,016/120,000 steps (1,249.0 s). Its best validation censored travel time was 373.774 s at 40,008 steps; later checks were worse. Separate `net_medium/3004` held-out cell completed 650/650 trips, ended at sim time 4,964 s with zero teleports, and achieved **1/12** at the 0.95 threshold. The other 11 TLS had PPO tick shares below 0.95 (maximum 0.9426). Not promoted.
+- Candidate 3 (`ppo_coverage_penalty_05_interval5`, SHA-256 `04b09698de499f26abbaf47d641f8184ff1ca7c56bd77dc2b7854450c90378f8`) completed 120,000 steps in 1,891.7 s; best validation censored travel time was 336.537 s at 120,000. Its held-out `net_medium/3005` completed 650/650 trips with zero teleports and achieved **1/12**; the remaining eleven TLS had PPO tick shares at or below 0.93345. Not promoted; output is `results/rl/coverage_candidate_05_interval5/net_medium_s3005`.
+- The held-out candidate output is isolated under `results/rl/coverage_candidate_10_interval5/net_medium_s3004`; the route cache was prepared without rewriting scenario config. Post-run zombie check found no SUMO/SUMO-GUI processes. No accepted model/config/seeds/scenarios/metrics/outputs were changed. Any new final acceptance block remains subject to the open seed-protocol decision.
+
+## Strict PPO development candidate 4 completed (2026-11-06 18:09 +05:30)
+
+- Candidate 4 (`ppo_coverage_penalty_10_stage3`, model SHA-256 `8c46f2308f7269552cf05d4753867d8b9fcd94bd1705343842832f27a23a6074`) completed 120,000 training steps, seed 1005, network term 0.25, rejection penalty 1.0, Stage 3 1,800 s episodes / 10 s decision interval. Training wall time was 2,045.064 s; selected validation checkpoint was 100,008 steps with mean censored travel time 297.746252 s.
+- Independent `net_medium/3006` held-out run completed 650/650 trips, 3 teleports, sim end 4,652 s, wall time 219.113 s. Strict ownership was **1/12** at the configured 0.95 PPO tick-share threshold: one TLS had share 1.0; the remaining eleven were 0.8517–0.9366. Output is isolated at `results/rl/coverage_candidate_10_stage3/net_medium_s3006`.
+- Post-run `scripts/check_zombies.py` reported no running SUMO or SUMO-GUI processes. Candidate 4 is not promoted; accepted final remains DEC-14 Stage 4 hybrid, strict PPO **0/12**. No final seed, config, accepted model, scenario, metric definition or accepted output changed. A new final acceptance run still requires a documented seed protocol.
+
+## T6.1 release-code verification (2026-11-06 18:09 +05:30)
+
+- Focused acceptance `Ai/.venv/Scripts/pytest.exe -q -p no:cacheprovider tests/test_run_demo.py tests/test_no_database.py tests/test_results_doc.py` passed **7 tests**; focused Ruff over the same files and `scripts/run_demo.py` passed. T6.1 remains Partial because dashboard live-view verification is still blocked by the unavailable native pipe.
+
+## Phase 3/5 and final phase checkpoint (2026-11-06 18:28 +05:30)
+
+- Whole-repository Ruff: All checks passed. Default pytest: **104 passed, 23 deselected**. Full SUMO-marked suite: **23 passed, 104 deselected** in 165.99 s. `scripts/check_zombies.py`: no running SUMO or SUMO-GUI processes. Phase 3 and Phase 5 checkboxes are now closed; Phase 6 remains open until its local release merge/tag is audited.
+- Release content audit: `main` `59e0551` is an ancestor of `agent/autonomous-build`. Selected M1 checkpoint SHA-256 `9d0e3e82…2c01bc467` CPU-loads with observation `(46,)`, `Discrete(4)` and is packaged with its training metadata in `7242ae0`. Selected M2 checkpoint SHA-256 `758711e7…f5037757` CPU-loads with observation `(54,)`, `Discrete(4)`; it is committed with its metadata in the branch. Canonical `summary.csv`, `network_runs.csv`, and `network_junctions.csv` are byte-identical to the accepted M2 coverage/run/junction snapshots; package commit `189f044`. Dashboard and M2 snapshots/figure are already in the branch. No tracked file exceeds 50 MiB. The protected map modifications remain unstaged.
+
+## Verified update (2026-11-06 14:05 +05:30)
+
+- T4.7 source and selected rejection-penalty model were rechecked without rerunning SUMO. Controller tests passed (6), targeted Ruff passed, and SB3 loaded the selected model at 2,240,004 steps with observation `(54,)` and `Discrete(4)`.
+- Read-only parsing of `results/raw/t47_candidate_gate.log` (SHA-256 `82d2038a925e98e4735a45fb986b069c01aaf4c6a4d8d703d7664a09aedd7089`) found all six `net_medium`/`net_heavy` × seeds 3000–3002 run records. All report 12 controlled TLS, full T4.7 gate coverage, completed scheduled trips (4,350 total), and selected-model SHA-256 `758711e7f28e29e69b59af6eade30ba679c3160daadf39e09ed89287f5037757`. The original per-run raw output directories are absent now; the gate log and detailed diagnostic table are retained, so this recheck does not claim fresh raw CSV lineage validation.
+- T4.7 acceptance is Done. Next work is reconciling/committing the already completed T4.8 artifacts, then T4.9/T4.10, before continuing with T5.1 and T6.4. Preserve the remaining mixed owner work and protected map edits.
+
+## T4.8 network evaluator recheck (2026-11-06 14:17 +05:30)
+
+- Acceptance tests: `pytest -q -p no:cacheprovider tests/test_evaluation_network.py tests/test_evaluation.py tests/test_metrics_network.py tests/test_run_episode.py tests/test_scenarios.py` → **29 passed**; targeted Ruff → **All checks passed**.
+- Read-only raw audit matched all **75/75** expected `fixed/rule/rl × five network scenarios × seeds 5000–5004` dev cells. Every cell had six nonempty artifacts, one summary row, 12 unique TLS junction rows, consistent trip counts, and the selected candidate model SHA for PPO runs. All **25/25** scenario/seed groups shared the same route SHA across the three controllers. This verifies raw structure/paired route lineage, not current-config reproducibility: raw config metadata SHA is `99a432c2912d0320ca0bf61f9435781f2d8cbdb1f282fdeddc391c3da4408e16`, while current `config/stms.yaml` is `322293c6c89cfdeba92c08b7ff65b5858095897adb733abc81200da74c5a7668`.
+- Preserved development snapshots: `comparison_dev_snapshot.csv` (3,239 rows; SHA-256 `047cf3e163156d9f6db82b36de80ddc43cadd612ea9898d8389bc70ba17cef45`), `network_runs_dev_snapshot.csv` (75 rows; `66c3096449bc2778abddcc38c28e01ece4913a0b986a082cf2bbb25c8513d01`), and `network_junctions_dev_snapshot.csv` (180 rows; `e34478782286bcd2efc1e711d59a1fb21bc35395a5d0bf1e941101edb22743d9`). The 1,782 M1 dev rows match `comparison.csv` exactly by key and values. Dev Metric N common-trip headline: fixed 364.007238 s, RL 278.895423 s, 23.3451% reduction; 11,500 common trips, 100% completion. All 25 RL dev cells classify `ai_coverage=none`; this is a development result, not a final result or full-AI claim.
+- `network_junction_congestion.png` is a valid 1800×825 PNG (SHA-256 `7fe719b522c7452e2ae30209bb7e00e5ca83713959c3d00ec7cec267f84b6340`). The saved T4.8 result and figure are preserved; `comparison.csv` currently contains later final M2 rows, so no overwrite or fresh dev reaggregation was performed.
+
+## T4.9 final PPO-only evidence recheck (2026-11-06 14:26 +05:30)
+
+- Read-only final-cell scan matched all **75/75** `fixed/rule/rl ? five network scenarios ? seeds 6000?6004` outputs, each with nonempty run/evaluation/summary/steps/trips/junction files, one summary row, 12 unique TLS rows, and consistent scheduled/completed/unfinished trip counts. All **25/25** scenario/seed groups share route SHA across controllers; PPO metadata identifies the frozen candidate SHA `758711e7f28e29e69b59af6eade30ba679c3160daadf39e09ed89287f5037757`.
+- `tests/test_results_doc.py` passed **2** tests. Preserved PPO-only snapshots: comparison 3,239 rows, SHA-256 `099c621d7d1a7cc329bda2c77ca5f8c8c8407275f15bff4849ba1bc78787ccc8`; network runs 75 rows, `21fbbc8203de521e9f6649b5c7793fd6c7c35971e82858018ead35286f7e011f`; junctions 180 rows, `c847a03efecfbaf1d526a026398ea3f5c8d265d8879cd87211aeed9330ee4cbd`; coverage `80eca0bdf29de487a728911c27c4002ac0aecc0cf6c6932c073f9efd36669130`.
+- Snapshot headline Metric N common trips: fixed 375.477537 s, rule 298.470664 s, PPO 277.935556 s; PPO is 25.7436% below fixed over 11,500 common trips; `target_met=true`; all scheduled trips complete. Coverage is **0/12 (none)**, the DEC-14 Stage 4 trigger. Current raw config metadata differs from today's frozen config, so preserve the accepted snapshot and do not rerun or reaggregate final-seed work.
+
+## T4.10 Stage-4 hybrid audit (2026-11-06 14:28 +05:30)
+
+- `pytest -q -p no:cacheprovider tests/test_hybrid_controller.py` -> **4 passed**; T4.8 acceptance/regression tests -> **29 passed**; targeted Ruff -> **All checks passed**.
+- Rebuilt the validation gate in memory without writing output; it exactly matches frozen `t410_hybrid_gate.json` (SHA-256 `655e36c69382dbbbb39d3ef3144691fd0e635598a519bd63de8499672390ff55`), admitting 11 PPO TLS and one rule TLS. The latter is `GS_cluster_11178931802_11178931803_2414626606_6887565739` after +15.48% queue regression.
+- Read-only final hybrid audit validated 75/75 cells, 25/25 shared route groups, complete trip totals and 12 TLS rows per cell; final hybrid rows report coverage none (0/12). Snapshot SHA-256: comparison dev `277be427af4e9c82765547387ec70146306e2be30f08616f12c8ddb04888226f`, comparison final `8aefa3c0a2ae2ac13e9528de5da410670a1a74cc95f47adf0d706468f712dcd4`; run and junction hashes are recorded in `docs/experiment_log.md`. Final Metric N is 277.531516 s vs fixed 375.477537 s, 25.8429% lower (95% CI 22.20-29.49%), 11,500 trips, 100% complete; provisional until P1.
+- Raw historical config hash differs from current config; accepted snapshots remain authoritative. No model, config, seed, scenario, output, or final evaluation grid was changed/rerun.
 
 ## Verified update (2026-11-06 10:50 +05:30; historical; commit b1bae24)
 
@@ -224,3 +279,9 @@ The saved fixed/medium/seed-3000 summaries `20261027-133344_fixed_medium_s3000` 
 - Active single RL job `20261106-055458_e62da661`, evaluator PID 19656, at startup (sim time 0) when checked. Continue polling this exact job.
 
 - 11:32 live poll: T6.1 single RL job `20261106-055458_e62da661` remained running with PID 19656 alive; log had advanced to 3660/7200 simulated seconds. Continue polling the same job.
+
+## T6.4 local release audit (2026-11-07 18:55 +05:30)
+
+- Content audit and final checkpoint passed, but local merge/tag have not yet run. `agent/autonomous-build` is at `189f044`; linked `main` is at `59e0551`, an ancestor; no `v1.0-ai-core` tag exists. Next perform the one local `--no-ff` merge and tag, then verify the merge tree and tag target. No remote operations.
+
+- Current authoritative state: `agent/autonomous-build` is at `189f044`; linked local `main` is at `59e0551`, an ancestor. No `v1.0-ai-core` tag exists yet. Next action: one local `--no-ff` merge and tag, then read-only verification. Do not touch owner/protected modifications.

@@ -1,6 +1,6 @@
 # Project progress
 
-Updated: 2026-11-07 19:06 +05:30
+Updated: 2026-11-07 19:10 +05:30
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
@@ -11,6 +11,11 @@ Updated: 2026-11-07 19:06 +05:30
 - Resumed on `agent/autonomous-build` at `6c4978c`. A0 ancestor audit found the local release merge `9396db5` (and tag `v1.0-ai-core`) was not yet in this branch's ancestry; all other checked completed task commits and `agent/phase-2-rl` were ancestors.
 - Created rollback tag `a0-pre-reconcile-20261107T133518Z`, then merged local `main` with `--no-ff`; reconciliation commit is `33d8eb6`. Verified `9396db5` is now an ancestor of the work branch and `v1.0-ai-core` still targets `9396db5`.
 - Mixed owner/generated work remains unstaged, including the pre-existing protected map edits. No protected files were staged or committed; no remote operations were performed. No experiment or result artifact was created during this graph-only reconciliation.
+
+## T6.1 dashboard live-view blocker recheck (2026-11-07 19:10 +05:30)
+
+- Retried the documented read-only Windows app inventory through the computer-use skill. `sky.list_apps()` again failed before exposing any app/window: `Computer Use native pipe is unavailable: failed to connect native pipe: The system cannot find the file specified. (os error 2)`. No UI action or dashboard verification occurred.
+- T6.1 remains Partial; its exact recovery action is unchanged: once the desktop helper is operational, open the Windows Release dashboard, select a completed seed-8000 demo and verify its live/status data. No experiment, SUMO run, or result artifact was created.
 
 ## T5.1 same-config equivalence complete (2026-11-06 16:49 +05:30)
 

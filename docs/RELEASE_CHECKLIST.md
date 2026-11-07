@@ -1,6 +1,6 @@
 # Release checklist
 
-Updated: 2026-11-07 18:58 +05:30. Local release merge/tag verified; limitations remain itemized below.
+Updated: 2026-11-07 19:06 +05:30. Local release merge/tag verified; A0 resume reconciliation completed; limitations remain itemized below.
 
 | Area | Status | Evidence / remaining action |
 |---|---|---|
@@ -11,7 +11,7 @@ Updated: 2026-11-07 18:58 +05:30. Local release merge/tag verified; limitations 
 | Whole-repository quality (T6.2) | Done with documented existing-artifact deviation (`55fdc54`) | Final phase checkpoint: whole-repo Ruff passed; default pytest **104 passed/23 deselected**; full SUMO suite **23 passed/104 deselected**, RC 0; pip check and post-suite zombie check clean. Credential-pattern search found only a ContextVar named `token`, no credential; prohibited-scope dependency search empty; no tracked DB; ignore probes and ODbL attribution pass. T5.1 was later closed by the same-config equivalence check; T6.1 desktop blocker remains open. Four pre-existing tracked files >10 MiB (approved SRS and existing SUMO assets, including protected map files) were left untouched; no generated artifact exceeds 50 MiB. The existing PDF scratch helper remains documented and exact-path excluded. |
 | Documentation (T6.3) | Done with deviation | Commit `0317a4b`. README overview, architecture, setup, config, command order, outputs, limitations, ODbL attribution and dashboard pointer are documented. SRS deviations, limitations and report/PPT sources are listed. Local Markdown-link audit passed 8/8. Windows checks and the saved M2 job are verified; Ubuntu/fresh-install, demo and exact dashboard launch commands are listed as unrun in README. M1 final values are included and checked against the final comparison CSV. |
 | Supervisor items | Pending | P1 headline metric confirmation and P2 SRS deviation acknowledgement remain labels/items; neither blocks release execution. |
-| Release merge/tag | Complete | Local `--no-ff` merge completed at `9396db5`; annotated tag `v1.0-ai-core` targets the merge on `main`. `agent/autonomous-build` is an ancestor of main and the main worktree is clean. Selected M1 model/config `7242ae0`; canonical M2 aggregates `189f044`; selected M2 model, snapshots, network implementation, dashboard and demo are included. Final checkpoint passed; no tracked file exceeds 50 MiB. No remote operations.
+| Release merge/tag | Complete | Local `--no-ff` merge completed at `9396db5`; annotated tag `v1.0-ai-core` targets the merge on `main`. A0 reconciliation commit `33d8eb6` merged local `main` into `agent/autonomous-build`; `9396db5` is now an ancestor of the work branch. The main worktree is clean. Selected M1 model/config `7242ae0`; canonical M2 aggregates `189f044`; selected M2 model, snapshots, network implementation, dashboard and demo are included. Final checkpoint passed; no tracked file exceeds 50 MiB. No remote operations.
 
 ## Tasks still Partial or unverified
 

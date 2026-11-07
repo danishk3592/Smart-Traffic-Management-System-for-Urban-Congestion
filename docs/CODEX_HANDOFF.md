@@ -1,10 +1,10 @@
 # Codex continuation handoff
 
-Updated: 2026-11-07 18:58 +05:30. T6.4 local release is complete; T6.1 live-view remains Partial.
+Updated: 2026-11-07 19:06 +05:30. T6.4 local release is complete; A0 resume reconciliation passed; T6.1 live-view remains Partial.
 
-## Current verified state (2026-11-07 18:58 +05:30)
+## Current verified state (2026-11-07 19:06 +05:30)
 
-- T6.4 is complete: local merge `9396db5` and annotated tag `v1.0-ai-core` verified; no remote operations. T6.1 desktop live-view remains unverified; T6.2/T6.3 and final checkpoint evidence are summarized below.
+- T6.4 is complete: local merge `9396db5` and annotated tag `v1.0-ai-core` verified; no remote operations. On resume, A0 saved prior tip `6c4978c` at `a0-pre-reconcile-20261107T133518Z` and merged local `main` into this branch as `33d8eb6`; the release merge is now an ancestor of the work branch and the tag target is unchanged. T6.1 desktop live-view remains unverified; T6.2/T6.3 and final checkpoint evidence are summarized below.
 - T4.8 is complete and committed as `b806d96`: 29 acceptance/regression tests pass, focused Ruff passes, 75/75 network dev raw cells are structurally complete with matching routes across controllers, and accepted snapshots contain 75 run/180 junction rows. Historical development headline is 23.3451% below fixed with 11,500 common trips; `ai_coverage=none` for all 25 PPO dev cells. Raw dev config hash `99a432c2…a4408e16` differs from current config; saved snapshots remain authoritative for the historical result, and no reaggregation was performed.
 - T4.9 final PPO-only audit is complete and committed as `a1d2679`: read-only checks found 75/75 final cells with matching routes; accepted coverage snapshot confirms 0/12 (none), triggering Stage 4. `tests/test_results_doc.py` passed (2). PPO-only final headline is 25.7436% below fixed with 11,500 common trips and 100% completion. No final seeds were rerun; snapshots remain preserved.
 - T4.10 is complete and committed as `735f863`: frozen gate rebuilt exactly (11 PPO TLS / 1 rule), hybrid tests 4 passed, T4.8 acceptance tests 29 passed, Ruff clean, final grid 75/75 with 0/12 strict ownership. Preserved snapshots report 25.8429% lower common-trip Metric N versus fixed at 100% completion. No final-seed rerun; current raw config hash mismatch is disclosed.
@@ -21,11 +21,11 @@ Updated: 2026-11-07 18:58 +05:30. T6.4 local release is complete; T6.1 live-view
 ## Prompt for the next Codex
 
 ```text
-Continue the Smart Traffic Management System goal through T6.4 on local branch `agent/autonomous-build`. Read `AGENTS.md`, Sections 0 and 12 of `docs/STMS_Agent_Roadmap_FINAL.md`, then follow A0/resume. Read the current `docs/PROGRESS.md`, `docs/decisions.md`, `docs/RELEASE_CHECKLIST.md`, and this handoff. Continue autonomously and keep the full goal active until the T6.4 completion audit passes.
+Continue Smart Traffic Management System follow-up on local branch `agent/autonomous-build`. Read `AGENTS.md`, Sections 0 and 12 of `docs/STMS_Agent_Roadmap_FINAL.md`, then follow A0/resume. Read the current `docs/PROGRESS.md`, `docs/decisions.md`, `docs/RELEASE_CHECKLIST.md`, and this handoff. T6.4 is complete and audited; do not repeat the release merge or final-seed evaluations. The only roadmap task still Partial is T6.1 dashboard live-view verification, which can be retried if the Windows desktop helper becomes available. Strict PPO development candidates have not achieved full ownership; keep the accepted 0/12 result and frozen final artifacts honest unless a separately documented seed protocol permits a new final block.
 
 Send a brief update after each completed task and keep roadmap, progress, decisions, experiment log, release checklist, and handoff current.
 
-Current verified state (2026-11-07 18:58 +05:30): T3.2 is Done with 105/105 lineage cells; M1 provisional Metric B improvement 9.229%, 10% target not met. T4.7 `44c2355`, T4.8 `b806d96`, T4.9 `a1d2679`, and T4.10 `735f863` are committed. T5.1 is Done; T6.1 remains Partial because desktop live-view evidence is unavailable; T6.2/T6.3 are Done with documented deviations. Work branch `a7d1cbe` is contained in local `main` merge `9396db5`; annotated tag `v1.0-ai-core` points to the merge. T6.4 is complete. Preserve owner/protected changes; no remote operations.
+Current verified state (2026-11-07 19:06 +05:30): T3.2 is Done with 105/105 lineage cells; M1 provisional Metric B improvement 9.229%, 10% target not met. T4.7 `44c2355`, T4.8 `b806d96`, T4.9 `a1d2679`, and T4.10 `735f863` are committed. T5.1 is Done; T6.1 remains Partial because desktop live-view evidence is unavailable; T6.2/T6.3 are Done with documented deviations. T6.4 is complete. A0 reconciliation commit `33d8eb6` merges local `main` into `agent/autonomous-build`; the release merge `9396db5` is now an ancestor of the work branch, and annotated tag `v1.0-ai-core` still points to `9396db5`. Preserve owner/protected changes; no remote operations.
 
 M2 remains DEC-14 Stage 4 hybrid with strict PPO coverage 0/12 (none). The user requests a separate development candidate experiment; preserve accepted final model/config/seeds/scenarios/metrics/outputs and do not rerun final seeds. Accepted final comparison rows are preserved from `comparison_t410_hybrid_final_snapshot.csv`; raw M2 metadata uses config SHA `99a432c2912d0320ca0bf61f9435781f2d8cbdb1f282fdeddc391c3da4408e16`, differing from current config `322293c6c89cfdeba92c08b7ff65b5858095897adb733abc81200da74c5a7668`.
 

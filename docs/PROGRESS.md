@@ -1,10 +1,16 @@
 # Project progress
 
-Updated: 2026-11-07 18:58 +05:30
+Updated: 2026-11-07 19:06 +05:30
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T6.1 Partial / T6.4 release | T6.4 Done with documented T6.1 limitation | agent/autonomous-build -> main | `9396db5`, tag `v1.0-ai-core` | Local no-ff merge and annotated tag verified. Six seed-8000 demos passed; T6.1 dashboard live-view remains unverified. Final checkpoint: Ruff clean, pytest 104 passed/23 deselected, SUMO 23 passed/104 deselected, zombie check clean. Selected M1 model/config commit `7242ae0`; canonical M2 aggregate commit `189f044`. Four strict PPO development candidates reached 1/12 each; accepted final remains 0/12.
+| T6.1 Partial / T6.4 release | T6.4 Done with documented T6.1 limitation; A0 reconciliation passed | agent/autonomous-build | `33d8eb6` (A0); release merge `9396db5`, tag `v1.0-ai-core` | Local release merge/tag verified and merged into the work branch by A0. Six seed-8000 demos passed; T6.1 dashboard live-view remains unverified. Final checkpoint: Ruff clean, pytest 104 passed/23 deselected, SUMO 23 passed/104 deselected, zombie check clean. Strict PPO candidates remain 1/12 each; accepted final remains 0/12.
+
+## A0 resume reconciliation (2026-11-07 19:06 +05:30)
+
+- Resumed on `agent/autonomous-build` at `6c4978c`. A0 ancestor audit found the local release merge `9396db5` (and tag `v1.0-ai-core`) was not yet in this branch's ancestry; all other checked completed task commits and `agent/phase-2-rl` were ancestors.
+- Created rollback tag `a0-pre-reconcile-20261107T133518Z`, then merged local `main` with `--no-ff`; reconciliation commit is `33d8eb6`. Verified `9396db5` is now an ancestor of the work branch and `v1.0-ai-core` still targets `9396db5`.
+- Mixed owner/generated work remains unstaged, including the pre-existing protected map edits. No protected files were staged or committed; no remote operations were performed. No experiment or result artifact was created during this graph-only reconciliation.
 
 ## T5.1 same-config equivalence complete (2026-11-06 16:49 +05:30)
 
@@ -32,7 +38,7 @@ Updated: 2026-11-07 18:58 +05:30
 
 ## Phase 3/5 and final phase checkpoint (2026-11-06 18:28 +05:30)
 
-- Whole-repository Ruff: All checks passed. Default pytest: **104 passed, 23 deselected**. Full SUMO-marked suite: **23 passed, 104 deselected** in 165.99 s. `scripts/check_zombies.py`: no running SUMO or SUMO-GUI processes. Phase 3 and Phase 5 checkboxes are now closed; Phase 6 remains open until its local release merge/tag is audited.
+- Whole-repository Ruff: All checks passed. Default pytest: **104 passed, 23 deselected**. Full SUMO-marked suite: **23 passed, 104 deselected** in 165.99 s. `scripts/check_zombies.py`: no running SUMO or SUMO-GUI processes. Phase 3 and Phase 5 checkboxes were closed; Phase 6 was still open at the time of this pre-release checkpoint and was subsequently closed after merge/tag verification.
 - Release content audit: `main` `59e0551` is an ancestor of `agent/autonomous-build`. Selected M1 checkpoint SHA-256 `9d0e3e82…2c01bc467` CPU-loads with observation `(46,)`, `Discrete(4)` and is packaged with its training metadata in `7242ae0`. Selected M2 checkpoint SHA-256 `758711e7…f5037757` CPU-loads with observation `(54,)`, `Discrete(4)`; it is committed with its metadata in the branch. Canonical `summary.csv`, `network_runs.csv`, and `network_junctions.csv` are byte-identical to the accepted M2 coverage/run/junction snapshots; package commit `189f044`. Dashboard and M2 snapshots/figure are already in the branch. No tracked file exceeds 50 MiB. The protected map modifications remain unstaged.
 
 ## Verified update (2026-11-06 14:05 +05:30)

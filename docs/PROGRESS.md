@@ -1,10 +1,10 @@
 # Project progress
 
-Updated: 2026-11-06 18:09 +05:30
+Updated: 2026-11-07 18:55 +05:30
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T6.1 Dashboard demo view / T6.4 release audit | In progress | agent/autonomous-build | 07f4d30 (T5.1) | T5.1 is Done via same-config full-column equivalence (31 fields; evidence `docs/evidence/t51_equivalence_20261106.json`). T6.1 still lacks desktop live-view evidence. T6.4 release content audit and local merge/tag remain. Four strict PPO development candidates each reached only 1/12 on a held-out cell; none met the 12/12 goal or changed the frozen final result. Main `59e0551`, no release tag. |
+| T6.1 Partial / T6.4 release | In progress | agent/autonomous-build | 189f044 (T6.4 aggregates) | T6.1 demo CLI commit `a2b92fa`; six seed-8000 demos passed, dashboard live-view unverified. T6.4 content audit/checkpoint passed; local merge/tag pending. Main `59e0551` is an ancestor; no tag exists. Final checkpoint Ruff clean, pytest 104 passed/23 deselected, SUMO suite 23 passed/104 deselected, zombie check clean. M1 model/config `7242ae0`; canonical M2 aggregates `189f044`. Four PPO development candidates each reached 1/12; accepted final remains 0/12.
 
 ## T5.1 same-config equivalence complete (2026-11-06 16:49 +05:30)
 
@@ -29,6 +29,11 @@ Updated: 2026-11-06 18:09 +05:30
 ## T6.1 release-code verification (2026-11-06 18:09 +05:30)
 
 - Focused acceptance `Ai/.venv/Scripts/pytest.exe -q -p no:cacheprovider tests/test_run_demo.py tests/test_no_database.py tests/test_results_doc.py` passed **7 tests**; focused Ruff over the same files and `scripts/run_demo.py` passed. T6.1 remains Partial because dashboard live-view verification is still blocked by the unavailable native pipe.
+
+## Phase 3/5 and final phase checkpoint (2026-11-06 18:28 +05:30)
+
+- Whole-repository Ruff: All checks passed. Default pytest: **104 passed, 23 deselected**. Full SUMO-marked suite: **23 passed, 104 deselected** in 165.99 s. `scripts/check_zombies.py`: no running SUMO or SUMO-GUI processes. Phase 3 and Phase 5 checkboxes are now closed; Phase 6 remains open until its local release merge/tag is audited.
+- Release content audit: `main` `59e0551` is an ancestor of `agent/autonomous-build`. Selected M1 checkpoint SHA-256 `9d0e3e82…2c01bc467` CPU-loads with observation `(46,)`, `Discrete(4)` and is packaged with its training metadata in `7242ae0`. Selected M2 checkpoint SHA-256 `758711e7…f5037757` CPU-loads with observation `(54,)`, `Discrete(4)`; it is committed with its metadata in the branch. Canonical `summary.csv`, `network_runs.csv`, and `network_junctions.csv` are byte-identical to the accepted M2 coverage/run/junction snapshots; package commit `189f044`. Dashboard and M2 snapshots/figure are already in the branch. No tracked file exceeds 50 MiB. The protected map modifications remain unstaged.
 
 ## Verified update (2026-11-06 14:05 +05:30)
 
@@ -274,3 +279,9 @@ The saved fixed/medium/seed-3000 summaries `20261027-133344_fixed_medium_s3000` 
 - Active single RL job `20261106-055458_e62da661`, evaluator PID 19656, at startup (sim time 0) when checked. Continue polling this exact job.
 
 - 11:32 live poll: T6.1 single RL job `20261106-055458_e62da661` remained running with PID 19656 alive; log had advanced to 3660/7200 simulated seconds. Continue polling the same job.
+
+## T6.4 local release audit (2026-11-07 18:55 +05:30)
+
+- Content audit and final checkpoint passed, but local merge/tag have not yet run. `agent/autonomous-build` is at `189f044`; linked `main` is at `59e0551`, an ancestor; no `v1.0-ai-core` tag exists. Next perform the one local `--no-ff` merge and tag, then verify the merge tree and tag target. No remote operations.
+
+- Current authoritative state: `agent/autonomous-build` is at `189f044`; linked local `main` is at `59e0551`, an ancestor. No `v1.0-ai-core` tag exists yet. Next action: one local `--no-ff` merge and tag, then read-only verification. Do not touch owner/protected modifications.

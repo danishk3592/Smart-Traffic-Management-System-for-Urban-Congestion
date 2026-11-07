@@ -1,9 +1,11 @@
 # T2.5 RL diagnostics
 
-**Evaluation date:** 2026-10-27 UTC  
-**Checkpoint:** `Ai/rl/models/ppo_v2_variant_waithalf/evaluations/20261026-182752/best_model.zip`  
-**Checkpoint SHA-256:** `9d0e3e82d8aab4e1d38c1e79ad29ec9e637ecd7001500a5b5aad3852c01bc467`  
-**Seeds/scenarios:** validation seeds 3000–3002; medium and heavy; same cached route per controller/scenario/seed.
+| Field | Value |
+|---|---|
+| Evaluation date | 2026-10-27 UTC |
+| Checkpoint | `Ai/rl/models/ppo_v2_variant_waithalf/evaluations/20261026-182752/best_model.zip` |
+| Checkpoint SHA-256 | `9d0e3e82d8aab4e1d38c1e79ad29ec9e637ecd7001500a5b5aad3852c01bc467` |
+| Seeds/scenarios | Validation seeds 3000–3002; medium and heavy; same cached route per controller/scenario/seed |
 
 ## Episode results
 

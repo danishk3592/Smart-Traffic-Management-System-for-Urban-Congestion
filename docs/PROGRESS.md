@@ -1,10 +1,10 @@
 # Project progress
 
-Updated: 2026-11-07 18:55 +05:30
+Updated: 2026-11-07 18:58 +05:30
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T6.1 Partial / T6.4 release | In progress | agent/autonomous-build | 189f044 (T6.4 aggregates) | T6.1 demo CLI commit `a2b92fa`; six seed-8000 demos passed, dashboard live-view unverified. T6.4 content audit/checkpoint passed; local merge/tag pending. Main `59e0551` is an ancestor; no tag exists. Final checkpoint Ruff clean, pytest 104 passed/23 deselected, SUMO suite 23 passed/104 deselected, zombie check clean. M1 model/config `7242ae0`; canonical M2 aggregates `189f044`. Four PPO development candidates each reached 1/12; accepted final remains 0/12.
+| T6.1 Partial / T6.4 release | T6.4 Done with documented T6.1 limitation | agent/autonomous-build -> main | `9396db5`, tag `v1.0-ai-core` | Local no-ff merge and annotated tag verified. Six seed-8000 demos passed; T6.1 dashboard live-view remains unverified. Final checkpoint: Ruff clean, pytest 104 passed/23 deselected, SUMO 23 passed/104 deselected, zombie check clean. Selected M1 model/config commit `7242ae0`; canonical M2 aggregate commit `189f044`. Four strict PPO development candidates reached 1/12 each; accepted final remains 0/12.
 
 ## T5.1 same-config equivalence complete (2026-11-06 16:49 +05:30)
 
@@ -280,8 +280,8 @@ The saved fixed/medium/seed-3000 summaries `20261027-133344_fixed_medium_s3000` 
 
 - 11:32 live poll: T6.1 single RL job `20261106-055458_e62da661` remained running with PID 19656 alive; log had advanced to 3660/7200 simulated seconds. Continue polling the same job.
 
-## T6.4 local release audit (2026-11-07 18:55 +05:30)
+## T6.4 local release completed (2026-11-07 18:58 +05:30)
 
-- Content audit and final checkpoint passed, but local merge/tag have not yet run. `agent/autonomous-build` is at `189f044`; linked `main` is at `59e0551`, an ancestor; no `v1.0-ai-core` tag exists. Next perform the one local `--no-ff` merge and tag, then verify the merge tree and tag target. No remote operations.
+- Local `--no-ff` merge of `agent/autonomous-build` into `main` completed at `9396db5`; annotated tag `v1.0-ai-core` points to that merge. Read-only verification confirms main contains the work branch and its worktree is clean. No remote operations. T6.1 remains Partial for desktop live-view verification; P1/P2 remain pending labels. M2 is DEC-14 Stage 4 hybrid with accepted strict PPO 0/12.
 
-- Current authoritative state: `agent/autonomous-build` is at `189f044`; linked local `main` is at `59e0551`, an ancestor. No `v1.0-ai-core` tag exists yet. Next action: one local `--no-ff` merge and tag, then read-only verification. Do not touch owner/protected modifications.
+- Current authoritative release state: `agent/autonomous-build` at `a7d1cbe` is contained in local `main` merge `9396db5`; annotated tag `v1.0-ai-core` points to `9396db5`. The main worktree is clean. No remote operation was run. Owner/protected modifications in the development worktree remain unstaged.

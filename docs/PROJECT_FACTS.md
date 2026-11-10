@@ -29,9 +29,9 @@
 
 | Group | Packages | Evidence / status |
 |---|---|---|
-| Runtime | `traci`, `sumolib`, `numpy`, `PyYAML`, `gymnasium`, `stable-baselines3`, `torch`, `psutil` | Imported by current code, RL scripts, or `scripts/check_zombies.py`; pinned in `requirements.txt`. |
+| Runtime | `traci`, `sumolib`, `numpy`, `PyYAML`, `gymnasium`, `stable-baselines3`, `torch`, `psutil`, `tensorboard` | Imported by current code, RL scripts, or `scripts/check_zombies.py`; pinned in `requirements.txt`. |
 | Development | `pytest`, `pytest-cov`, `pytest-timeout`, `ruff` | Test/lint tooling; pinned in `requirements-dev.txt`. |
-| Not direct project dependencies | `pandas`, `matplotlib`, `scikit-learn`, `joblib`, `tensorboard`, IPython/Jupyter packages, Qiskit, document/PDF packages, and other packages from the supplied inventory | No direct imports found in current project/test Python files. Some packages can still arrive transitively through the pinned RL stack. |
+| Not direct project dependencies | `pandas`, `matplotlib`, `scikit-learn`, `joblib`, IPython/Jupyter packages, Qiskit, document/PDF packages, and other packages from the supplied inventory | No direct imports found in current project/test Python files. Some packages can still arrive transitively through the pinned RL stack. |
 | Deferred web/database | FastAPI, Uvicorn, SQLAlchemy, psycopg2, Supabase, Alembic | No imports found; remain out of scope. |
 
 The import scan covered Python files under `Ai/`, `scripts/`, and `tests/`. Standard-library imports are not listed above.

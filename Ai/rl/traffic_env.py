@@ -43,8 +43,11 @@ class TrafficEnvironment(gym.Env[np.ndarray, int]):
         self.seeds = tuple(int(s) for s in (cached_seeds if seeds is None else seeds))
         if not self.scenario_pool or not self.seeds:
             raise ValueError("scenario_pool and seeds must be non-empty")
-        if any(s < 1000 or s > 1999 for s in self.seeds):
-            raise ValueError("training seeds must be in 1000–1999")
+        if any(
+            not (1000 <= seed <= 1999 or 3000 <= seed <= 3009)
+            for seed in self.seeds
+        ):
+            raise ValueError("seeds must be in the training block 1000–1999 or validation block 3000–3009")
         self.tls = dict(self.config["intersection"])
         self.tls.update({"tls_id": self.config["sumo"]["tls_id"],
                          "min_green_s": self.config["signal"]["min_green_s"],
@@ -165,7 +168,12 @@ class TrafficEnvironment(gym.Env[np.ndarray, int]):
         return to_vector(self.state, self.norm), float(reward), bool(terminated), bool(truncated), {
             "sim_time": self.client.sim_time, "phase": self.state.phase,
             "phase_elapsed": self.state.phase_elapsed_s, "action_taken": actual,
-            "illegal_action": bool(illegal), "queue_total": queue, "wait_total": mean_wait}
+            "illegal_action": bool(illegal), "queue_total": queue, "wait_total": mean_wait,
+            "forced_max_green_switches": self.safety.forced_max_green_switches,
+            "green_durations_by_phase": {
+                phase: list(durations)
+                for phase, durations in self.safety.green_durations_by_phase.items()
+            }}
 
     def close(self) -> None:
         """Stop SUMO; safe to call repeatedly."""

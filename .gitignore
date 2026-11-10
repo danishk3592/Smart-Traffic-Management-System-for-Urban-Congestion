@@ -16,6 +16,16 @@ htmlcov/
 .env
 .env.*
 !.env.example
+/secrets/
+**/secrets/
+/credentials/
+**/credentials/
+.secrets/
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
 
 # Generated SUMO outputs and cached scenario routes
 **/tripinfos.xml

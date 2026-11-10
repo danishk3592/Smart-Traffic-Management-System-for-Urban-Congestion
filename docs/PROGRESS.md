@@ -4,7 +4,7 @@ Updated: 2026-11-10
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| Release status review | T6.4 release is complete; T6.1 remains Partial; full PPO coverage was not achieved | agent/autonomous-build | `40a669d` (`docs: record remaining blockers and PPO plateau`); release merge `9396db5`, tag `v1.0-ai-core` | At review on 2026-11-10, HEAD remains `40a669dad7264bb05ad0d37ce1c0f41ab565d7de`. T5.1 and T5.4 are Done. T6.1 still needs genuine fresh-run dashboard captures with displayed-value checks; existing screenshots show a historical completed run. M1 Metric B improvement is 9.229% (10% target not met). Accepted M2 is DEC-14 Stage 4 hybrid, 25.84% below fixed with 100% completion, but strict PPO coverage is 0/12 (none); this does not meet the full-network AI objective. T6.4 local release merge/tag is complete. The worktree contains pre-existing uncommitted changes; this status update does not stage or commit them.
+| Release status review | T6.4 release is complete; T6.1 is Blocked on live UI evidence; full PPO coverage was not achieved | agent/autonomous-build | `b28e708` (`docs: reconcile project status records`); release merge `9396db5`, tag `v1.0-ai-core` | At the start of this 2026-11-10 recheck, HEAD was `b28e7085d4142ab7b38aab003cdeb15c71f298d8`. T5.1 and T5.4 are Done. T6.1 still needs genuine fresh-run dashboard captures with displayed-value checks; the native computer-use pipe failed on initial, retry, and reset/retry calls, and the alternate CUA surface exposed no apps/windows. M1 Metric B improvement is 9.229% (10% target not met). Accepted M2 is DEC-14 Stage 4 hybrid, 25.84% below fixed with 100% completion, but strict PPO coverage is 0/12 (none); this does not meet the full-network AI objective. T6.4 local release merge/tag is complete. The remaining worktree changes are preserved.
 
 ## Status reconciliation (2026-11-10)
 
@@ -12,6 +12,12 @@ Updated: 2026-11-10
 - Current roadmap tracker records T5.1–T5.4 and T6.2–T6.4 as Done; T6.1 remains Partial pending fresh-run dashboard visual evidence. T6.4 and the local `v1.0-ai-core` tag are complete.
 - Product/release completion and research objective completion differ: the release records a measured Stage 4 hybrid M2 result, while strict PPO ownership is 0/12, so full intended-junction AI control has not been demonstrated. M1's 10% target is also not met.
 - Older dated entries below preserve the state and decisions recorded at those checkpoints; the current status above and the roadmap Section 12 tracker are authoritative.
+
+## T6.1 live UI evidence recheck (2026-11-10)
+
+- Rechecked the Windows computer-use bridge using its documented recovery path: initial inventory, a 2-second retry, reset/reinitialization, and another 2-second retry. Each `sky.list_apps()` call failed with `Computer Use native pipe is unavailable: failed to connect native pipe: The system cannot find the file specified. (os error 2)`. The separate CUA inventory returned `apps: []`, `browsers: []`, with native-app and browser-host errors.
+- No dashboard window was exposed, so no fresh screenshot or displayed-value comparison could be captured. The prior source telemetry, six demo runs, code fix and Flutter checks remain valid but do not satisfy visual acceptance. T6.1 is Blocked pending an operational Windows UI bridge or genuine owner-captured screenshots correlated with the live run source files. No simulation or test was run during this recheck.
+- Resume audit found seven job records still labelled `running`, with all seven recorded process IDs dead. Their logs belong to earlier gate, evaluation or seed-8000 attempts; the roadmap tasks and accepted evaluation/demo outputs are already recorded as complete, so none was restarted or allowed to duplicate a frozen final-seed run.
 
 ## Master prompt continuation (2026-11-08)
 

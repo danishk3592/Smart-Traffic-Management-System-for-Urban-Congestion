@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 from pathlib import Path
 
@@ -75,6 +76,67 @@ def test_summary_exact_completed_censored_and_route_membership(tmp_path: Path) -
         written = next(csv.DictReader(stream))
     assert list(written) == list(SUMMARY_FIELDS)
     assert "nan" not in {str(value).lower() for value in written.values()}
+
+
+def test_config_hash_is_provenance_not_a_behavioral_metric(tmp_path: Path) -> None:
+    def summarize_project(
+        project_root: Path,
+        run_id: str,
+        wall_clock_s: float,
+        config_text: str,
+    ) -> dict[str, object]:
+        (project_root / "config").mkdir(parents=True)
+        config_path = project_root / "config" / "stms.yaml"
+        config_path.write_text(config_text, encoding="utf-8")
+        run_dir = project_root / "results" / "raw" / run_id
+        run_dir.mkdir(parents=True)
+        (run_dir / "run.json").write_text(
+            json.dumps({
+                "run_id": run_id,
+                "controller": "fixed",
+                "scenario": "medium",
+                "seed": 3000,
+                "sim_end_time": 60,
+                "wall_clock_s": wall_clock_s,
+                "teleports": 0,
+            }),
+            encoding="utf-8",
+        )
+        _write_csv(run_dir / "trips.csv", (
+            "vehicle_id", "scheduled_depart", "depart_delay", "duration", "trip_time",
+            "waiting_time", "time_loss", "route_length", "completed",
+            "route_through_junction", "passed_controlled_junction",
+        ), [{
+            "vehicle_id": "vehicle-1", "scheduled_depart": 0, "depart_delay": 0,
+            "duration": 10, "trip_time": 10, "waiting_time": 2, "time_loss": 1,
+            "route_length": 100, "completed": True, "route_through_junction": True,
+            "passed_controlled_junction": True,
+        }])
+        _write_csv(run_dir / "steps.csv", ("sim_time", "halting", "congestion"), [{
+            "sim_time": 0, "halting": 0, "congestion": "Low",
+        }])
+        return summarize_run(run_dir)
+
+    before_config = "sumo:\n  tls_id: pilot\n# generated before dashboard instrumentation\n"
+    after_config = "sumo:\n  tls_id: pilot\n# generated after dashboard instrumentation\n"
+    before = summarize_project(
+        tmp_path / "before", "before", 1.0, before_config,
+    )
+    after = summarize_project(
+        tmp_path / "after", "after", 2.0, after_config,
+    )
+
+    before_bytes = (tmp_path / "before" / "config" / "stms.yaml").read_bytes()
+    after_bytes = (tmp_path / "after" / "config" / "stms.yaml").read_bytes()
+    assert before["config_hash"] == hashlib.sha256(before_bytes).hexdigest()
+    assert after["config_hash"] == hashlib.sha256(after_bytes).hexdigest()
+    assert before["config_hash"] != after["config_hash"]
+    ignored_provenance = {"run_id", "wall_clock_s", "config_hash"}
+    assert {
+        key: value for key, value in before.items() if key not in ignored_provenance
+    } == {
+        key: value for key, value in after.items() if key not in ignored_provenance
+    }
 
 
 def test_route_membership_requires_a_controlled_edge_pair(tmp_path: Path) -> None:

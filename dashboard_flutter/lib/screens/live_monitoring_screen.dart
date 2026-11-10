@@ -23,7 +23,20 @@ class _MonitoringState extends State<_Monitoring> {
         ? selected
         : (ids.isEmpty ? null : ids.first);
     final chosen = rows.where((r) => r['intersection_id'] == selected).toList();
-    final current = chosen.isEmpty ? null : chosen.last;
+    final sampleTimes = chosen
+        .map((r) => double.tryParse(r['sim_time'] ?? ''))
+        .whereType<double>();
+    final latestSimTime = sampleTimes.isEmpty
+        ? null
+        : sampleTimes.reduce((a, b) => a > b ? a : b);
+    final latestApproaches = latestSimTime == null
+        ? (chosen.isEmpty ? <Map<String, String>>[] : [chosen.last])
+        : chosen
+              .where(
+                (r) => double.tryParse(r['sim_time'] ?? '') == latestSimTime,
+              )
+              .toList();
+    final current = latestApproaches.isEmpty ? null : latestApproaches.last;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -90,7 +103,9 @@ class _MonitoringState extends State<_Monitoring> {
               flex: 3,
               child: _Panel(
                 title: 'APPROACH TELEMETRY',
-                subtitle: 'Approaches are discovered from recorded rows',
+                subtitle: latestSimTime == null
+                    ? 'Latest recorded approach sample'
+                    : 'Latest sample • sim time ${latestSimTime.toStringAsFixed(1)} s',
                 child: chosen.isEmpty
                     ? const _Empty(text: 'No approach rows for this junction')
                     : _DataTable(
@@ -101,7 +116,7 @@ class _MonitoringState extends State<_Monitoring> {
                           'Mean speed',
                           'Wait',
                         ],
-                        rows: chosen
+                        rows: latestApproaches
                             .map(
                               (r) => [
                                 r['approach'] ?? '—',

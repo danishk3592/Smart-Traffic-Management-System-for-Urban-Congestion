@@ -105,7 +105,7 @@ class NetworkValidationCallback(BaseCallback):
         return aggregate
 
     def _on_step(self) -> bool:
-        if self.model.stop_training:
+        if getattr(self.model, "stop_training", False):
             return False
         if self.num_timesteps >= self.next_timestep:
             previous_best = self.best_censored_time

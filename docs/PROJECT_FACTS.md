@@ -1,6 +1,6 @@
 # Project facts and environment audit
 
-**Audit date:** 2026-10-25. Facts marked verified below came from commands run in this checkout. The target ASUS specifications are user-provided and were not measured.
+**Audit date:** 2026-10-25; environment recheck: 2026-11-04. Facts marked verified below came from commands run in this checkout. The target ASUS specifications are user-provided and were not measured.
 
 ## Current repository and checkpoint
 
@@ -17,11 +17,11 @@
 
 ## Python and package compatibility
 
-- **Verified project interpreter:** `Ai/.venv/Scripts/python.exe`, Python `3.14.2`.
+- **Verified project interpreter (2026-11-04):** `Ai/.venv/Scripts/python.exe`, Python `3.14.10`. The 2026-10-25 audit recorded Python 3.14.2; both are within the configured 3.14.x setup target.
 - **Verified relevant installed versions:** Gymnasium `1.4.0`; NumPy `2.5.4`; PyYAML `6.0.3`; Stable-Baselines3 `2.9.0`; Torch `2.14.1+cpu`; TraCI and sumolib `1.27.1`; psutil `7.2.2`.
 - **CUDA status in the verified environment:** Torch reports a CPU build (`torch.version.cuda` is `None`) and `torch.cuda.is_available()` is `False`. CPU is the supported default; this says nothing about the target laptop's CUDA capability.
-- `pyproject.toml` declares `requires-python = ">=3.10"`. The full current stack was actually verified only with Python 3.14.2. PyTorch's official Windows documentation currently lists Python 3.10–3.14 as supported; the setup script targets Python 3.14.x. Other minor versions have not been tested for this repository.
-- The root runtime/dev requirements now pin direct dependencies, and `requirements.lock.txt` records the verified Windows environment's pinned dependency closure. Optional vision bounds are separate and unvalidated.
+- `pyproject.toml` declares `requires-python = ">=3.10"`. The full current runtime/dev stack has been checked on Python 3.14.2 historically and Python 3.14.10 on 2026-11-04; the setup script targets Python 3.14.x. Other minor versions have not been verified here.
+- The root runtime/dev requirements pin direct dependencies, and `requirements.lock.txt` records the verified Windows environment's pinned dependency closure. Removed-scope vision packages are not project dependencies.
 - The existing `Ai/.venv`'s `pip freeze` currently points its editable project install at `C:\Users\empow\AppData\Local\Temp\STMS_phase0_foundation_20261020`; this setup task did not alter that pre-existing environment. The full setup script installs the current checkout as editable after installing the lock.
 - The legacy dependency inventory in `Ai/requirements.txt` included packages with no imports in the current source tree (for example Qiskit, PyMuPDF, python-docx, and IPython); it now includes the root runtime and dev files instead of pinning that inventory.
 
@@ -31,11 +31,10 @@
 |---|---|---|
 | Runtime | `traci`, `sumolib`, `numpy`, `PyYAML`, `gymnasium`, `stable-baselines3`, `torch`, `psutil` | Imported by current code, RL scripts, or `scripts/check_zombies.py`; pinned in `requirements.txt`. |
 | Development | `pytest`, `pytest-cov`, `pytest-timeout`, `ruff` | Test/lint tooling; pinned in `requirements-dev.txt`. |
-| Optional vision | `opencv-python`, `ultralytics` | No imports in current source; deferred to the vision phase and not installed by Windows setup. |
 | Not direct project dependencies | `pandas`, `matplotlib`, `scikit-learn`, `joblib`, `tensorboard`, IPython/Jupyter packages, Qiskit, document/PDF packages, and other packages from the supplied inventory | No direct imports found in current project/test Python files. Some packages can still arrive transitively through the pinned RL stack. |
 | Deferred web/database | FastAPI, Uvicorn, SQLAlchemy, psycopg2, Supabase, Alembic | No imports found; remain out of scope. |
 
-The import scan covered Python files under `Ai/`, `scripts/`, `tests/`, `prediction/`, and `vision/`. Standard-library imports are not listed above.
+The import scan covered Python files under `Ai/`, `scripts/`, and `tests/`. Standard-library imports are not listed above.
 
 ## SUMO facts
 

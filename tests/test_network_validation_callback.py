@@ -98,6 +98,20 @@ def test_network_validation_skips_episode_after_budget_stop(tmp_path: Path) -> N
     assert not (tmp_path / "best_model.zip").exists()
 
 
+def test_network_validation_accepts_new_model_before_stop_flag_is_created(tmp_path: Path) -> None:
+    env = _EvalEnv()
+    callback = NetworkValidationCallback(
+        env,
+        [("net_medium", 3000), ("net_heavy", 3001), ("net_rush_hour", 3002)],
+        20_000,
+        tmp_path,
+    )
+    callback.model = SimpleNamespace(num_timesteps=0)
+
+    assert callback._on_step()
+    assert env.evaluation == 0
+
+
 def test_censored_network_metric_excludes_unfinished_tripinfo_arrivals() -> None:
     metrics = _censored_trip_metrics(
         {"finished": 0.0, "unfinished": 10.0},

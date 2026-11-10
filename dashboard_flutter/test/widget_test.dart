@@ -398,6 +398,72 @@ void main() {
     await tester.pumpWidget(const SizedBox.shrink());
   });
 
+  testWidgets('live monitoring refreshes to the newest complete approach sample', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1600, 1000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final dir = Directory(
+      '${Directory.current.path}/.test-tmp/live-sample-${DateTime.now().microsecondsSinceEpoch}',
+    );
+    dir.createSync(recursive: true);
+    addTearDown(() => dir.delete(recursive: true));
+    const stepsHeader =
+        'run_id,controller,scenario,seed,sim_time,intersection_id,approach,vehicles,halting,mean_speed,wait_time,phase,phase_elapsed,signal_state,action,action_accepted,congestion\n';
+    const initialSample =
+        'run-live,fixed,medium,8000,5,tls-a,north,0,0,0.0,0.0,0,5,G,hold,true,Low\n'
+        'run-live,fixed,medium,8000,5,tls-a,east,0,0,0.0,0.0,0,5,G,hold,true,Low\n';
+    final runDir = Directory('${dir.path}/results/raw/run-live');
+    runDir.createSync(recursive: true);
+    File('${runDir.path}/summary.csv').writeAsStringSync(
+      '$_summaryHeader'
+      'run-live,fixed,medium,8000,abc,hash,1,10,10,10,0,1,1,100,100,100,100,3.5,4,0,2,5,12,0,0,10,1,single,1,0,none,,\n',
+    );
+    final stepsFile = File('${runDir.path}/steps.csv');
+    stepsFile.writeAsStringSync('$stepsHeader$initialSample');
+    final statusFile = File('${runDir.path}/status.json');
+    void writeStatus(int simTime) => statusFile.writeAsStringSync(
+      '{"schema_version":1,"run_id":"run-live","state":"running",'
+      '"family":"single","controller":"fixed","scenario":"medium",'
+      '"seed":8000,"sim_time":$simTime,"max_sim_s":7200,"n_tls_controlled":1,'
+      '"started_utc":"2026-11-08T00:00:00Z",'
+      '"updated_utc":"${DateTime.now().toUtc().toIso8601String()}","error":null}',
+    );
+    writeStatus(5);
+
+    final store = DashboardStore();
+    await tester.runAsync(() => store.loadFolder(dir.path));
+    await tester.pumpWidget(StmsApp(initialStore: store));
+    await tester.tap(find.text('Live Monitoring'));
+    await tester.pump();
+    expect(find.text('Latest sample • sim time 5.0 s'), findsOneWidget);
+
+    stepsFile.writeAsStringSync(
+      'run-live,fixed,medium,8000,10,tls-a,north,4,3,2.5,8.0,2,5,rrG,hold,true,Medium\n'
+      'run-live,fixed,medium,8000,10,tls-a,east,2,1,3.5,4.0,2,5,rrG,hold,true,Low\n',
+      mode: FileMode.append,
+      flush: true,
+    );
+    writeStatus(10);
+    await tester.runAsync(store.refreshNow);
+    await tester.pump();
+
+    expect(store.runState, 'running');
+    expect(find.text('Latest sample • sim time 10.0 s'), findsOneWidget);
+    final approachTable = tester.widget<DataTable>(
+      find.byType(DataTable).first,
+    );
+    expect(approachTable.rows, hasLength(2));
+    String cellText(DataCell cell) =>
+        (((cell.child as SizedBox).child) as Text).data!;
+    expect(approachTable.rows.map((row) => cellText(row.cells[1])), ['4', '2']);
+    expect(approachTable.rows.map((row) => cellText(row.cells[2])), ['3', '1']);
+
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
   test('refreshes a selected run summary created after the directory scan', () async {
     final dir = await Directory.systemTemp.createTemp(
       'stms-dashboard-summary-refresh-',

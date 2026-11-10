@@ -1,0 +1,462 @@
+{
+  "purpose": "Source-only observations for T6.1 fresh live demo; no UI screenshot captured.",
+  "run_id": "20261108-185632_fixed_net_medium_s8001",
+  "configuration": {
+    "command": "Ai/.venv/Scripts/python.exe -m scripts.run_demo --family network --controller fixed --scenario net_medium --seed 8001",
+    "scenario_config": "SUMO/scenarios/net_medium/net_medium.sumocfg",
+    "seed": 8001,
+    "max_sim_s": 7200
+  },
+  "status_path": "results\\raw\\20261108-185632_fixed_net_medium_s8001\\status.json",
+  "steps_path": "results\\raw\\20261108-185632_fixed_net_medium_s8001\\steps.csv",
+  "observations": [
+    {
+      "observed_local": "2026-11-08T18:59:19.176+05:30",
+      "run_id": "20261108-185632_fixed_net_medium_s8001",
+      "state": "running",
+      "status_sim_time_s": 2540.0,
+      "status_updated_utc": "2026-11-08T13:29:18.858601+00:00",
+      "steps_latest_complete_sim_time_s": 2540.0,
+      "step_rows_at_latest": 48,
+      "vehicle_total": 10,
+      "halting_total": 6,
+      "nonzero_approach_count": 8,
+      "approaches": [
+        {
+          "intersection_id": "2387385680",
+          "approach": "approach_2",
+          "vehicles": 1,
+          "halting": 0,
+          "wait_time_s": 0.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "GS_2407671508",
+          "approach": "approach_1",
+          "vehicles": 1,
+          "halting": 0,
+          "wait_time_s": 0.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "GS_2407671508",
+          "approach": "approach_3",
+          "vehicles": 1,
+          "halting": 0,
+          "wait_time_s": 0.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "GS_2407671508",
+          "approach": "approach_4",
+          "vehicles": 1,
+          "halting": 0,
+          "wait_time_s": 0.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "GS_cluster_12067305554_6017833806_6017833807_6131076159",
+          "approach": "approach_1",
+          "vehicles": 1,
+          "halting": 1,
+          "wait_time_s": 10.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "cluster11259448953_11259448962_11259448969_cluster_11259448960_11259448961_11259448963",
+          "approach": "approach_4",
+          "vehicles": 1,
+          "halting": 1,
+          "wait_time_s": 21.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "cluster11259448953_11259448962_11259448969_cluster_11259448960_11259448961_11259448963",
+          "approach": "approach_5",
+          "vehicles": 3,
+          "halting": 3,
+          "wait_time_s": 9.666666666666666,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "cluster_306608060_6131903446",
+          "approach": "approach_4",
+          "vehicles": 1,
+          "halting": 1,
+          "wait_time_s": 54.0,
+          "congestion": "Low"
+        }
+      ]
+    },
+    {
+      "observed_local": "2026-11-08T18:59:23.441+05:30",
+      "run_id": "20261108-185632_fixed_net_medium_s8001",
+      "state": "running",
+      "status_sim_time_s": 2595.0,
+      "status_updated_utc": "2026-11-08T13:29:22.871749+00:00",
+      "steps_latest_complete_sim_time_s": 2600.0,
+      "step_rows_at_latest": 48,
+      "vehicle_total": 12,
+      "halting_total": 9,
+      "nonzero_approach_count": 6,
+      "approaches": [
+        {
+          "intersection_id": "cluster11259448953_11259448962_11259448969_cluster_11259448960_11259448961_11259448963",
+          "approach": "approach_5",
+          "vehicles": 3,
+          "halting": 3,
+          "wait_time_s": 27.333333333333332,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "cluster11260122965_12067305543_12067305544_cluster_11260122968_1608973468_2110371293",
+          "approach": "approach_4",
+          "vehicles": 1,
+          "halting": 0,
+          "wait_time_s": 0.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "cluster11260122965_12067305543_12067305544_cluster_11260122968_1608973468_2110371293",
+          "approach": "approach_5",
+          "vehicles": 1,
+          "halting": 0,
+          "wait_time_s": 0.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "cluster11374930007_11374930012_cluster_11374930008_11374930009_11374930010_11374930011",
+          "approach": "approach_2",
+          "vehicles": 1,
+          "halting": 1,
+          "wait_time_s": 46.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "cluster618250255_7478115627_cluster_11927462278_11927462280_7478115626_7479633881",
+          "approach": "approach_2",
+          "vehicles": 3,
+          "halting": 3,
+          "wait_time_s": 10.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "cluster_6633301856_7432359269_7432359283_7432359284",
+          "approach": "approach_1",
+          "vehicles": 3,
+          "halting": 2,
+          "wait_time_s": 2.5,
+          "congestion": "Low"
+        }
+      ]
+    },
+    {
+      "observed_local": "2026-11-08T18:59:27.711+05:30",
+      "run_id": "20261108-185632_fixed_net_medium_s8001",
+      "state": "running",
+      "status_sim_time_s": 2655.0,
+      "status_updated_utc": "2026-11-08T13:29:27.277003+00:00",
+      "steps_latest_complete_sim_time_s": 2660.0,
+      "step_rows_at_latest": 48,
+      "vehicle_total": 14,
+      "halting_total": 9,
+      "nonzero_approach_count": 11,
+      "approaches": [
+        {
+          "intersection_id": "GS_2407671508",
+          "approach": "approach_1",
+          "vehicles": 1,
+          "halting": 1,
+          "wait_time_s": 35.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "GS_2407671508",
+          "approach": "approach_3",
+          "vehicles": 1,
+          "halting": 1,
+          "wait_time_s": 6.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "GS_cluster_11178931802_11178931803_2414626606_6887565739",
+          "approach": "approach_1",
+          "vehicles": 1,
+          "halting": 0,
+          "wait_time_s": 0.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "GS_cluster_11178931802_11178931803_2414626606_6887565739",
+          "approach": "approach_3",
+          "vehicles": 1,
+          "halting": 1,
+          "wait_time_s": 31.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "GS_cluster_12067305554_6017833806_6017833807_6131076159",
+          "approach": "approach_3",
+          "vehicles": 2,
+          "halting": 1,
+          "wait_time_s": 15.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "cluster11259448953_11259448962_11259448969_cluster_11259448960_11259448961_11259448963",
+          "approach": "approach_1",
+          "vehicles": 1,
+          "halting": 0,
+          "wait_time_s": 0.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "cluster11259448953_11259448962_11259448969_cluster_11259448960_11259448961_11259448963",
+          "approach": "approach_2",
+          "vehicles": 1,
+          "halting": 0,
+          "wait_time_s": 0.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "cluster11259448953_11259448962_11259448969_cluster_11259448960_11259448961_11259448963",
+          "approach": "approach_3",
+          "vehicles": 1,
+          "halting": 1,
+          "wait_time_s": 51.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "cluster11259448953_11259448962_11259448969_cluster_11259448960_11259448961_11259448963",
+          "approach": "approach_5",
+          "vehicles": 3,
+          "halting": 3,
+          "wait_time_s": 87.33333333333333,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "cluster11260122965_12067305543_12067305544_cluster_11260122968_1608973468_2110371293",
+          "approach": "approach_3",
+          "vehicles": 1,
+          "halting": 0,
+          "wait_time_s": 0.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "cluster_2447849296_306618051",
+          "approach": "approach_4",
+          "vehicles": 1,
+          "halting": 1,
+          "wait_time_s": 6.0,
+          "congestion": "Low"
+        }
+      ]
+    },
+    {
+      "observed_local": "2026-11-08T18:59:31.986+05:30",
+      "run_id": "20261108-185632_fixed_net_medium_s8001",
+      "state": "running",
+      "status_sim_time_s": 2715.0,
+      "status_updated_utc": "2026-11-08T13:29:31.663118+00:00",
+      "steps_latest_complete_sim_time_s": 2715.0,
+      "step_rows_at_latest": 48,
+      "vehicle_total": 17,
+      "halting_total": 13,
+      "nonzero_approach_count": 11,
+      "approaches": [
+        {
+          "intersection_id": "GS_2407671508",
+          "approach": "approach_2",
+          "vehicles": 1,
+          "halting": 0,
+          "wait_time_s": 0.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "GS_2407671508",
+          "approach": "approach_3",
+          "vehicles": 1,
+          "halting": 0,
+          "wait_time_s": 0.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "cluster11259448953_11259448962_11259448969_cluster_11259448960_11259448961_11259448963",
+          "approach": "approach_1",
+          "vehicles": 2,
+          "halting": 2,
+          "wait_time_s": 31.5,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "cluster11259448953_11259448962_11259448969_cluster_11259448960_11259448961_11259448963",
+          "approach": "approach_2",
+          "vehicles": 1,
+          "halting": 1,
+          "wait_time_s": 47.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "cluster11259448953_11259448962_11259448969_cluster_11259448960_11259448961_11259448963",
+          "approach": "approach_5",
+          "vehicles": 3,
+          "halting": 3,
+          "wait_time_s": 9.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "cluster11260122965_12067305543_12067305544_cluster_11260122968_1608973468_2110371293",
+          "approach": "approach_3",
+          "vehicles": 1,
+          "halting": 1,
+          "wait_time_s": 50.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "cluster11260122965_12067305543_12067305544_cluster_11260122968_1608973468_2110371293",
+          "approach": "approach_4",
+          "vehicles": 1,
+          "halting": 0,
+          "wait_time_s": 0.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "cluster11374930007_11374930012_cluster_11374930008_11374930009_11374930010_11374930011",
+          "approach": "approach_2",
+          "vehicles": 3,
+          "halting": 3,
+          "wait_time_s": 18.666666666666668,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "cluster11374930007_11374930012_cluster_11374930008_11374930009_11374930010_11374930011",
+          "approach": "approach_4",
+          "vehicles": 2,
+          "halting": 2,
+          "wait_time_s": 28.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "cluster_306608060_6131903446",
+          "approach": "approach_4",
+          "vehicles": 1,
+          "halting": 0,
+          "wait_time_s": 0.0,
+          "congestion": "Low"
+        },
+        {
+          "intersection_id": "cluster_6633301856_7432359269_7432359283_7432359284",
+          "approach": "approach_4",
+          "vehicles": 1,
+          "halting": 1,
+          "wait_time_s": 14.0,
+          "congestion": "Low"
+        }
+      ]
+    },
+    {
+      "observed_local": "2026-11-08T19:01:10+05:30",
+      "run_id": "20261108-185632_fixed_net_medium_s8001",
+      "state": "running",
+      "status_sim_time_s": 4035.0,
+      "status_updated_utc": "2026-11-08T13:31:10.181862+00:00",
+      "steps_latest_complete_sim_time_s": 4040.0,
+      "step_rows_at_latest": 48,
+      "vehicle_total": 4,
+      "halting_total": 3,
+      "nonzero_approach_count": 2
+    },
+    {
+      "observed_local": "2026-11-08T19:01:21+05:30",
+      "run_id": "20261108-185632_fixed_net_medium_s8001",
+      "state": "running",
+      "status_sim_time_s": 4190.0,
+      "status_updated_utc": "2026-11-08T13:31:20.712938+00:00",
+      "steps_latest_complete_sim_time_s": 4195.0,
+      "step_rows_at_latest": 48,
+      "vehicle_total": 5,
+      "halting_total": 3,
+      "nonzero_approach_count": 2
+    },
+    {
+      "observed_local": "2026-11-08T19:01:31+05:30",
+      "run_id": "20261108-185632_fixed_net_medium_s8001",
+      "state": "running",
+      "status_sim_time_s": 4340.0,
+      "status_updated_utc": "2026-11-08T13:31:30.827985+00:00",
+      "steps_latest_complete_sim_time_s": 4350.0,
+      "step_rows_at_latest": 48,
+      "vehicle_total": 3,
+      "halting_total": 2,
+      "nonzero_approach_count": 1
+    },
+    {
+      "observed_local": "2026-11-08T19:01:41+05:30",
+      "run_id": "20261108-185632_fixed_net_medium_s8001",
+      "state": "running",
+      "status_sim_time_s": 4505.0,
+      "status_updated_utc": "2026-11-08T13:31:41.276561+00:00",
+      "steps_latest_complete_sim_time_s": 4515.0,
+      "step_rows_at_latest": 48,
+      "vehicle_total": 4,
+      "halting_total": 3,
+      "nonzero_approach_count": 3
+    },
+    {
+      "observed_local": "2026-11-08T19:01:52+05:30",
+      "run_id": "20261108-185632_fixed_net_medium_s8001",
+      "state": "running",
+      "status_sim_time_s": 4665.0,
+      "status_updated_utc": "2026-11-08T13:31:51.746621+00:00",
+      "steps_latest_complete_sim_time_s": 4670.0,
+      "step_rows_at_latest": 48,
+      "vehicle_total": 5,
+      "halting_total": 4,
+      "nonzero_approach_count": 4
+    },
+    {
+      "observed_local": "2026-11-08T19:02:02+05:30",
+      "run_id": "20261108-185632_fixed_net_medium_s8001",
+      "state": "running",
+      "status_sim_time_s": 4830.0,
+      "status_updated_utc": "2026-11-08T13:32:02.229694+00:00",
+      "steps_latest_complete_sim_time_s": 4835.0,
+      "step_rows_at_latest": 48,
+      "vehicle_total": 3,
+      "halting_total": 2,
+      "nonzero_approach_count": 1
+    },
+    {
+      "observed_local": "2026-11-08T19:02:13+05:30",
+      "run_id": "20261108-185632_fixed_net_medium_s8001",
+      "state": "finished",
+      "status_sim_time_s": 4978.0,
+      "status_updated_utc": "2026-11-08T13:32:12.220138+00:00",
+      "steps_latest_complete_sim_time_s": 4975.0,
+      "step_rows_at_latest": 48,
+      "vehicle_total": 0,
+      "halting_total": 0,
+      "nonzero_approach_count": 0
+    }
+  ],
+  "completion": {
+    "state": "finished",
+    "sim_end_time_s": 4978.0,
+    "trips": 650,
+    "completed": 650,
+    "teleports": 7,
+    "wall_clock_s": 337.89542340000025,
+    "summary_csv_fields": {
+      "completion_rate": "1.0",
+      "avg_wait": "129.1276923076923",
+      "avg_queue": "8.474371859296483",
+      "throughput_veh_per_min": "7.834471675371635",
+      "teleports": "7",
+      "sim_end_time": "4978.0",
+      "wall_clock_s": "337.89542340000025",
+      "n_tls_controlled": "12",
+      "n_tls_ai": "0",
+      "ai_coverage": "none"
+    }
+  }
+}

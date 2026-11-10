@@ -26,14 +26,17 @@ flowchart LR
 - The project metadata permits Python 3.10+, but the complete dependency stack has been verified locally on Python 3.14.x only.
 - Ubuntu command-line use is intended, but it has not been validated in this workspace.
 
-Install Python 3.14.x and SUMO 1.27.1, ensure `sumo`, `sumo-gui`, `duarouter`, and `netconvert` are on `PATH`, then run from PowerShell:
+Install Python 3.14.x and SUMO 1.27.1, ensure `sumo`, `sumo-gui`, `duarouter`, and `netconvert` are on `PATH`, then run the one-step setup from the repository root:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup_windows.ps1 -CheckOnly
-Ai/.venv/Scripts/python.exe scripts/check_environment.py
+.\setup.bat
 ```
 
-For a new Windows environment, run `scripts/setup_windows.ps1` without `-CheckOnly` to install the pinned packages; it does not overwrite an existing virtual environment. For Ubuntu, install the same Python and SUMO versions from their upstream packages, create/activate `Ai/.venv`, install `requirements.txt` and `requirements-dev.txt`, and verify `SUMO_HOME` plus the four SUMO commands. This setup path has not been run on Ubuntu.
+This creates `Ai/.venv` when needed, installs the pinned Python packages and editable project, runs `flutter pub get` when Flutter is installed, and checks the environment. It reuses an existing `Ai/.venv` and does not replace it. After pulling updates, run `setup.bat` again to reconcile dependencies. Flutter is optional for simulation and Python CLI use; install the Flutter SDK if you also want the desktop dashboard.
+
+Git does not run repository scripts automatically during clone or pull. Run `setup.bat` once after cloning, and again after pulling dependency changes; this keeps installation visible and under the user's control.
+
+For a read-only environment check, use `setup.bat -CheckOnly`. To skip Flutter dependency resolution, use `setup.bat -SkipFlutter`. For Ubuntu, install Python and SUMO from their upstream packages, create/activate `Ai/.venv`, install `requirements.txt` and `requirements-dev.txt`, and verify `SUMO_HOME` plus the four SUMO commands. This setup path has not been run on Ubuntu.
 
 The unverified Ubuntu Python setup commands are:
 

@@ -9,6 +9,7 @@ Install these before cloning:
 1. **64-bit Python 3.14** from [python.org](https://www.python.org/downloads/). The repository metadata permits Python 3.10+, but this dependency set was verified locally on Python 3.14.10 on 2026-11-05. The Windows lock file was originally captured on Python 3.14.2 and rechecked on 3.14.10. PyTorch's Windows support in the verified environment covers this Python version.
 2. **Eclipse SUMO 1.27.1 for Windows** from the [official SUMO downloads](https://sumo.dlr.de/userdoc/Downloads.php). This matches the repository's pinned `traci` and `sumolib` packages. The newer SUMO release may need a coordinated package/config update; the setup checker intentionally requires 1.27.1.
 3. **Git for Windows**.
+4. **Flutter SDK** (optional; required only for the desktop dashboard). Add `flutter` to `PATH` so setup can resolve the dashboard packages automatically.
 
 The SUMO installer normally adds its executables to `PATH` and sets `SUMO_HOME`. If that did not happen, configure `SUMO_HOME` to the SUMO installation directory and add its `bin` directory to `PATH`, then open a new PowerShell window. The checker requires `sumo`, `sumo-gui`, `duarouter`, and `netconvert`.
 
@@ -19,10 +20,12 @@ Open PowerShell in the directory where you keep projects and run:
 ```powershell
 git clone https://github.com/hannanahmedqureshi786-eng/smart-traffic-management-system.git
 cd smart-traffic-management-system
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup_windows.ps1
+.\setup.bat
 ```
 
-The script creates `Ai/.venv` with Python 3.14, installs the pinned Windows dependency lock and editable project package, and runs the environment checker. It will not replace an existing `Ai/.venv`; if one already exists, the script checks it and installs into it. If it uses a different Python minor version, the script stops with an error and preserves it.
+The setup launcher creates `Ai/.venv` with Python 3.14, installs the pinned Windows dependency lock and editable project package, resolves Flutter packages if Flutter is installed, and runs the environment checker. It will not replace an existing `Ai/.venv`; if one already exists, the script checks it and installs into it. If it uses a different Python minor version, the script stops with an error and preserves it. After a `git pull`, run `setup.bat` again to reconcile dependencies.
+
+Git does not execute setup scripts automatically on clone or pull. Running this launcher is the one-step, explicit first-run setup; rerun it after pulling dependency changes.
 
 Then activate the environment and verify again:
 

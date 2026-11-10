@@ -1,6 +1,7 @@
 [CmdletBinding()]
 param(
-    [switch]$CheckOnly
+    [switch]$CheckOnly,
+    [switch]$SkipFlutter
 )
 
 $ErrorActionPreference = 'Stop'
@@ -63,6 +64,23 @@ try {
         Invoke-Checked -Executable $venvPython -Arguments @('-m', 'pip', 'install', '--no-deps', '--index-url', 'https://download.pytorch.org/whl/cpu', 'torch==2.14.1') -Purpose 'Installing CPU PyTorch'
         Invoke-Checked -Executable $venvPython -Arguments @('-m', 'pip', 'install', '-r', (Join-Path $repoRoot 'requirements.lock.txt')) -Purpose 'Installing the pinned project dependencies'
         Invoke-Checked -Executable $venvPython -Arguments @('-m', 'pip', 'install', '--no-deps', '--no-build-isolation', '--editable', $repoRoot) -Purpose 'Installing the project package'
+
+        if (-not $SkipFlutter) {
+            $flutter = Get-Command flutter -ErrorAction SilentlyContinue
+            if ($null -ne $flutter) {
+                Write-Host 'Resolving the Flutter dashboard dependencies...'
+                Push-Location (Join-Path $repoRoot 'dashboard_flutter')
+                try {
+                    Invoke-Checked -Executable $flutter.Source -Arguments @('pub', 'get') -Purpose 'Resolving Flutter dependencies'
+                }
+                finally {
+                    Pop-Location
+                }
+            }
+            else {
+                Write-Host 'Flutter SDK not found; dashboard dependency setup was skipped. Install Flutter and rerun this script to enable the dashboard.'
+            }
+        }
     }
 
     Write-Host 'Checking Python packages, SUMO, configuration files, and project scripts...'

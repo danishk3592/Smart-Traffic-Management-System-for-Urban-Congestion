@@ -1,6 +1,6 @@
 # Limitations and outstanding work
 
-Updated: 2026-11-06 10:50 +05:30. See [`docs/PROGRESS.md`](PROGRESS.md) and the Section 12 tracker in the roadmap for current task state.
+Updated: 2026-11-10. See [`docs/PROGRESS.md`](PROGRESS.md) and the Section 12 tracker in the roadmap for current task state.
 
 ## Evaluation and control
 
@@ -12,7 +12,8 @@ Updated: 2026-11-06 10:50 +05:30. See [`docs/PROGRESS.md`](PROGRESS.md) and the 
 
 ## Dashboard
 
-- T5.1 remains Partial because the pre-instrumentation config snapshot matching SHA-256 `6b0b87b8aa135dfc3c160a9aa899eaa87b63774c0fc440cbc363abb7c85b5bef` is not archived. Existing saved fixed/medium/seed-3000 summaries differ in `config_hash`, so strict same-config, all-column observational equivalence is unproven.
+- T5.1 is Done under the documented same-config fallback: the pre-instrumentation and current runners matched all 31 summary fields except the permitted `run_id` and `wall_clock_s` fields. The historical config snapshot matching SHA-256 `6b0b87b8aa135dfc3c160a9aa899eaa87b63774c0fc440cbc363abb7c85b5bef` remains unavailable and was not reconstructed. Evidence: `docs/evidence/t51_equivalence_20261106.json`.
+- T6.1 remains Partial: the fresh demo's source telemetry and the latest-row UI fix are verified, but fresh-run dashboard screenshots and displayed-value checks are missing. The existing Live Monitoring screenshot shows a historical finished run. See `docs/dashboard.md` for the exact evidence gap.
 - T5.4 is Done. Its post-M1 check reported no running SUMO or SUMO-GUI processes. The fresh 30-sample Windows Release status-to-post-frame measurement: median age 661.151 ms and maximum 1676.448 ms, below the SRS NFR-PRF-02 ≤2 s threshold for this measured 45-second interval. All 30 rendered `Last update` values matched distinct producer timestamps at consecutive 5-s simulation intervals. The raw report is `docs/evidence/t54_live_freshness_20261105.json`. This is one run sample, not a universal bound; the post-evaluation zombie check passed. Flutter analysis, 19 widget tests, Release build, no-database tests and Ruff pass. Five Release real-results page loads separately measured median 1589.084 ms. NFR-PRF-03 is not applicable because the dashboard has no REST endpoints.
 - The dashboard is Windows desktop only, local, unauthenticated and read-only. It reads files already on disk; it does not control SUMO. Raw run artifacts are not committed.
 

@@ -1,10 +1,44 @@
 # Project progress
 
-Updated: 2026-11-07 19:10 +05:30
+Updated: 2026-11-10
 
 | Current task | Status | Branch | Last completed commit | Resume point |
 |---|---|---|---|---|
-| T6.1 Partial / T6.4 release | T6.4 Done with documented T6.1 limitation; A0 reconciliation passed | agent/autonomous-build | `33d8eb6` (A0); release merge `9396db5`, tag `v1.0-ai-core` | Local release merge/tag verified and merged into the work branch by A0. Six seed-8000 demos passed; T6.1 dashboard live-view remains unverified. Final checkpoint: Ruff clean, pytest 104 passed/23 deselected, SUMO 23 passed/104 deselected, zombie check clean. Strict PPO candidates remain 1/12 each; accepted final remains 0/12.
+| Release status review | T6.4 release is complete; T6.1 remains Partial; full PPO coverage was not achieved | agent/autonomous-build | `40a669d` (`docs: record remaining blockers and PPO plateau`); release merge `9396db5`, tag `v1.0-ai-core` | At review on 2026-11-10, HEAD remains `40a669dad7264bb05ad0d37ce1c0f41ab565d7de`. T5.1 and T5.4 are Done. T6.1 still needs genuine fresh-run dashboard captures with displayed-value checks; existing screenshots show a historical completed run. M1 Metric B improvement is 9.229% (10% target not met). Accepted M2 is DEC-14 Stage 4 hybrid, 25.84% below fixed with 100% completion, but strict PPO coverage is 0/12 (none); this does not meet the full-network AI objective. T6.4 local release merge/tag is complete. The worktree contains pre-existing uncommitted changes; this status update does not stage or commit them.
+
+## Status reconciliation (2026-11-10)
+
+- This is a documentation status review, not a new evaluation. No simulation, training, or test command was run for this update.
+- Current roadmap tracker records T5.1–T5.4 and T6.2–T6.4 as Done; T6.1 remains Partial pending fresh-run dashboard visual evidence. T6.4 and the local `v1.0-ai-core` tag are complete.
+- Product/release completion and research objective completion differ: the release records a measured Stage 4 hybrid M2 result, while strict PPO ownership is 0/12, so full intended-junction AI control has not been demonstrated. M1's 10% target is also not met.
+- Older dated entries below preserve the state and decisions recorded at those checkpoints; the current status above and the roadmap Section 12 tracker are authoritative.
+
+## Master prompt continuation (2026-11-08)
+
+- **P0 preservation:** recorded branch `agent/autonomous-build`, HEAD `40a669dad7264bb05ad0d37ce1c0f41ab565d7de`, and all 60 pre-existing status entries. A recoverable tracked diff plus status manifest is in `%TEMP%\stms-pre-master-worktree-20261108T120345Z`; no existing worktree file was edited or staged during preflight. Untracked artifacts are preserved in place.
+- **P1 T5.1:** dispositioned Done under the roadmap fallback. The historical YAML bytes/hash were not recovered; the same-config fixed/medium/seed-3000 comparison matched 31 summary fields except permitted `run_id` and `wall_clock_s`. Evidence: `docs/evidence/t51_equivalence_20261106.json`.
+- **P2 M1:** current accepted final remains 9.229% vs fixed, below the 10% target. No new M1 experiment has started yet; next step is read-only controller/reward analysis using validation data only. Seeds 5000+ and 6000+ are excluded from tuning.
+- **P3 strict PPO:** accepted M2 remains Stage 4 hybrid, 0/12 under the frozen 0.95 PPO-owned tick rule. Coverage candidates 5 and 6 did not improve validation and were not promoted; this prompt restarts the broader investigation, but does not authorize changing the metric, safety layer, accepted model, or final outputs.
+- **P4 dashboard:** T5.4 is Done in the current roadmap based on five Release real-results loads (median 1589.084 ms) and 30 freshness samples (max 1676.448 ms). The older `docs/dashboard.md` follow-up text still describes the earlier Partial state and is being reconciled without deleting that history.
+- **P5 T6.1:** user-supplied screenshots were inspected and static page values cross-checked. Status is Partial: the Live Monitoring screenshot is a finished run and does not show changing live telemetry. The earlier native-pipe failure remains recorded; no visual claim is inferred from the loader report alone.
+- **P6 regression / P7 docs:** last release checkpoint remains 104 passed/23 deselected, 23 SUMO passed, Ruff clean, Flutter tests/analyzer passed, zombie check clean. Re-run affected checks after any implementation changes; preserve the accepted M1/M2 snapshots.
+
+## T6.1 desktop dashboard recheck (2026-11-08)
+
+- Flutter 3.47.9 / Dart 3.13.7 doctor confirmed Windows desktop and Visual Studio toolchain; `flutter devices` listed Windows desktop. `flutter test --no-pub`: **19 passed**. `flutter build windows --release`: succeeded; executable `dashboard_flutter/build/windows/x64/runner/Release/dashboard_flutter.exe`.
+- `flutter run -d windows --release` created a responsive process, but its main-window handle remained zero. Direct `Start-Process` launch created a responsive Release process in session 1 with title `dashboard_flutter` and a nonzero main-window handle. No screenshot was available to confirm its rendered appearance.
+- The app's real-results measurement mode loaded the repository root, discovered **632 runs** and **581 summaries**, selected `20261106-150152_fixed_medium_s3000`, and reported the summary loaded. Load-to-data-frame was **660.349 ms**. The selected record was cross-checked against `results/raw/20261106-150152_fixed_medium_s3000/summary.csv`: fixed/medium/3000, 2,600 scheduled, 1,534 completed, 59% completion, 2505.193076923077 s average wait, 2.075 vehicles/min throughput. Generated report: `docs/evidence/T6.1/real_results_load_20261108.json`, SHA-256 `4B708FB33C51F9AA8E545D19B9B15B9BCEEB6CAFB0CFB23C10E63221FEF2768A`.
+- Live-run audit: 18 raw status files say `running`, but all are stale (newest age approximately 195,614 seconds); `scripts/check_zombies.py` found no running SUMO/SUMO-GUI process. There is no active live run for a live dashboard capture, and historical status is not treated as current telemetry.
+- At the first desktop recheck, before the PNGs were supplied, `sky.list_apps()` failed initially, after the required 2-second retry, and after runtime reset/reinitialization with the native-pipe error. That checkpoint had no visual evidence. The later screenshot review below supersedes its screenshot/page status: three saved-data views pass source checks, while live-changing data remains unverified and T6.1 is Partial.
+
+## T6.1 screenshot review (2026-11-08)
+
+- Inspected `docs/evidence/T6.1/overview.png`, `performance.png`, `experiment_history.png`, and `live_monitoring.png`; all are 1920×1200 and visually consistent with the Windows dashboard. SHA-256: overview `cb2cb93c0e5efdb507704454b66979b9455c68fade10f9cc1fbc54ce71e5bbc2`; performance `02b3a6f5f518a94d7cf3b8a14f91a2b92baab66bdd2a417f187dc96223a4909a`; experiment history `b8d2e742f3bbea7200793b753dcff8da87767b9a1207b05c832db1157f1c7d5a`; live monitoring `093732fe1f92c6d5a80575e4c264e52ae31dbef547d143388d6be323edf39c5d`.
+- **Overview:** real selected run `20261106-150152_fixed_medium_s3000`; FINISHED at 7200 s matches `status.json`. Avg wait 2505.193076923077 s and throughput 2.075 vehicles/min match `summary.csv`; latest `steps.csv` sums to 72 active/72 halting vehicles, max approach queue 26.
+- **Performance:** M2 final headline hybrid travel time 277.5315164945055 s, 25.842935394271755% improvement over fixed, target MET, 11,500 common trips; matches accepted comparison/results evidence. Adjacent avg-wait/queue/throughput cards match the selected M1 fixed medium seed-3000 summary and are labelled saved summary. AI coverage 0/12 is correct.
+- **Experiment History:** visible saved single and network runs resolve to raw summaries; displayed controller/scenario/seed and wait/queue/throughput fields match. Cross-checked network hybrid/rule/fixed `net_medium/8000` and single RL/rule/fixed `medium/8000` examples.
+- **Live Monitoring:** its finished-run phase 2/25 s/action `hold`/safety accepted/congestion Low matches the final 7200-s row. But the visible approach table shows all-zero records from sim times 5–15 s, while the final row set totals 72 vehicles and 72 halting. Screenshot capture time is Nov 8; source status last updated Nov 6. The image therefore shows historical telemetry, not changing live activity, and the table is not displaying the current approach sample.
+- **Disposition:** Overview, Performance, and Experiment History visual/source checks pass. Live-changing data acceptance does not. T6.1 is **Partial**, not Done; require a screenshot during an active demo with fresh status timestamps and current approach rows. Detailed findings are in `docs/dashboard.md`.
 
 ## A0 resume reconciliation (2026-11-07 19:06 +05:30)
 
@@ -12,10 +46,10 @@ Updated: 2026-11-07 19:10 +05:30
 - Created rollback tag `a0-pre-reconcile-20261107T133518Z`, then merged local `main` with `--no-ff`; reconciliation commit is `33d8eb6`. Verified `9396db5` is now an ancestor of the work branch and `v1.0-ai-core` still targets `9396db5`.
 - Mixed owner/generated work remains unstaged, including the pre-existing protected map edits. No protected files were staged or committed; no remote operations were performed. No experiment or result artifact was created during this graph-only reconciliation.
 
-## T6.1 dashboard live-view blocker recheck (2026-11-07 19:10 +05:30)
+## T6.1 dashboard live-view blocker recheck (2026-11-07 19:10 +05:30; historical status wording superseded)
 
 - Retried the documented read-only Windows app inventory through the computer-use skill. `sky.list_apps()` again failed before exposing any app/window: `Computer Use native pipe is unavailable: failed to connect native pipe: The system cannot find the file specified. (os error 2)`. No UI action or dashboard verification occurred.
-- T6.1 remains Partial; its exact recovery action is unchanged: once the desktop helper is operational, open the Windows Release dashboard, select a completed seed-8000 demo and verify its live/status data. No experiment, SUMO run, or result artifact was created.
+- At that checkpoint T6.1 was described as Partial. The subsequent pre-screenshot checkpoint marked it Blocked because the native pipe failed before exposing any app/window. Both are historical; the later screenshot review above is the current disposition: Partial pending live-changing data evidence.
 
 ## T5.1 same-config equivalence complete (2026-11-06 16:49 +05:30)
 
@@ -296,3 +330,18 @@ The saved fixed/medium/seed-3000 summaries `20261027-133344_fixed_medium_s3000` 
 - Local `--no-ff` merge of `agent/autonomous-build` into `main` completed at `9396db5`; annotated tag `v1.0-ai-core` points to that merge. Read-only verification confirms main contains the work branch and its worktree is clean. No remote operations. T6.1 remains Partial for desktop live-view verification; P1/P2 remain pending labels. M2 is DEC-14 Stage 4 hybrid with accepted strict PPO 0/12.
 
 - Current authoritative release state: `agent/autonomous-build` at `a7d1cbe` is contained in local `main` merge `9396db5`; annotated tag `v1.0-ai-core` points to `9396db5`. The main worktree is clean. No remote operation was run. Owner/protected modifications in the development worktree remain unstaged.
+
+## T6.1 live telemetry follow-up (2026-11-08)
+
+- Fresh demo command: `Ai/.venv/Scripts/python.exe -m scripts.run_demo --family network --controller fixed --scenario net_medium --seed 8001`. Run `20261108-185632_fixed_net_medium_s8001`; scenario config `SUMO/scenarios/net_medium/net_medium.sumocfg`; seed 8001; 7200 s cap. Status: `results/raw/20261108-185632_fixed_net_medium_s8001/status.json`; telemetry: `results/raw/20261108-185632_fixed_net_medium_s8001/steps.csv`.
+- Four source observations between 18:59:19 and 18:59:32 +05:30 captured `running` status and advancing source timestamps/simulation time. Status sim time moved 2540→2715 s; latest complete 48-row step sample moved 2540→2715 s (two polls had the step sample 5 s ahead of status). Sample totals were 10 vehicles/6 halting, 12/9, 14/9, and 17/13; nonzero approach counts were 8, 6, 11, and 11. Per-approach values and observation timestamps: [`live_demo_20261108_s8001.json`](evidence/T6.1/live_demo_20261108_s8001.json).
+- The same run completed normally at 4978 s with 650/650 trips, 7 teleports, and 337.895 s wall time. Final status is `finished`; the latest complete step sample (4975 s) has 48 rows and zero vehicles/halting. Summary reports avg_wait 129.1276923 s, avg_queue 8.4743719, throughput 7.8344717 vehicles/min, 12 controlled junctions, AI coverage none. These are demo results, not an AI coverage claim.
+- Cause of the earlier screenshot’s zero approach rows: Live Monitoring selected the current signal state but presented the selected run’s approach rows in CSV order, so its table showed the earliest sample (5–15 s). It now selects approach rows at the maximum parseable `sim_time` for that run and labels the sample time. A widget regression test checks a refresh from an early all-zero sample to newer nonzero approach rows. No artificial metric changes were made.
+- Validation after the change: `flutter test --no-pub` **20 passed**; `flutter analyze --no-pub` **No issues found**; `flutter build windows --release` succeeded. No repository-wide or SUMO test suites were rerun for this focused UI fix.
+- Native Computer Use remained unavailable. Therefore no fresh genuine Live Monitoring screenshot was captured, no displayed dashboard values were visually cross-checked against this run, and no near-completion dashboard screenshot is available. Source telemetry is verified; UI live acceptance is not. T6.1 remains **Partial**. Exact capture procedure and acceptance comparisons are in `docs/dashboard.md`.
+
+### T6.1 manual screenshot audit (2026-11-08)
+
+- Re-inspected `docs/evidence/T6.1/`: it contains the three previously accepted page screenshots and only the earlier `live_monitoring.png`; there are no three new Live Monitoring captures. The Live Monitoring PNG is 1920×1200, SHA-256 `093732fe1f92c6d5a80575e4c264e52ae31dbef547d143388d6be323edf39c5d`, file time 17:33:16 +05:30. It shows selected run `20261106-150152_fixed_medium_s3000` and `FINISHED`, not fresh demo `20261108-185632_fixed_net_medium_s8001` (started 18:56:33 +05:30).
+- The screenshot run's `status.json` matches the finished 7200 s state and Nov 6 update timestamp. Its displayed zero rows match early `steps.csv` samples at 5, 10, and 15 s (five rows each; zero vehicles/halting); the latest 7200-s sample has five rows and totals 72 vehicles/72 halting. Thus this remains a historical screenshot and does not satisfy live acceptance.
+- The fresh `s8001` evidence JSON records source-only observations and terminal completion, but contains no dashboard captures. Missing checks are screenshot evidence for the fresh run's displayed identity, running status, advancing displayed sim time, current vehicle/halting values, latest approach sample, and displayed finished state. Retain the three prior visual passes and keep T6.1 **Partial**. No screenshots were invented or modified.
